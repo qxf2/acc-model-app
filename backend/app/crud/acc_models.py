@@ -1,58 +1,124 @@
 """
-This module contains the CRUD (Create, Read, Update, Delete) operations for interacting with the database models.
+This module contains the CRUD (Create, Read, Update, Delete) operations related to acc_models table.
 """
 
 from sqlalchemy.orm import Session
 from app import schemas, models
 
-def get_acc_model(db: Session, acc_model_id: int):
+
+def get_acc_model(db_session: Session, acc_model_id: int):
     """
-    Retreive an ACCModel by its ID.
+    Retrieves an ACCModel instance from the database based on the provided acc_model_id.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        acc_model_id (int): The ID of the ACCModel to retrieve.
+
+    Returns:
+        models.ACCModel: The retrieved ACCModel instance, or None if not found.
     """
-    return db.query(models.ACCModel).filter(models.ACCModel.id == acc_model_id).first()
+
+    return (
+        db_session.query(models.ACCModel)
+        .filter(models.ACCModel.id == acc_model_id)
+        .first()
+    )
 
 
-def get_acc_model_by_name(db: Session, name: str):
+def get_acc_model_by_name(db_session: Session, name: str):
     """
-    Retreive an ACCModel by its name.
-    """
-    return db.query(models.ACCModel).filter(models.ACCModel.name == name).first()
+    Retrieves an ACCModel instance from the database based on the provided name.
 
-def get_acc_models(db: Session, limit: int = 100):
+    Args:
+        db_session (Session): The database session to use for the query.
+        name (str): The name of the ACCModel to retrieve.
+
+    Returns:
+        models.ACCModel: The retrieved ACCModel instance, or None if not found.
     """
-    Retreive a list of all ACCModels.
-    """
-    return db.query(models.ACCModel).limit(limit).all()
+
+    return (
+        db_session.query(models.ACCModel).filter(models.ACCModel.name == name).first()
+    )
 
 
-def create_acc_model(db: Session, acc_model: schemas.ACCModelCreate):
+def get_acc_models(db_session: Session, limit: int = 100):
     """
-    Create a new ACCModel.
+    Retrieves a list of ACCModel instances from the database.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        limit (int): The maximum number of ACCModel instances to retrieve. Defaults to 100.
+
+    Returns:
+        list[models.ACCModel]: A list of ACCModel instances.
+    """
+
+    return db_session.query(models.ACCModel).limit(limit).all()
+
+
+def create_acc_model(db_session: Session, acc_model: schemas.ACCModelCreate):
+    """
+    Creates a new ACCModel instance in the database.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        acc_model (schemas.ACCModelCreate): The ACCModel data to create.
+
+    Returns:
+        models.ACCModel: The newly created ACCModel instance.
     """
     db_acc_model = models.ACCModel(**acc_model.model_dump())
-    db.add(db_acc_model)
-    db.commit()
-    db.refresh(db_acc_model)
+    db_session.add(db_acc_model)
+    db_session.commit()
+    db_session.refresh(db_acc_model)
     return db_acc_model
 
-def update_acc_model(db: Session, acc_model_id: int, acc_model: schemas.ACCModelCreate):
+
+def update_acc_model(db_session: Session, acc_model_id: int, acc_model: schemas.ACCModelCreate):
     """
-    Update an existing ACCModel.
+    Updates an existing ACCModel instance in the database.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        acc_model_id (int): The ID of the ACCModel instance to update.
+        acc_model (schemas.ACCModelCreate): The updated ACCModel data.
+
+    Returns:
+        models.ACCModel: The updated ACCModel instance, or None if no instance was found.
     """
-    db_acc_model = db.query(models.ACCModel).filter(models.ACCModel.id == acc_model_id).first()
+
+    db_acc_model = (
+        db_session.query(models.ACCModel)
+        .filter(models.ACCModel.id == acc_model_id)
+        .first()
+    )
     if db_acc_model:
         for key, value in acc_model.model_dump().items():
             setattr(db_acc_model, key, value)
-        db.commit()
-        db.refresh(db_acc_model)
+        db_session.commit()
+        db_session.refresh(db_acc_model)
     return db_acc_model
 
-def delete_acc_model(db: Session, acc_model_id: int):
+
+def delete_acc_model(db_session: Session, acc_model_id: int):
     """
-    Delete an existing ACCModel.
+    Deletes an existing ACCModel instance from the database.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        acc_model_id (int): The ID of the ACCModel instance to delete.
+
+    Returns:
+        models.ACCModel: The deleted ACCModel instance, or None if no instance was found.
     """
-    db_acc_model = db.query(models.ACCModel).filter(models.ACCModel.id == acc_model_id).first()
+
+    db_acc_model = (
+        db_session.query(models.ACCModel)
+        .filter(models.ACCModel.id == acc_model_id)
+        .first()
+    )
     if db_acc_model:
-        db.delete(db_acc_model)
-        db.commit()
+        db_session.delete(db_acc_model)
+        db_session.commit()
     return db_acc_model
