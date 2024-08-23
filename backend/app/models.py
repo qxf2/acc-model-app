@@ -38,7 +38,7 @@ class Attribute(Base):
     name = Column(String, index=True)
     description = Column(Text)
 
-    capabilities = relationship("Capability", back_populates="attribute")
+    assessments = relationship("CapabilityAssessment", back_populates="attribute", cascade="all, delete-orphan")
 
 class Capability(Base):
     __tablename__ = "capabilities"
@@ -46,14 +46,23 @@ class Capability(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, index=True)
     description = Column(Text)
-    comments = Column(Text)
     component_id = Column(Integer, ForeignKey('components.id'))
-    attribute_id = Column(Integer, ForeignKey('attributes.id'))
 
     component = relationship("Component", back_populates="capabilities")
-    attribute = relationship("Attribute", back_populates="capabilities")
-    ratings = relationship("Rating", back_populates="capability")  
+    assessments = relationship("CapabilityAssessment", back_populates="capability", cascade="all, delete-orphan")
 
+class CapabilityAssessment(Base):
+    __tablename__ = "capability_assessments"
+
+    id = Column(Integer, primary_key=True)
+    capability_id = Column(Integer, ForeignKey('capabilities.id'), nullable=False)
+    attribute_id = Column(Integer, ForeignKey('attributes.id'), nullable=False)
+    rating = Column(Integer, nullable=True)
+    comments = Column(Text, nullable=True)
+
+    capability = relationship("Capability", back_populates="assessments")
+    attribute = relationship("Attribute")
+    ratings = relationship("Rating", back_populates="capability_assessment", cascade="all, delete-orphan")
 
 class User(Base):
     __tablename__ = 'users'
@@ -71,12 +80,12 @@ class Rating(Base):
     __tablename__ = 'ratings'
 
     id = Column(Integer, primary_key=True, index=True)
-    rating = Column(Integer, nullable=False)
+    rating = Column(String, nullable=False)
+    comments = Column(Text, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    capability_id = Column(Integer, ForeignKey('capabilities.id'), nullable=False)
+    capability_assessment_id = Column(Integer, ForeignKey('capability_assessments.id'), nullable=False)
     timestamp = Column(DateTime, default=datetime.now, nullable=False)
 
     user = relationship("User", back_populates="ratings")
-    capability = relationship("Capability", back_populates="ratings")
-
+    capability_assessment = relationship("CapabilityAssessment", back_populates="ratings")
 

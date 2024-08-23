@@ -10,7 +10,7 @@ from pydantic import ValidationError
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_dir)
 
-from app.routers import acc_models, attributes, capabilities, components, users, security
+from app.routers import acc_models, attributes, capabilities, components, users, security, ratings
 from app.database import Base, engine
 from logging_config import setup_logging
 
@@ -65,6 +65,7 @@ app.include_router(capabilities.router)
 app.include_router(components.router)
 app.include_router(users.router)
 app.include_router(security.router)
+app.include_router(ratings.router)
 
 Base.metadata.create_all(bind=engine)
 
