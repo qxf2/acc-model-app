@@ -21,6 +21,7 @@ from sqlalchemy.orm import Session
 from app import schemas
 from app.crud import capabilities as crud
 from app.database import get_db
+from app.routers.security import get_current_user
 
 logger = logging.getLogger(__name__)
 
@@ -33,13 +34,17 @@ router = APIRouter(
 
 @router.post("/", response_model=schemas.CapabilityRead)
 def create_capability(
-                capability: schemas.CapabilityCreate, db_session: Session = Depends(get_db)):
+                capability: schemas.CapabilityCreate,
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
     Creates a new capability.
 
     Args:
         capability: The capability to be created.
         db_session: The database session.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The newly created capability.
@@ -60,8 +65,13 @@ def create_capability(
         crud.create_capability_assessment(
             db_session=db_session, capability_id=new_capability.id
         )
-        logger.info("Created new capability with ID %s", new_capability.id)
+        logger.info("Created new capability with ID %s by user %s",
+                    new_capability.id, current_user.username)
         return new_capability
+
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
 
     except Exception as error:
         logger.exception("Error creating capability: %s", error)
@@ -87,6 +97,10 @@ def read_capabilities(limit: int = 100, db_session: Session = Depends(get_db)):
         capabilities = crud.get_capabilities(db_session, limit=limit)
         logger.info("Retrieved %s capabilities", len(capabilities))
         return capabilities
+    
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.exception("Error retrieving capabilities: %s", error)
         raise HTTPException(
@@ -114,6 +128,9 @@ def read_capability(capability_id: int, db_session: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail="Capability not found")
         logger.info("Retrieved capability with ID %s", capability_id)
         return capability
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.exception("Error retrieving capability: %s", error)
         raise HTTPException(
@@ -149,6 +166,9 @@ def read_capabilities_by_component(
             component_id,
         )
         return capabilities
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.exception("Error retrieving capabilities by component: %s", error)
         raise HTTPException(
@@ -162,6 +182,7 @@ def update_capability(
                 capability_id: int,
                 capability: schemas.CapabilityUpdate,
                 db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user),
 ):
     """
     Updates an existing capability by its ID.
@@ -170,6 +191,7 @@ def update_capability(
         capability_id: The ID of the capability to update.
         capability: The updated capability data.
         db_session: The database session.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The updated capability data.
@@ -187,7 +209,7 @@ def update_capability(
         )
         if capability_by_name and capability_by_name.id != capability_id:
             logger.error(
-                "Capability name %s already in use in component ID %s",
+                "Capability name %s already in use in component ID %d",
                 capability.name,
                 capability.component_id,
             )
@@ -199,8 +221,12 @@ def update_capability(
         updated_capability = crud.update_capability(
             db_session, capability_id=capability_id, capability=capability
         )
-        logger.info("Updated capability with ID %s", capability_id)
+        logger.info("Updated capability with ID %s by user %s",
+                    capability_id, current_user.username)
         return updated_capability
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.exception("Error updating capability: %s", error)
         raise HTTPException(
@@ -210,13 +236,18 @@ def update_capability(
 
 
 @router.delete("/{capability_id}", response_model=schemas.CapabilityRead)
-def delete_capability(capability_id: int, db_session: Session = Depends(get_db)):
+def delete_capability(
+                capability_id: int,
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
     Deletes an existing capability by its ID.
 
     Args:
         capability_id: The ID of the capability to delete.
         db_session: The database session.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The deleted capability.
@@ -232,8 +263,12 @@ def delete_capability(capability_id: int, db_session: Session = Depends(get_db))
         deleted_capability = crud.delete_capability(
             db_session, capability_id=capability_id
         )
-        logger.info("Deleted capability with ID %s", capability_id)
+        logger.info("Deleted capability with ID %s by user %s",
+                    capability_id, current_user.username)
         return deleted_capability
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.exception("Error deleting capability: %s", error)
         raise HTTPException(

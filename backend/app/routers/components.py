@@ -21,6 +21,7 @@ from sqlalchemy.orm import Session
 from app import schemas
 from app.crud import components as crud
 from app.database import get_db
+from app.routers.security import get_current_user
 
 router = APIRouter(
     prefix="/components",
@@ -32,20 +33,26 @@ logger = logging.getLogger(__name__)
 
 
 @router.post("/", response_model=schemas.ComponentRead)
-def create_component(component: schemas.ComponentCreate, db_session: Session = Depends(get_db)):
+def create_component(
+                component: schemas.ComponentCreate,
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
     Creates a new component.
 
     Args:
         component: The component data to create.
         db_session: The database session to use for the operation.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The newly created component instance.
     """
 
     try:
-        logger.info("Creating a new component: %s", component.name)
+        logger.info("Creating a new component: %s by user %s",
+                    component.name, current_user.username)
         existing_component = crud.get_component_by_name_and_acc_model_id(
             db_session, name=component.name, acc_model_id=component.acc_model_id)
         if existing_component:
@@ -57,7 +64,9 @@ def create_component(component: schemas.ComponentCreate, db_session: Session = D
         logger.info("Successfully created component with ID: %s",
                     new_component.id)
         return new_component
-
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error creating component: %s", error)
         raise HTTPException(
@@ -82,7 +91,9 @@ def read_all_components(limit: int = 100, db_session: Session = Depends(get_db))
         logger.info("Fetching up to %d components", limit)
         components = crud.get_all_components(db_session, limit=limit)
         return components
-
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error retrieving components: %s", error)
         raise HTTPException(
@@ -112,7 +123,9 @@ def read_components_by_acc_model(
         components = crud.get_components_by_acc_model(
             db_session, acc_model_id=acc_model_id, limit=limit)
         return components
-
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error(
             "Error fetching components for acc_model_id %d: %s", acc_model_id, error)
@@ -143,7 +156,9 @@ def read_component(component_id: int, db_session: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail="Component not found")
         logger.info("Returning component details for ID: %d", component_id)
         return component
-
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error retrieving component with ID %d: %s",
                      component_id, error)
@@ -157,7 +172,9 @@ def read_component(component_id: int, db_session: Session = Depends(get_db)):
 def update_component(
                 component_id: int,
                 component: schemas.ComponentCreate,
-                db_session: Session = Depends(get_db)):
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
     Updates an existing Component.
 
@@ -165,13 +182,15 @@ def update_component(
         component_id: The ID of the component to update.
         component: The updated component data.
         db_session: The database session to use for the operation.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The updated component instance.
     """
 
     try:
-        logger.info("Updating component with ID: %d", component_id)
+        logger.info("Updating component with ID: %d by user: %s",
+                    component_id, current_user.username)
         existing_component = crud.get_component(
             db_session, component_id=component_id)
         if existing_component is None:
@@ -189,7 +208,9 @@ def update_component(
             db_session, component_id=component_id, component=component)
         logger.info("Successfully updated component with ID: %d", component_id)
         return updated_component
-
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error updating component with ID %d: %s",
                      component_id, error)
@@ -200,20 +221,26 @@ def update_component(
 
 
 @router.delete("/{component_id}", response_model=schemas.ComponentRead)
-def delete_component(component_id: int, db_session: Session = Depends(get_db)):
+def delete_component(
+                component_id: int,
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
     Deletes an existing Component.
 
     Args:
         component_id: The ID of the component to delete.
         db_session: The database session to use for the operation.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The deleted component instance.
     """
 
     try:
-        logger.info("Deleting component with ID: %d", component_id)
+        logger.info("Deleting component with ID: %d by user %s",
+                    component_id, current_user.username)
         existing_component = crud.get_component(
             db_session, component_id=component_id)
         if existing_component is None:
@@ -224,7 +251,9 @@ def delete_component(component_id: int, db_session: Session = Depends(get_db)):
             db_session, component_id=component_id)
         logger.info("Successfully deleted component with ID: %d", component_id)
         return deleted_component
-
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error deleting component with ID %d: %s",
                      component_id, error)

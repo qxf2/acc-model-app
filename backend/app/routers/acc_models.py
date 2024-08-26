@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 from app import schemas
 from app.crud import acc_models as crud
 from app.database import get_db
+from app.routers.security import get_current_user
 
 router = APIRouter(
     prefix="/acc-models",
@@ -30,19 +31,25 @@ logger = logging.getLogger(__name__)
 
 
 @router.post("/", response_model=schemas.ACCModelRead)
-def create_acc_model(acc_model: schemas.ACCModelCreate, db_session: Session = Depends(get_db)):
+def create_acc_model(
+                acc_model: schemas.ACCModelCreate,
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
-    Creates a new ACCModel instance.
+    Creates a new ACCModel.
 
     Args:
         acc_model: The ACCModel data to create.
         db: The database session to use for the query.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
-        schemas.ACCModelRead: The newly created ACCModel instance.
+        The newly created ACCModel.
     """
     try:
-        logger.info("Creating ACC model with name: %s", acc_model.name)
+        logger.info("Creating ACC model with name: %s by user: %s",
+                    acc_model.name, current_user.username)
         existing_acc_model = crud.get_acc_model_by_name(
             db_session, name=acc_model.name)
         if existing_acc_model:
@@ -54,10 +61,15 @@ def create_acc_model(acc_model: schemas.ACCModelCreate, db_session: Session = De
             db_session=db_session, acc_model=acc_model)
         logger.info("ACC model '%s' created successfully", acc_model.name)
         return new_model
+
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
+    
     except Exception as error:
         logger.error("Error creating ACC model: %s", error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An unexpected error occurred while creating the ACC model.")
+                            detail="An unexpected error occurred while creating the ACC model.") from error
 
 
 @router.get("/", response_model=List[schemas.ACCModelRead])
@@ -76,6 +88,11 @@ def read_acc_models(limit: int = 100, db_session: Session = Depends(get_db)):
         acc_models = crud.get_acc_models(db_session, limit=limit)
         logger.info("Fetched %d ACC models", len(acc_models))
         return acc_models
+
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
+    
     except Exception as error:
         logger.error("Error fetching ACC models: %s", error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -101,6 +118,10 @@ def read_acc_model(acc_model_id: int, db_session: Session = Depends(get_db)):
                 status_code=status.HTTP_404_NOT_FOUND, detail="ACC model not found")
         logger.info("Fetched ACC model with ID: %d", acc_model_id)
         return acc_model
+    
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error fetching ACC model with ID %d: %s", acc_model_id, error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -111,7 +132,9 @@ def read_acc_model(acc_model_id: int, db_session: Session = Depends(get_db)):
 def update_acc_model(
                 acc_model_id: int,
                 acc_model: schemas.ACCModelCreate,
-                db_session: Session = Depends(get_db)):
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
     Updates an existing ACC model.
 
@@ -119,13 +142,15 @@ def update_acc_model(
         acc_model_id: The ID of the ACC model to update.
         acc_model: The updated ACC model data.
         db_session: The database session to use for the query.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The updated ACC model.
     """
 
     try:
-        logger.info("Updating ACC model with ID: %d", acc_model_id)
+        logger.info("Updating ACC model with ID %d by user %s",
+                    acc_model_id, current_user.username)
         existing_acc_model = crud.get_acc_model(
             db_session, acc_model_id=acc_model_id)
         if existing_acc_model is None:
@@ -144,6 +169,10 @@ def update_acc_model(
             db_session, acc_model_id=acc_model_id, acc_model=acc_model)
         logger.info("ACC model with ID %d updated successfully", acc_model_id)
         return updated_acc_model
+
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error updating ACC model with ID %d: %s", acc_model_id, error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -151,7 +180,11 @@ def update_acc_model(
 
 
 @router.delete("/{acc_model_id}", response_model=schemas.ACCModelRead)
-def delete_acc_model(acc_model_id: int, db_session: Session = Depends(get_db)):
+def delete_acc_model(
+                acc_model_id: int,
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)
+):
     """
     Deletes an ACC model by its ID.
 
@@ -164,7 +197,8 @@ def delete_acc_model(acc_model_id: int, db_session: Session = Depends(get_db)):
     """
 
     try:
-        logger.info("Deleting ACC model with ID: %d", acc_model_id)
+        logger.info("Deleting ACC model with ID by user: %d %s",
+                    acc_model_id, current_user.username)
         existing_acc_model = crud.get_acc_model(
             db_session, acc_model_id=acc_model_id)
         if existing_acc_model is None:
@@ -176,6 +210,10 @@ def delete_acc_model(acc_model_id: int, db_session: Session = Depends(get_db)):
             db_session, acc_model_id=acc_model_id)
         logger.info("ACC model with ID %d deleted successfully", acc_model_id)
         return deleted_acc_model
+
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.error("Error deleting ACC model with ID %d: %s", acc_model_id, error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

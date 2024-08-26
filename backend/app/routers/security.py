@@ -3,7 +3,6 @@ Authentication and Authorization Endpoints for FastAPI.
 
 This module provides the following endpoints:
 - `POST /token`: Login and generate an access token.
-- `GET /users/me`: Retrieve the current logged-in user's information.
 
 It also includes functions for:
 - Password hashing and verification.

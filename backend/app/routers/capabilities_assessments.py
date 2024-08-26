@@ -54,8 +54,8 @@ def upsert_capability_assessment_rating(
     """
 
     try:
-        logger.info("Received capability_assessment_id: %s from user ID: %s",
-                    capability_assessment_id, current_user.id)
+        logger.info("Received capability_assessment_id: %s from user: %s",
+                    capability_assessment_id, current_user.username)
 
         existing_capability_assessment = crud.get_capability_assessment(
             db_session, capability_assessment_id=capability_assessment_id)
@@ -67,19 +67,22 @@ def upsert_capability_assessment_rating(
 
         existing_rating = crud.get_rating_by_user_and_assessment(
             db_session, user_id=current_user.id, capability_assessment_id=capability_assessment_id)
-        logger.debug("Existing Rating: %s", existing_rating)
 
         if existing_rating:
             updated_rating = rating_crud.update_rating(
                 db_session=db_session, db_rating=existing_rating, rating=rating)
-            logger.info("Updated Rating: %s", updated_rating)
+            logger.info("Updated Rating for capability assessment: %s",
+                        capability_assessment_id)
             return updated_rating
 
         new_rating = rating_crud.create_rating(
             db_session=db_session, rating=rating, user_id=current_user.id)
-        logger.info("Created New Rating: %s", new_rating)
+        logger.info("Created New Rating for capability assessment: %s",
+                    capability_assessment_id)
         return new_rating
-
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
     except Exception as error:
         logger.exception("Error creating or updating rating: %s", error)
         raise HTTPException(

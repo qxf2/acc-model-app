@@ -123,13 +123,16 @@ def read_user(user_id: int, db_session: Session = Depends(get_db)):
 
 
 @router.delete("/{user_id}", response_model=schemas.UserRead)
-def delete_user(user_id: int, db_session: Session = Depends(get_db)):
+def delete_user(user_id: int,
+                db_session: Session = Depends(get_db),
+                current_user: schemas.UserRead = Depends(get_current_user)):
     """
     Deletes an existing user by its ID.
 
     Args:
         user_id: The ID of the user to delete.
         db_session: The database session to use for the query.
+        current_user: The current user. Depends(get_current_user).
 
     Returns:
         The deleted user.
@@ -143,7 +146,8 @@ def delete_user(user_id: int, db_session: Session = Depends(get_db)):
             raise HTTPException(status_code=404, detail="User not found")
 
         deleted_user = crud.delete_user(db_session, user_id=user_id)
-        logger.info("User deleted successfully with ID: %s", user_id)
+        logger.info("User deleted successfully with ID by user %s: %s",
+                    user_id, current_user.username)
         return deleted_user
     except HTTPException as error:
         raise error
@@ -174,4 +178,5 @@ async def read_users_me(current_user: models.User = Depends(get_current_user)):
         logger.error(
             "Error occurred while retrieving current user: %s", str(error))
         raise HTTPException(
-            status_code=500, detail="An unexpected error occurred while retrieving the current user") from error
+            status_code=500,
+            detail="An unexpected error occurred while retrieving the current user") from error

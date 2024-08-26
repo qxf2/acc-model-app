@@ -10,11 +10,7 @@ The endpoints are:
 from typing import List
 from fastapi import APIRouter
 
-router = APIRouter(
-    prefix="/",
-    tags=["ratings"],
-    responses={404: {"description": "Not found"}},
-)
+router = APIRouter()
 
 RATING_VALUES = ["Green", "Yellow", "Red", "N/A"]
 
