@@ -80,9 +80,7 @@ class CapabilityBase(BaseModel):
     """
     name: str = Field(min_length=1, description="The name must have atleast one character")
     description: Optional[str] = None
-    comments: Optional[str] = None
     component_id: int
-    attribute_id: int
 
 class CapabilityCreate(CapabilityBase):
     """
@@ -95,7 +93,38 @@ class CapabilityRead(CapabilityBase):
     Model for reading a Capability
     """
     id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+class CapabilityUpdate(BaseModel):
+    """
+    Model for updating a Capability
+    """
+    name: Optional[str] = None
+    description: Optional[str] = None
+    component_id: Optional[int] = None
+
+
+class CapabilityAssessmentBase(BaseModel):
+    """
+    Base model for CapabilityAssessment with common properties
+    """
+    capability_id: int
+    attribute_id: int
     rating: Optional[int] = None
+    comments: Optional[str] = None
+
+class CapabilityAssessmentCreate(CapabilityAssessmentBase):
+    """
+    Model for creating a CapabilityAssessment
+    """
+    pass
+
+class CapabilityAssessmentRead(CapabilityAssessmentBase):
+    """
+    Model for reading a CapabilityAssessment
+    """
+    id: int
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -114,9 +143,8 @@ class UserRead(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
 class RatingBase(BaseModel):
-    user_id: int
-    capability_id: int
-    rating_value: int
+    capability_assessment_id: int
+    rating: str
     comments: Optional[str] = None
     timestamp: Optional[datetime] = None
     
@@ -125,6 +153,13 @@ class RatingCreate(RatingBase):
 
 class RatingRead(RatingBase):
     id: int
+    user_id: int
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class RatingUpdate(BaseModel):
+    rating: Optional[int] = None
+    comments: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 

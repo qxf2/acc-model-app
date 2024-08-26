@@ -1,139 +1,241 @@
 """
-This module contains the CRUD (Create, Read, Update, Delete) operations for interacting with the database models.
+This module contains the CRUD (Create, Read, Update, Delete) operations related to components table.
 """
-import logging
-from typing import Optional, List
+from typing import List
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from app import schemas, models
 from app.crud import acc_models
-from fastapi import HTTPException
 
-def get_component(db: Session, component_id: int):
+def get_component(db_session: Session, component_id: int):
     """
-    Retreive a Component by its ID.
+    Retrieves a component by its ID.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        component_id (int): The ID of the component to retrieve.
+
+    Returns:
+        dict: A dictionary containing the component's details,
+        or None if the component is not found.
     """
-    logging.info(f"Fetching component with ID: {component_id}")
-    component = db.query(models.Component).filter(models.Component.id == component_id).first()
-    logging.info(f"Component fetched: {component}")
+
+    component = (
+        db_session.query(models.Component).filter(models.Component.id == component_id).first()
+    )
     if component:
-        acc_model = db.query(models.ACCModel).filter(models.ACCModel.id == component.acc_model_id).first()
+        acc_model = (
+            db_session.query(models.ACCModel)
+            .filter(models.ACCModel.id == component.acc_model_id)
+            .first()
+        )
         component_details = {
             "id": component.id,
             "name": component.name,
             "description": component.description,
             "acc_model_id": component.acc_model_id,
-            "acc_model_name": acc_model.name if acc_model else None
+            "acc_model_name": acc_model.name if acc_model else None,
         }
-        logging.info(f"Component details constructed: {component_details}")
         return component_details
-    logging.warning(f"Component with ID: {component_id} not found")
     return None
 
-def get_all_components(db:Session, limit: int = 100) -> List[dict]:
+
+def get_all_components(db_session: Session, limit: int = 100) -> List[dict]:
     """
-    Retreive a list of all Components.
+    Retrieves a list of all components from the database.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        limit (int): The maximum number of components to retrieve. Defaults to 100.
+
+    Returns:
+        List[dict]: A list of dictionaries containing the component's details.
     """
-    components = db.query(models.Component).limit(limit).all()
+
+    components = db_session.query(models.Component).limit(limit).all()
     component_details = []
     for component in components:
-        acc_model = db.query(models.ACCModel).filter(models.ACCModel.id == component.acc_model_id).first()
-        component_details.append({
-            "id": component.id,
-            "name": component.name,
-            "description": component.description,
-            "acc_model_id": component.acc_model_id,
-            "acc_model_name": acc_model.name if acc_model else None
-        })
+        acc_model = (
+            db_session.query(models.ACCModel)
+            .filter(models.ACCModel.id == component.acc_model_id)
+            .first()
+        )
+        component_details.append(
+            {
+                "id": component.id,
+                "name": component.name,
+                "description": component.description,
+                "acc_model_id": component.acc_model_id,
+                "acc_model_name": acc_model.name if acc_model else None,
+            }
+        )
     return component_details
 
-def get_components_by_acc_model(db: Session, acc_model_id: int, limit: int = 100) -> List[dict]:
+
+def get_components_by_acc_model(
+                db_session: Session, acc_model_id: int, limit: int = 100
+) -> List[dict]:
     """
-    Retreive a list of all Components by acc_model_id
+    Retrieves a list of components associated with a specific acc_model_id.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        acc_model_id (int): The id of the acc_model to filter components by.
+        limit (int): The maximum number of components to retrieve. Defaults to 100.
+
+    Returns:
+        List[dict]: A list of dictionaries containing the component's details.
     """
-    components = db.query(models.Component).filter(models.Component.acc_model_id == acc_model_id).limit(limit).all()
+
+    components = (
+        db_session.query(models.Component)
+        .filter(models.Component.acc_model_id == acc_model_id)
+        .limit(limit)
+        .all()
+    )
     component_details = []
     for component in components:
-        acc_model = db.query(models.ACCModel).filter(models.ACCModel.id == component.acc_model_id).first()
-        component_details.append({
-            "id": component.id,
-            "name": component.name,
-            "description": component.description,
-            "acc_model_id": component.acc_model_id,
-            "acc_model_name": acc_model.name if acc_model else None
-        })
+        acc_model = (
+            db_session.query(models.ACCModel)
+            .filter(models.ACCModel.id == component.acc_model_id)
+            .first()
+        )
+        component_details.append(
+            {
+                "id": component.id,
+                "name": component.name,
+                "description": component.description,
+                "acc_model_id": component.acc_model_id,
+                "acc_model_name": acc_model.name if acc_model else None,
+            }
+        )
     return component_details
 
 
-def get_component_by_name_and_acc_model_id(db: Session, name: str, acc_model_id: int):
+def get_component_by_name_and_acc_model_id(db_session: Session, name: str, acc_model_id: int):
     """
-    Retreive a Component by its name and acc_model_id.
-    """
-    return db.query(models.Component).filter(models.Component.name == name, models.Component.acc_model_id == acc_model_id).first()
+    Retrieves a Component by its name and acc_model_id.
 
-def create_component(db: Session, component: schemas.ComponentCreate):
+    Args:
+        db_session (Session): The database session to use for the query.
+        name (str): The name of the Component to filter by.
+        acc_model_id (int): The id of the acc_model to filter by.
+
+    Returns:
+        The first Component that matches the given name and acc_model_id,
+        or None if no match is found.
+    """
+
+    return (
+        db_session.query(models.Component)
+        .filter(
+            models.Component.name == name, models.Component.acc_model_id == acc_model_id
+        )
+        .first()
+    )
+
+
+def create_component(db_session: Session, component: schemas.ComponentCreate):
     """
     Create a new Component.
+
+    Args:
+        db_session (Session): The database session to use for the operation.
+        component (schemas.ComponentCreate): The component data to create.
+
+    Returns:
+        models.Component: The newly created component instance.
     """
-    # Check if acc_model_id is valid
-    acc_model = acc_models.get_acc_model(db, component.acc_model_id)
+
+    acc_model = acc_models.get_acc_model(db_session, component.acc_model_id)
     if acc_model is None:
-        raise HTTPException(status_code=400, detail="ACC model with this ID does not exist")
-    
-    # Check if a component with the same name and acc_model_id already exists
-    existing_component = get_component_by_name_and_acc_model_id(db, name=component.name, acc_model_id=component.acc_model_id)
+        raise HTTPException(
+            status_code=400, detail="ACC model with this ID does not exist"
+        )
+
+    existing_component = get_component_by_name_and_acc_model_id(
+        db_session, name=component.name, acc_model_id=component.acc_model_id
+    )
     if existing_component:
-        raise HTTPException(status_code=400, detail="Component with this name already exists in this ACC model")
-    
+        raise HTTPException(
+            status_code=400,
+            detail="Component with this name already exists in this ACC model",
+        )
+
     db_component = models.Component(**component.model_dump())
-    db.add(db_component)
-    db.commit()
-    db.refresh(db_component)
+    db_session.add(db_component)
+    db_session.commit()
+    db_session.refresh(db_component)
     return db_component
 
-def update_component(db: Session, component_id: int, component: schemas.ComponentCreate):
+
+def update_component(db_session: Session, component_id: int, component: schemas.ComponentCreate):
     """
-    Update an existing Component.
+    Updates an existing Component in the database.
+
+    Args:
+        db_session (Session): The database session to use for the operation.
+        component_id (int): The ID of the Component to update.
+        component (schemas.ComponentCreate): The updated Component data.
+
+    Returns:
+        models.Component: The updated Component instance.
     """
-    # Check if the component exists
-    existing_component = db.query(models.Component).filter(models.Component.id == component_id).first()
+
+    existing_component = (
+        db_session.query(models.Component).filter(models.Component.id == component_id).first()
+    )
     if not existing_component:
         raise HTTPException(status_code=404, detail="Component not found")
 
-    # Check if the ACC model exists
-    acc_model = acc_models.get_acc_model(db, component.acc_model_id)
+    acc_model = acc_models.get_acc_model(db_session, component.acc_model_id)
     if not acc_model:
-        raise HTTPException(status_code=400, detail="ACC model with this ID does not exist")
+        raise HTTPException(
+            status_code=400, detail="ACC model with this ID does not exist"
+        )
 
-    # Check if a component with the same name and acc_model_id already exists
-    existing_component_by_name = get_component_by_name_and_acc_model_id(db, name=component.name, acc_model_id=component.acc_model_id)
+    existing_component_by_name = get_component_by_name_and_acc_model_id(
+        db_session, name=component.name, acc_model_id=component.acc_model_id
+    )
     if existing_component_by_name and existing_component_by_name.id != component_id:
-        raise HTTPException(status_code=400, detail="Component name already in use in this ACC model")
+        raise HTTPException(
+            status_code=400, detail="Component name already in use in this ACC model"
+        )
 
-    # Update component
     for key, value in component.model_dump().items():
         setattr(existing_component, key, value)
 
-    db.commit()
-    db.refresh(existing_component)
+    db_session.commit()
+    db_session.refresh(existing_component)
     return existing_component
 
 
-def delete_component(db: Session, component_id: int) -> dict:
+def delete_component(db_session: Session, component_id: int) -> dict:
     """
-    Delete an existing Component.
+    Deletes an existing Component from the database.
+
+    Args:
+        db_session (Session): The database session to use for the operation.
+        component_id (int): The ID of the Component to delete.
     """
-    db_component = db.query(models.Component).filter(models.Component.id == component_id).first()
+
+    db_component = (
+        db_session.query(models.Component).filter(models.Component.id == component_id).first()
+    )
     if db_component:
-        acc_model = db.query(models.ACCModel).filter(models.ACCModel.id == db_component.acc_model_id).first()
+        acc_model = (
+            db_session.query(models.ACCModel)
+            .filter(models.ACCModel.id == db_component.acc_model_id)
+            .first()
+        )
         component_details = {
             "id": db_component.id,
             "name": db_component.name,
             "description": db_component.description,
             "acc_model_id": db_component.acc_model_id,
-            "acc_model_name": acc_model.name if acc_model else None
+            "acc_model_name": acc_model.name if acc_model else None,
         }
-        db.delete(db_component)
-        db.commit()
+        db_session.delete(db_component)
+        db_session.commit()
         return component_details
     return None
-
