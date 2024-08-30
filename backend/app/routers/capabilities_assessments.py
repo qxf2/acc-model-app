@@ -15,7 +15,8 @@ The endpoints use the `get_db` dependency to get a database session.
 The endpoints use the `crud` module to perform the database operations.
 """
 import logging
-from typing import List
+from typing import List, Dict, Union
+from statistics import mean
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app import schemas
@@ -23,6 +24,7 @@ from app.crud import capabilities as crud
 from app.crud import ratings as rating_crud
 from app.database import get_db
 from app.routers.security import get_current_user
+from app.routers.ratings import RATING_MAPPING
 
 router = APIRouter(
     prefix="/capability-assessments",
@@ -162,12 +164,14 @@ def get_ratings_for_capability_assessment(
         if not ratings:
             logger.warning(
                 "No ratings found for capability assessment ID %s", capability_assessment_id)
-            raise HTTPException(
-                status_code=404, detail="No ratings found for this capability assessment")
+            return []
 
         logger.info("Retrieved %s ratings for capability assessment ID %s", len(
             ratings), capability_assessment_id)
         return ratings
+
+    except HTTPException as http_ex:
+        raise http_ex
     except Exception as error:
         logger.exception(
             "Error retrieving ratings for capability assessment: %s", error)
@@ -198,16 +202,59 @@ def get_ratings_for_capability_assessment_by_user(
             capability_assessment_id=capability_assessment_id
         )
 
-        if not user_ratings:
-            logger.warning("No ratings found for user ID %s and capability assessment ID %s",
-                           user_id, capability_assessment_id)
-            raise HTTPException(
-                status_code=404, detail="No ratings found for this user and capability assessment")
-
         logger.info("Retrieved %s ratings for user ID %s and capability assessment ID %s", len(
             user_ratings), user_id, capability_assessment_id)
-        return user_ratings
+        return user_ratings or []
+
     except Exception as error:
         logger.exception(
             "Error retrieving ratings for user and capability assessment: %s", error)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@router.get("/{capability_assessment_id}/aggregate", response_model=Dict[str, Union[int, float]])
+def get_ratings_aggregate_for_capability_assessment(
+                capability_assessment_id: int,
+                db_session: Session = Depends(get_db)
+):
+    """
+    Retrieves aggregated ratings for a specific capability assessment.
+
+    Args:
+        capability_assessment_id: The ID of the capability assessment.
+        db_session: The database session.
+
+    Returns:
+        A dictionary with the capability assessment ID and the average rating,
+        or None if no ratings are found.
+    """
+    try:
+        ratings = rating_crud.get_ratings_for_capability_assessment(
+            db_session,
+            capability_assessment_id
+        )
+        if not ratings:
+            return {
+                "capability_assessment_id": capability_assessment_id,
+                "average_rating": None
+            }
+
+        numeric_ratings = [RATING_MAPPING.get(rating.rating, 0) for rating in ratings]
+        print(numeric_ratings)
+
+        if not numeric_ratings:
+            return {
+                "capability_assessment_id": capability_assessment_id,
+                "average_rating": None
+            }
+        average_rating = mean(numeric_ratings)
+        aggregated_rating = {
+            "capability_assessment_id": capability_assessment_id,
+            "average_rating": average_rating
+        }
+
+        return aggregated_rating
+    except Exception as error:
+        logger.exception(
+            "Error retrieving aggregated ratings for capability assessment: %s", error
+        )
         raise HTTPException(status_code=500, detail="Internal Server Error")
