@@ -12,7 +12,18 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-RATING_VALUES = ["Green", "Yellow", "Red", "N/A"]
+RATING_VALUES = [
+    "Stable",
+    "Acceptable",
+    "Low impact",
+    "Critical Concern"]
+
+RATING_MAPPING = {
+    "Stable": 4,
+    "Acceptable": 3,
+    "Low impact": 2,
+    "Critical Concern": 1
+}
 
 
 @router.get("/rating-options/", response_model=List[str])

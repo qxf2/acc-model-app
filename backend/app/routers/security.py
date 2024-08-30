@@ -134,6 +134,32 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
             detail="An unexpected error occurred while creating the JWT token.",
         )
 
+def verify_refresh_token(token: str):
+    """
+    Validates and decodes a refresh token.
+
+    Args:
+        token (str): The refresh token to be verified and decoded.
+
+    Returns:
+        dict: The payload data extracted from the token if valid.
+        Raises HTTPException if the token is invalid or expired.
+    """
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except error:
+        logger.warning("Invalid refresh token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token"
+        )
+    except Exception as error:
+        logger.error("Error decoding refresh token: %s", error)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred while decoding the refresh token."
+        )
 
 async def get_current_user(
                 token: str = Depends(OAUTH2_SCHEME),
@@ -207,3 +233,51 @@ async def login_for_access_token(
     )
     logger.info("Access token created successfully for user: %s", user.username)
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/refresh-token", response_model=schemas.Token)
+async def refresh_access_token(
+                refresh_token: str,
+                db_session: Session = Depends(get_db)):
+    """
+    Endpoint to refresh an access token using a valid refresh token.
+
+    Args:
+        refresh_token: The refresh token used to request a new access token.
+        db_session: The database session.
+
+    Returns:
+        Token: The new access token.
+    """
+    try:
+        user_data = verify_refresh_token(refresh_token)
+        if not user_data:
+            logger.warning("Invalid refresh token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid refresh token"
+            )
+
+        user = crud.get_user_by_username(db_session, username=user_data['sub'])
+        if not user:
+            logger.warning("User not found for refresh token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found"
+            )
+
+        # Create a new access token
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        new_access_token = create_access_token(
+            data={"sub": user.username}, expires_delta=access_token_expires
+        )
+
+        logger.info("Access token refreshed successfully for user: %s", user.username)
+        return {"access_token": new_access_token, "token_type": "bearer"}
+
+    except Exception as error:
+        logger.error("Error refreshing access token: %s", error)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
