@@ -8,9 +8,12 @@ cd backend
 Use:
 uvicorn app.main:app --reload
 
+localhost:8000/docs
 
 ## How to start frontend
 cd frontend
 
 Use:
 npm start
+
+localhost:3000
