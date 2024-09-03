@@ -57,7 +57,7 @@ To set up the project locally, follow these instructions:
 3. Set 'SECRET_KEY' as Environment Variable.
    * Create a '.env' file in the project root
    
-   * Add the following line to '.env' replaceing 'your_secret_key_value_here' with the generated 'SECRET_KEY'"
+   * Add the following line to '.env' replacing 'your_secret_key_value_here' with the generated 'SECRET_KEY'"
 
    ```bash
    SECRET_KEY=your_secret_key_value_here
