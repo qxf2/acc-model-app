@@ -10,11 +10,11 @@ This project is built around the concept of ACC (Attributes, Components, Capabil
 
 ACC modeling is utilized to break down a software project into three key parts:
 
-Attributes: The qualities or characteristics (adjectives) that describe the desired properties of your product, such as "Accuracy," "Responsiveness," or "User-Friendly."
+**Attributes**: The qualities or characteristics (adjectives) that describe the desired properties of your product, such as "Accuracy," "Responsiveness," or "User-Friendly."
 
-Components: The major sections or building blocks (nouns) of your product, such as "User Management", "Shopping Cart" etc.
+**Components**: The major sections or building blocks (nouns) of your product, such as "User Management", "Shopping Cart" etc.
 
-Capabilities: The specific features or functionalities (verbs) that each Component has such as "Add User", "Edit User" etc. 
+**Capabilities**: The specific features or functionalities (verbs) that each Component has such as "Add User", "Edit User" etc. 
 
 
 ## What Does This Application Do?
