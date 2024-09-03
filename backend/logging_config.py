@@ -49,6 +49,9 @@ def setup_logging():
         logger.addHandler(c_handler)
         logger.addHandler(f_handler)
 
+        # Suppress debug logs from the multipart library
+        logging.getLogger("multipart").setLevel(logging.WARNING)
+
         return logger
     except Exception as error:
         print(f"Failed to configure logging: {error}")
