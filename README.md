@@ -2,7 +2,7 @@
 
 ## Overview
 
-The ACC Model App is a web application for managing and rating Attributes, Components, and Capabilities (ACC) for software projects. It provides a user-friendly interface for evaluating various capabilities against defined attributes and viewing aggregated ratings across users.
+The ACC Model App is a web application for managing Attributes, Components, and Capabilities (ACC) for software projects. It provides a user-friendly interface for evaluating various capabilities against defined attributes and viewing aggregated ratings across users.
 
 ## Background
 
