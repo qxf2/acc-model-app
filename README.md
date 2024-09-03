@@ -62,7 +62,7 @@ To set up the project locally, follow these instructions:
    ```bash
    SECRET_KEY=your_secret_key_value_here
    ```
-   * Ensure '.emv' is listed in your '.gitignore' file to prevent it from being committed to version control.
+   * Ensure '.env' is listed in your '.gitignore' file to prevent it from being committed to version control.
 
 
 2. Setup Backend and Frontend. Detailed instructions below.
