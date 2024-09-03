@@ -17,20 +17,28 @@ const RegistrationForm = () => {
   
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
-      console.log('Passwords do not match.');
       return;
     }
   
     try {
       const userData = { username, email, designation, password };
-      console.log('Sending user data:', userData);
-  
       const response = await registerUser(userData);
   
       if (response.status === 201 || response.status === 200) {
         setSuccess("Registration successful! Please log in.");
         setError('');
-        console.log('Registration successful.');
+
+        setUsername('');
+        setEmail('');
+        setDesignation('');
+        setPassword('');
+        setConfirmPassword('');
+
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+
+
       } else {
         setError("Failed to register. Please try again.");
         console.log('Registration failed with status:', response.status);
