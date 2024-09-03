@@ -84,11 +84,11 @@ To set up the project locally, follow these instructions:
 
 4. Run the backend server:
     ```bash
-    uvicorn main:app --reload
+    uvicorn app.main:app --reload
 
 The API will be available at `http://127.0.0.1:8000`. 
 
-For a full list of avaiable endpoints, refer to the FastAPI auto-generated docs available at `http://127.0.0.1:8000/docs`.
+For a full list of available endpoints, refer to the FastAPI auto-generated docs at `http://127.0.0.1:8000/docs`.
 
 ### Frontend (React)
 
@@ -113,7 +113,7 @@ The application will be available at `http://localhost:3000`.
 ## Usage
 1. Access the application by navigating to `http://localhost:3000` in your web browser.
 
-2. Register if a new user by using the Registration page.
+2. Register as a new user by using the Registration page.
 
 3. Login with your credentials. (Note that there is no 'Forgot Password' option at the moment.)
 
