@@ -58,8 +58,6 @@ function App() {
     handleAuthentication();
   }, []);
   
-  
-
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
   };
@@ -144,8 +142,13 @@ function App() {
       </AppBar>
       <Container>
         <Routes>
+          {/* Public routes: Always accessible */}
           <Route path="/" element={<h1>Home</h1>} />
           <Route path="/token" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="/registration" element={<RegistrationForm />} />
+          <Route path="/aggregate-ratings" element={<AggregateRatings />} />
+          
+          {/* Protected routes: Only accessible if authenticated */}
           {isAuthenticated ? (
             <>
               <Route path="/acc-models" element={<AccModels />} />
@@ -154,12 +157,10 @@ function App() {
               <Route path="/capabilities" element={<Capabilities />} />
               <Route path="/users" element={<Users />} />
               <Route path="/ratings" element={<Ratings />} />
-              <Route path="/registration" element={<RegistrationForm />} />
             </>
           ) : (
             <Route path="*" element={<Navigate to="/token" />} />
           )}
-          <Route path="/aggregate-ratings" element={<AggregateRatings />} />
         </Routes>
       </Container>
     </Router>
