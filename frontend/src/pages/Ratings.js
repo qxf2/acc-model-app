@@ -232,7 +232,10 @@ const Ratings = () => {
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Provide Ratings
+        Assess Software Capabilities
+      </Typography>
+      <Typography variant="body1" style={{ marginBottom: '1.5rem' }}>
+        Rate each capability against the defined attributes.
       </Typography>
       <TextField
         select
@@ -248,14 +251,21 @@ const Ratings = () => {
           </MenuItem>
         ))}
       </TextField>
-  
+
       <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
         <Table>
           <TableHead>
-            <TableRow>
-              <TableCell>Components</TableCell>
+            <TableRow style={{ backgroundColor: '#f0f0f0' }}>
+              <TableCell style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd' }}>
+                Components
+              </TableCell>
               {attributes.map((attribute) => (
-                <TableCell key={attribute.id}>{attribute.name}</TableCell>
+                <TableCell
+                  key={attribute.id}
+                  style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd' }}
+                >
+                  {attribute.name}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -263,18 +273,20 @@ const Ratings = () => {
             {components.map((component) => (
               <React.Fragment key={component.id}>
                 <TableRow>
-                  <TableCell>
+                  <TableCell
+                    style={{ fontSize: '1.125rem', border: '1px solid #ddd' }}
+                  >
                     <Box display="flex" alignItems="center">
                       <IconButton onClick={() => handleToggleExpand(component.id)}>
                         {expandedComponents[component.id] ? <ExpandLess /> : <ExpandMore />}
                       </IconButton>
-                      <Typography variant="h6" component="h2" style={{ fontSize: '1.25rem' }}>
+                      <Typography variant="h6" component="h2" style={{ fontSize: '1.125rem' }}>
                         {component.name}
                       </Typography>
                     </Box>
                   </TableCell>
                   {attributes.map((attribute) => (
-                    <TableCell key={`${component.id}-${attribute.id}`}>
+                    <TableCell key={`${component.id}-${attribute.id}`} style={{ border: '1px solid #ddd' }}>
                     </TableCell>
                   ))}
                 </TableRow>
@@ -283,11 +295,11 @@ const Ratings = () => {
                   .flatMap(cap => cap.capabilities)
                   .map((capability) => (
                     <TableRow key={capability.id}>
-                      <TableCell style={{ paddingLeft: '2rem' }}>
+                      <TableCell style={{ paddingLeft: '2rem', fontSize: '1rem', border: '1px solid #ddd' }}>
                         {capability.name}
                       </TableCell>
                       {attributes.map((attribute) => (
-                        <TableCell key={`${capability.id}-${attribute.id}`}>
+                        <TableCell key={`${capability.id}-${attribute.id}`} style={{ border: '1px solid #ddd' }}>
                           <Box display="flex" alignItems="center">
                             <TextField
                               select
@@ -300,9 +312,9 @@ const Ratings = () => {
                                   return selected || submitted || '';
                                 })()
                               }
-                              //value={selectedRatings[`${capability.id}-${attribute.id}`] || submittedRatings[`${capability.id}-${attribute.id}`] || ''}
                               onChange={(e) => handleRatingChange(capability.id, attribute.id, e.target.value)}
                               fullWidth
+                              style={{ fontSize: '0.875rem' }}
                             >
                               {ratingOptions.map((option) => (
                                 <MenuItem key={option} value={option}>
@@ -327,7 +339,7 @@ const Ratings = () => {
           </TableBody>
         </Table>
       </TableContainer>
-  
+
       <Button
         variant="contained"
         color="primary"
@@ -336,7 +348,7 @@ const Ratings = () => {
       >
         Submit All Ratings
       </Button>
-  
+
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Add Comments</DialogTitle>
         <DialogContent>
@@ -360,6 +372,6 @@ const Ratings = () => {
       </Dialog>
     </Container>
   );
-}  
+};
 
 export default Ratings;

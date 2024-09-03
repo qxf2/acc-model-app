@@ -17,6 +17,12 @@ const THRESHOLD_RATING_MAPPING = {
   "Critical Concern": [0, 1.49]
 };
 
+const RATING_COLOR_MAPPING = {
+  "Stable": "#a9d1a1",
+  "Acceptable": "#f1e0a1",
+  "Low impact": "#f5b877",
+  "Critical Concern": "#e57373"
+};
 
 const AggregateRatings = () => {
   const [accModels, setAccModels] = useState([]);
@@ -28,14 +34,18 @@ const AggregateRatings = () => {
   const [capabilityAssessments, setCapabilityAssessments] = useState({});
   const [aggregatedRatings, setAggregatedRatings] = useState({});
 
-  function mapRatingToColor(averageRating) {
-    for (const [color, range] of Object.entries(THRESHOLD_RATING_MAPPING)) {
+  function getRatingDescription(averageRating) {
+    for (const [description, range] of Object.entries(THRESHOLD_RATING_MAPPING)) {
       const [min, max] = range;
       if (averageRating >= min && averageRating <= max) {
-        return color;
+        return description;
       }
     }
     return "N/A";
+  }
+
+  function mapRatingToColor(ratingDescription) {
+    return RATING_COLOR_MAPPING[ratingDescription] || "#ffffff"; // Default to white if description is not found
   }
 
   useEffect(() => {
@@ -103,8 +113,8 @@ const AggregateRatings = () => {
         for (const [key, assessment] of Object.entries(assessments)) {
           try {
             const { average_rating } = await fetchAggregatedRatings(assessment.id);
-            const color = mapRatingToColor(average_rating);
-            aggregatedRatingsData[key] = color;
+            const description = getRatingDescription(average_rating);
+            aggregatedRatingsData[key] = description;
           } catch (error) {
             console.error(`Error fetching aggregated ratings for ${key}:`, error);
           }
@@ -131,7 +141,10 @@ const AggregateRatings = () => {
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        View Capabilities
+        Capability Ratings Overview
+      </Typography>
+      <Typography variant="body1" style={{ marginBottom: '1.5rem' }}>
+         View the aggregated ratings for each capability based on all user assessments.
       </Typography>
       <TextField
         select
@@ -147,63 +160,109 @@ const AggregateRatings = () => {
           </MenuItem>
         ))}
       </TextField>
+       
 
       <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Components</TableCell>
-              {attributes.map((attribute) => (
-                <TableCell key={attribute.id}>{attribute.name}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {components.map((component) => (
-              <React.Fragment key={component.id}>
-                <TableRow>
-                  <TableCell>
-                    <Box display="flex" alignItems="center">
-                      <IconButton onClick={() => handleToggleExpand(component.id)}>
-                        {expandedComponents[component.id] ? <ExpandLess /> : <ExpandMore />}
-                      </IconButton>
-                      <Typography variant="h6" component="h2" style={{ fontSize: '1.25rem' }}>
-                        {component.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  {attributes.map((attribute) => (
-                    <TableCell key={`${component.id}-${attribute.id}`}>
-                      {/* Empty component row cells */}
-                    </TableCell>
-                  ))}
-                </TableRow>
-                {expandedComponents[component.id] && capabilities
-                  .filter(cap => cap.componentId === component.id)
-                  .flatMap(cap => cap.capabilities)
-                  .map((capability) => (
-                    <TableRow key={capability.id}>
-                      <TableCell style={{ paddingLeft: '2rem' }}>
-                        {capability.name}
-                      </TableCell>
-                      {attributes.map((attribute) => {
-                        const capabilityAssessmentId = `${capability.id}-${attribute.id}`;
-                        const ratingColor = aggregatedRatings[capabilityAssessmentId] || 'N/A';
-                        
-                        return (
-                          <TableCell key={capabilityAssessmentId} style={{ backgroundColor: mapRatingToColor(ratingColor) }}>
-                            {ratingColor}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  ))}
-              </React.Fragment>
+  <Table style={{ border: '1px solid #ddd' }}>
+    <TableHead>
+      <TableRow>
+        <TableCell
+          style={{
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            backgroundColor: '#f5f5f5',
+            border: '1px solid #ddd',
+          }}
+        >
+          Components
+        </TableCell>
+        {attributes.map((attribute) => (
+          <TableCell
+            key={attribute.id}
+            style={{
+              fontWeight: 'bold',
+              fontSize: '1rem',
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ddd',
+            }}
+          >
+            {attribute.name}
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {components.map((component) => (
+        <React.Fragment key={component.id}>
+          <TableRow>
+            <TableCell
+              style={{
+                border: '1px solid #ddd',
+              }}
+            >
+              <Box display="flex" alignItems="center">
+                <IconButton onClick={() => handleToggleExpand(component.id)}>
+                  {expandedComponents[component.id] ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  style={{ fontSize: '1rem', fontWeight: 'bold' }}
+                >
+                  {component.name}
+                </Typography>
+              </Box>
+            </TableCell>
+            {attributes.map((attribute) => (
+              <TableCell
+                key={`${component.id}-${attribute.id}`}
+                style={{ border: '1px solid #ddd' }}
+              >
+                {/* Empty component row cells */}
+              </TableCell>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Container>
+          </TableRow>
+          {expandedComponents[component.id] &&
+            capabilities
+              .filter((cap) => cap.componentId === component.id)
+              .flatMap((cap) => cap.capabilities)
+              .map((capability) => (
+                <TableRow key={capability.id}>
+                  <TableCell
+                    style={{
+                      paddingLeft: '2rem',
+                      fontSize: '0.875rem',
+                      border: '1px solid #ddd',
+                    }}
+                  >
+                    {capability.name}
+                  </TableCell>
+                  {attributes.map((attribute) => {
+                    const capabilityAssessmentId = `${capability.id}-${attribute.id}`;
+                    const ratingDescription = aggregatedRatings[capabilityAssessmentId] || 'N/A';
+                    const ratingColor = mapRatingToColor(ratingDescription);
+
+                    return (
+                      <TableCell
+                        key={capabilityAssessmentId}
+                        style={{
+                          backgroundColor: ratingColor,
+                          fontSize: '0.875rem',
+                          border: '1px solid #ddd',
+                        }}
+                      >
+                        {ratingDescription}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+        </React.Fragment>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer>
+</Container>
   );
 };
 
