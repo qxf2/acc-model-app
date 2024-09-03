@@ -42,32 +42,19 @@ This application allows you to efficiently construct, manage, and assess an ACC 
 ## Setup Instructions
 To set up the project locally, follow these instructions:
 
-1. **Clone the repository:**
+1. Clone the repository:
    ```bash
    git clone <repository-url>
    cd <repository-directory>
 
-2. Setup Backend and Frontend. Detailed instructions below.
-
-### Backend (FastAPI)
-
-1. Create a virtual environment and activate it:
-    ```bash
-    python -m venv venv
-    source venv/bin/activate 
-
-2. Install the required Python packages:
-    ```bash
-    pip install -r requirements.txt
-
-3. Generate 'SECRET_KEY'.
+2. Generate 'SECRET_KEY'.
    This is essential for cryptograhic signing within the application. To generate the key, run the following command in your terminal:
 
    ```bash
    openssl rand -hex 32
    ```
    
-4. Set 'SECRET_KEY' as Environment Variable.
+3. Set 'SECRET_KEY' as Environment Variable.
    * Create a '.env' file in the project root
    
    * Add the following line to '.env' replaceing 'your_secret_key_value_here' with the generated 'SECRET_KEY'"
@@ -77,11 +64,25 @@ To set up the project locally, follow these instructions:
    ```
    * Ensure '.emv' is listed in your '.gitignore' file to prevent it from being committed to version control.
 
-5. Navigate to the backend directory:
+
+2. Setup Backend and Frontend. Detailed instructions below.
+
+### Backend (FastAPI)
+
+1. Navigate to the backend directory:
     ```bash
     cd backend
 
-6. Run the backend server:
+2. Create a virtual environment and activate it:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate 
+
+3. Install the required Python packages:
+    ```bash
+    pip install -r requirements.txt
+
+4. Run the backend server:
     ```bash
     uvicorn main:app --reload
 
