@@ -102,7 +102,7 @@ For a full list of available endpoints, refer to the FastAPI auto-generated docs
 
 3. Create a `.env` file with the following:
     ```bash
-    REACT_APP_API_URL=http://127.0.0.1:8000
+    REACT_APP_API_BASE_URL=http://localhost:8000
 
 4. Run the React development server:
     ```bash
