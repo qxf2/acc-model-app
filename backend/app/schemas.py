@@ -158,8 +158,26 @@ class RatingRead(RatingBase):
     model_config = ConfigDict(from_attributes=True)
 
 class RatingUpdate(BaseModel):
-    rating: Optional[int] = None
     comments: Optional[str] = None
+    timestamp: Optional[datetime] = None
+
+class CommentBase(BaseModel):
+    rating_id: int
+    comment_text: str
+    timestamp: Optional[datetime] = None
+
+class CommentCreate(CommentBase):
+    pass
+
+class CommentRead(CommentBase):
+    id: int
+    user_id: int
+    
+    model_config = ConfigDict(from_attributes=True)
+
+class CommentUpdate(BaseModel):
+    comment_text: Optional[str] = None
+    timestamp: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 

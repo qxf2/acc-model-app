@@ -48,7 +48,6 @@ export const fetchCapabilityAssessments = async (capabilities, attributes) => {
     
     for (const cap of capabilities.flatMap(cap => cap.capabilities)) {
       for (const attr of attributes) {
-        // Construct the query parameters
         const params = new URLSearchParams({
           capability_id: cap.id,
           attribute_id: attr.id
@@ -138,16 +137,15 @@ export const submitRatings = async (ratings, authToken) => {
 
 export const submitRating = async (capabilityAssessmentId, ratingValue, authToken) => {
   try {
-    const timestamp = new Date().toISOString();
+    const payload = {
+      capability_assessment_id: capabilityAssessmentId,
+      rating: ratingValue,
+      timestamp: new Date().toISOString(),
+    };
 
     const response = await axios.post(
       `${API_BASE_URL}/capability-assessments/${capabilityAssessmentId}/`,
-      {
-        capability_assessment_id: capabilityAssessmentId,
-        rating: ratingValue,
-        comments: "",
-        timestamp: timestamp,
-      },
+      payload,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -157,23 +155,27 @@ export const submitRating = async (capabilityAssessmentId, ratingValue, authToke
     );
 
     console.log('Rating submitted successfully:', response.data);
+    const ratingId = response.data.id;
+    console.log('Rating ID:', ratingId);
+    return ratingId;
   } catch (error) {
     console.error('Error submitting rating:', error);
   }
 };
 
-export const submitComments = async (capabilityAssessmentId, comments, authToken) => {
-  try {
-    const timestamp = new Date().toISOString();
 
-    const response = await axios.post(
-      `${API_BASE_URL}/capability-assessments/${capabilityAssessmentId}/`,
-      {
-        capability_assessment_id: capabilityAssessmentId,
-        rating: "",
-        comments: comments,
-        timestamp: timestamp,
-      },
+export const submitComments = async (ratingId, comments, authToken) => {
+  try {
+    const payload = {
+      comments: comments,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log('Submitting comments with payload:', payload);
+
+    const response = await axios.put(
+      `${API_BASE_URL}/capability-assessments/ratings/${ratingId}/`,
+      payload,
       {
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -183,11 +185,14 @@ export const submitComments = async (capabilityAssessmentId, comments, authToken
     );
 
     console.log('Comments submitted successfully:', response.data);
-  } catch (error) {
-    console.error('Error submitting comments:', error);
+  } 
+  catch (error) {
+    console.error('Error submitting comments:', error.response ? error.response.data : error.message);
     throw error;
   }
 };
+
+
 
 export const fetchAggregatedRatings = async (capabilityAssessmentId) => {
   try {
@@ -199,4 +204,3 @@ export const fetchAggregatedRatings = async (capabilityAssessmentId) => {
     throw error;
   }
 };
-
