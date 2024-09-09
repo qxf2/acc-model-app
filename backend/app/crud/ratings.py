@@ -100,9 +100,12 @@ def update_rating(db_session: Session, db_rating: models.Rating, rating: schemas
     Returns:
         models.Rating: The updated Rating.
     """
-    db_rating.rating = rating.rating
-    db_rating.comments = rating.comments
-    db_rating.timestamp = rating.timestamp or datetime.now()
+    if rating.rating is not None:
+        db_rating.rating = rating.rating
+    if rating.comments is not None:
+        db_rating.comments = rating.comments  # Update comments here
+    if rating.timestamp is not None:
+        db_rating.timestamp = rating.timestamp
 
     db_session.commit()
     db_session.refresh(db_rating)

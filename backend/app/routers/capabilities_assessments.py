@@ -15,6 +15,7 @@ The endpoints use the `get_db` dependency to get a database session.
 The endpoints use the `crud` module to perform the database operations.
 """
 import logging
+from datetime import datetime
 from typing import List, Dict, Union
 from statistics import mean
 from fastapi import APIRouter, Depends, HTTPException
@@ -33,7 +34,6 @@ router = APIRouter(
 )
 
 logger = logging.getLogger(__name__)
-
 
 @router.post("/{capability_assessment_id}/", response_model=schemas.RatingRead)
 def upsert_capability_assessment_rating(
@@ -90,6 +90,53 @@ def upsert_capability_assessment_rating(
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while creating or updating the rating")
+
+@router.put("/ratings/{rating_id}/", response_model=schemas.RatingRead)
+def update_rating(
+        rating_id: int,
+        rating_update: schemas.RatingUpdate,
+        db_session: Session = Depends(get_db),
+        current_user: schemas.UserRead = Depends(get_current_user)
+):
+    """
+    Updates an existing rating, including comments.
+
+    Args:
+        rating_id: The ID of the rating to update.
+        rating_update: The updated rating data, including comments.
+        db_session: The database session.
+        current_user: The current user.
+
+    Returns:
+        The updated rating.
+    """
+    try:
+        logger.info("Received rating_id: %s from user: %s", rating_id, current_user.username)
+
+        existing_rating = rating_crud.get_rating(db_session, rating_id=rating_id)
+        if existing_rating is None:
+            logger.error("Rating with ID %s not found", rating_id)
+            raise HTTPException(status_code=404, detail="Rating not found")
+
+        if rating_update.comments is not None:
+            existing_rating.comments = rating_update.comments
+        existing_rating.timestamp = rating_update.timestamp or datetime.now()
+
+        db_session.commit()
+        db_session.refresh(existing_rating)
+
+        logger.info("Updated Rating with ID: %s", rating_id)
+        return existing_rating
+
+    except HTTPException as http_error:
+        logger.error("Client error: %s", http_error.detail)
+        raise http_error
+    except Exception as error:
+        logger.exception("Error updating rating: %s", error)
+        raise HTTPException(
+            status_code=500,
+            detail="An unexpected error occurred while updating the rating"
+        )
 
 
 @router.get("/", response_model=schemas.CapabilityAssessmentRead)
