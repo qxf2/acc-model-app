@@ -151,7 +151,7 @@ const Ratings = () => {
               id: value.id || '',
             };
           }
-          console.log('Additional Rating Data:', additionalRatingData);
+          console.log('Populated Additional Rating Data:', additionalRatingData);
           setAdditionalRatingData(additionalRatingData);
         }
       } catch (error) {
@@ -198,14 +198,19 @@ const Ratings = () => {
     setCurrentCapability(capabilityId);
     setCurrentAttribute(attributeId);
     const key = `${capabilityId}-${attributeId}`;
+    
     const existingComments = additionalRatingData[key]?.comments || '';
     const ratingId = additionalRatingData[key]?.id || '';
+
     console.log("Fetched Rating ID:", ratingId);
     console.log("Existing Comments:", existingComments);
+
     setComments(existingComments);
+
     setRatingId(ratingId);
     setOpenDialog(true);
   };
+
   
  
   const handleSaveComments = async () => {
@@ -213,6 +218,16 @@ const Ratings = () => {
       const authToken = localStorage.getItem('authToken');
       if (!authToken) {
         console.error('User is not authenticated');
+        return;
+      }
+
+      const key = `${currentCapability}-${currentAttribute}`;
+      const rating = submitRating[key];
+
+      if (!rating) {
+        console.error('Rating not found');
+        setSnackbarMessage('Please submit a rating before adding a comment.');
+        setShowSnackbar(true);
         return;
       }
   
@@ -226,6 +241,7 @@ const Ratings = () => {
     } catch (error) {
       console.error('Error submitting comments:', error);
       alert(`Failed to submit comments.`);
+      setShowSnackbar(true);
     }
   };
   
@@ -250,6 +266,7 @@ const Ratings = () => {
           return {
             capabilityAssessmentId,
             rating: value,
+            key,
           };
         })
         .filter(entry => entry !== null);
@@ -259,10 +276,26 @@ const Ratings = () => {
         return;
       }
   
+      // const results = await Promise.allSettled(
+      //   ratingsToSubmit.map(({ capabilityAssessmentId, rating }) =>
+      //     submitRating(capabilityAssessmentId, rating, authToken)
+      //   )
+      // );
+
       const results = await Promise.allSettled(
-        ratingsToSubmit.map(({ capabilityAssessmentId, rating }) =>
-          submitRating(capabilityAssessmentId, rating, authToken)
-        )
+        ratingsToSubmit.map(async ({ capabilityAssessmentId, rating, key }) => {
+          const ratingId = await submitRating(capabilityAssessmentId, rating, authToken);
+          
+          setAdditionalRatingData((prev) => ({
+            ...prev,
+            [key]: {
+              ...(prev[key] || {}),
+              id: ratingId,
+            }
+          }));
+
+          return ratingId;
+        })
       );
   
       const successfulSubmissions = results.filter(result => result.status === 'fulfilled');
