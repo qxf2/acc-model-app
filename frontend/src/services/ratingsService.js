@@ -110,29 +110,29 @@ export const fetchRatingOptions = async () => {
   }
 };
 
-export const submitRatings = async (ratings, authToken) => {
-  try {
-    const responses = await Promise.all(
-      ratings.map(rating =>
-        axios.post(
-          `${API_BASE_URL}/capability-assessments/${rating.capabilityAssessmentId}/`,
-          {
-            capability_assessment_id: rating.capabilityAssessmentId,
-            rating: rating.rating,
-            timestamp: new Date().toISOString(),
-          },
-          {
-            headers: { Authorization: `Bearer ${authToken}` },
-          }
-        )
-      )
-    );
-    return responses.map(response => response.data);
-  } catch (error) {
-    console.error('Error submitting ratings:', error);
-    throw error;
-  }
-};
+// export const submitRatings = async (ratings, authToken) => {
+//   try {
+//     const responses = await Promise.all(
+//       ratings.map(rating =>
+//         axios.post(
+//           `${API_BASE_URL}/capability-assessments/${rating.capabilityAssessmentId}/`,
+//           {
+//             capability_assessment_id: rating.capabilityAssessmentId,
+//             rating: rating.rating,
+//             timestamp: new Date().toISOString(),
+//           },
+//           {
+//             headers: { Authorization: `Bearer ${authToken}` },
+//           }
+//         )
+//       )
+//     );
+//     return responses.map(response => response.data);
+//   } catch (error) {
+//     console.error('Error submitting ratings:', error);
+//     throw error;
+//   }
+// };
 
 
 export const submitRating = async (capabilityAssessmentId, ratingValue, authToken) => {
@@ -154,7 +154,7 @@ export const submitRating = async (capabilityAssessmentId, ratingValue, authToke
       }
     );
 
-    console.log('Rating submitted successfully:', response.data);
+    console.log('The user Rating submitted successfully:', response.data);
     const ratingId = response.data.id;
     console.log('Rating ID:', ratingId);
     return ratingId;

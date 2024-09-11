@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 logging.info("Starting application...")
 
-origins = ["http://localhost", "http://localhost:3000"]
+origins = ["http://localhost", "http://localhost:3000", "https://acc-model-app.netlify.app"]
 
 app.add_middleware(
     CORSMiddleware,
