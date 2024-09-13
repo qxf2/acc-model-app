@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { CssBaseline, Container, AppBar, Toolbar, Typography, Button, Menu, MenuItem, IconButton } from '@mui/material';
+import { CssBaseline, Container, AppBar, Toolbar, Typography, Button, Menu, MenuItem, IconButton, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { List, Settings } from '@mui/icons-material';
+import { Apps, People, ExitToApp } from '@mui/icons-material';
 import AccModels from './pages/AccModels';
 import Attributes from './pages/Attributes';
 import Components from './pages/Components';
 import Capabilities from './pages/Capabilities';
 import Ratings from './pages/Ratings';
-import AggregateRatings from './pages/AggregateRatings';
+import Dashboard from './pages/AggregateRatings';
 import Users from './pages/Users';
 import RegistrationForm from './pages/RegistrationForm';
 import Login from './pages/Login';
 import { apiRequest } from './services/apiService';
+import Home from './pages/Home';
 import './App.css';
 
 function App() {
@@ -86,7 +87,7 @@ function App() {
             ACC Model App
           </Typography>
           
-          <Button color="inherit" component={Link} to="/aggregate-ratings">
+          <Button color="inherit" component={Link} to="/dashboard">
             Dashboard
           </Button>
           
@@ -104,12 +105,13 @@ function App() {
           {isAuthenticated && (
             <>
               <Button color="inherit" component={Link} to="/ratings">
-                Ratings
+                Submit Ratings
               </Button>
-
+              <Tooltip title="Open Menu">
               <IconButton color="inherit" onClick={handleMenuClick}>
-                <List />
+                <Apps />
               </IconButton>
+              </Tooltip>
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
@@ -129,13 +131,17 @@ function App() {
                 </MenuItem>
               </Menu>
 
+              <Tooltip title="Manage Users">
               <IconButton color="inherit" component={Link} to="/users">
-                <Settings />
+                <People />
               </IconButton>
-
-              <Button color="inherit" onClick={handleLogout}>
-                Logout
-              </Button>
+              </Tooltip>
+              
+              <Tooltip title="Logout">
+              <IconButton color="inherit" onClick={handleLogout}>
+                <ExitToApp />
+              </IconButton>
+              </Tooltip>
             </>
           )}
         </Toolbar>
@@ -143,10 +149,10 @@ function App() {
       <Container>
         <Routes>
           {/* Public routes: Always accessible */}
-          <Route path="/" element={<h1>Home</h1>} />
+          <Route path="/" element={<Home />} />
           <Route path="/token" element={<Login onLoginSuccess={handleLoginSuccess} />} />
           <Route path="/registration" element={<RegistrationForm />} />
-          <Route path="/aggregate-ratings" element={<AggregateRatings />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           
           {/* Protected routes: Only accessible if authenticated */}
           {isAuthenticated ? (
