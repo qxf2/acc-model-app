@@ -121,9 +121,14 @@ const Capabilities = () => {
 
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
         Capabilities
       </Typography>
+      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+        Capabilities are the specific features or functionalities (verbs) that each Component has, such as "Add User", "Process Payment." etc.
+        They help define what each Component can do.
+      </Typography>
+
       <AccModelSelector
         accModels={accModels}
         selectedAccModel={selectedAccModel}

@@ -24,7 +24,7 @@ const RATING_COLOR_MAPPING = {
   "Critical Concern": "#e57373"
 };
 
-const AggregateRatings = () => {
+const Dashboard = () => {
   const [accModels, setAccModels] = useState([]);
   const [selectedAccModel, setSelectedAccModel] = useState('');
   const [components, setComponents] = useState([]);
@@ -141,10 +141,10 @@ const AggregateRatings = () => {
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Capability Ratings Overview
+        Capability Ratings Dashboard
       </Typography>
-      <Typography variant="body1" style={{ marginBottom: '1.5rem' }}>
-         View the aggregated ratings for each capability based on all user assessments.
+      <Typography variant="body1" style={{ marginBottom: '1.5rem', color: "#7f8c8d"  }}>
+      Review and analyze the consolidated ratings for each capability. This dashboard provides an overview of user evaluations across all capabilities, helping you identify strengths, areas for improvement, and overall performance.
       </Typography>
       <TextField
         select
@@ -167,24 +167,14 @@ const AggregateRatings = () => {
     <TableHead>
       <TableRow>
         <TableCell
-          style={{
-            fontWeight: 'bold',
-            fontSize: '1rem',
-            backgroundColor: '#f5f5f5',
-            border: '1px solid #ddd',
-          }}
+          style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd', color: '#283593', backgroundColor: "#f0f0f0" }}
         >
-          Components
+          Capabilities/Attributes
         </TableCell>
         {attributes.map((attribute) => (
           <TableCell
             key={attribute.id}
-            style={{
-              fontWeight: 'bold',
-              fontSize: '1rem',
-              backgroundColor: '#f5f5f5',
-              border: '1px solid #ddd',
-            }}
+            style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd', color: '#283593', backgroundColor: "#f0f0f0" }}
           >
             {attribute.name}
           </TableCell>
@@ -197,6 +187,7 @@ const AggregateRatings = () => {
           <TableRow>
             <TableCell
               style={{
+                fontSize: '1.125 rem',
                 border: '1px solid #ddd',
               }}
             >
@@ -266,4 +257,4 @@ const AggregateRatings = () => {
   );
 };
 
-export default AggregateRatings;
+export default Dashboard;

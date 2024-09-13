@@ -78,8 +78,12 @@ const Attributes = () => {
 
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
         Attributes
+      </Typography>
+      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+        Attributes are the qualities or characteristics (adjectives) that describe the desired properties of your product, such as "Accuracy," 
+        "Responsiveness," or "User-Friendly." They help define the key qualities that are important for your project.
       </Typography>
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button variant="contained" color="primary" onClick={() => handleOpenModal()}>

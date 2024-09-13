@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box, Container, Typography, MenuItem, TextField, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar
+  TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Tooltip
 } from '@mui/material';
 import { ExpandMore, ExpandLess, Edit } from '@mui/icons-material';
 import {
@@ -326,12 +326,13 @@ const Ratings = () => {
 
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
         Assess Software Capabilities
       </Typography>
-      <Typography variant="body1" style={{ marginBottom: '1.5rem' }}>
-        Rate each capability against the defined attributes.
+      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+        Rate the effectiveness of each Capability based on its performance. Your ratings help assess how well each feature meets the intended quality standards.
       </Typography>
+
       <TextField
         select
         label="Select ACC Model"
@@ -351,13 +352,13 @@ const Ratings = () => {
         <Table>
           <TableHead>
             <TableRow style={{ backgroundColor: '#f0f0f0' }}>
-              <TableCell style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd' }}>
-                Components
+              <TableCell style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd', color: '#283593', backgroundColor: "#f0f0f0" }}>
+                Capabilities/Attributes
               </TableCell>
               {attributes.map((attribute) => (
                 <TableCell
                   key={attribute.id}
-                  style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd' }}
+                  style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd', color: '#283593', backgroundColor: "#f0f0f0" }}
                 >
                   {attribute.name}
                 </TableCell>
@@ -375,7 +376,7 @@ const Ratings = () => {
                       <IconButton onClick={() => handleToggleExpand(component.id)}>
                         {expandedComponents[component.id] ? <ExpandLess /> : <ExpandMore />}
                       </IconButton>
-                      <Typography variant="h6" component="h2" style={{ fontSize: '1.125rem' }}>
+                      <Typography variant="h6" component="h2" style={{ fontSize: '1.125rem', fontWeight: 'bold' }}>
                         {component.name}
                       </Typography>
                     </Box>
@@ -422,7 +423,9 @@ const Ratings = () => {
                               size="small"
                               onClick={() => handleEditClick(capability.id, attribute.id)}
                             >
+                              <Tooltip title={!selectedRatings[`${capability.id}-${attribute.id}`] ? "Submit a rating before adding comments" : "Add comments"}>
                               <Edit fontSize="small" />
+                            </Tooltip>
                             </IconButton>
                           </Box>
                         </TableCell>

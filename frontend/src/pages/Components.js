@@ -96,9 +96,14 @@ const Components = () => {
 
   return (
     <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}> 
         Components
       </Typography>
+      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+        Components are the major sections or building blocks (nouns) of your product such as "User Management," "Shopping Cart," etc.
+        They represent the core structural pieces that make up the project.
+      </Typography>
+
       <AccModelSelector accModels={accModels} selectedAccModel={selectedAccModel} handleSelect={setSelectedAccModel} />
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button variant="contained" color="primary" onClick={() => handleOpenModal()}>
