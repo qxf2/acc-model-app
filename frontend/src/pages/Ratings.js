@@ -361,41 +361,47 @@ const Ratings = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        gutterBottom
-        sx={{ color: "primary.main" }}
-      >
-        Assess Software Capabilities
-      </Typography>
-      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
-        Rate the effectiveness of each Capability based on its performance. Your
-        ratings help assess how well each feature meets the intended quality
-        standards.
-      </Typography>
+  <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+    <Typography variant="h4" component="h1" gutterBottom sx={{ color: "primary.main" }}>
+      Assess Software Capabilities
+    </Typography>
+    <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+      Rate the effectiveness of each Capability based on its performance. Your ratings help assess how well each feature meets the intended quality standards.
+    </Typography>
 
-      <TextField
-        select
-        label="Select ACC Model"
-        value={selectedAccModel}
-        onChange={(e) => setSelectedAccModel(e.target.value)}
-        fullWidth
-        margin="normal"
-      >
-        {accModels.map((model) => (
-          <MenuItem key={model.id} value={model.id}>
-            {model.name}
-          </MenuItem>
-        ))}
-      </TextField>
+    <TextField
+      select
+      label="Select ACC Model"
+      value={selectedAccModel}
+      onChange={(e) => setSelectedAccModel(e.target.value)}
+      fullWidth
+      margin="normal"
+    >
+      {accModels.map((model) => (
+        <MenuItem key={model.id} value={model.id}>
+          {model.name}
+        </MenuItem>
+      ))}
+    </TextField>
 
-      <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
-        <Table>
-          <TableHead>
-            <TableRow style={{ backgroundColor: "#f0f0f0" }}>
+    <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
+      <Table>
+        <TableHead>
+          <TableRow style={{ backgroundColor: "#f0f0f0" }}>
+            <TableCell
+              style={{
+                fontSize: "1rem",
+                fontWeight: "bold",
+                border: "1px solid #ddd",
+                color: "#283593",
+                backgroundColor: "#f0f0f0",
+              }}
+            >
+              Capabilities/Attributes
+            </TableCell>
+            {attributes.map((attribute) => (
               <TableCell
+                key={attribute.id}
                 style={{
                   fontSize: "1rem",
                   fontWeight: "bold",
@@ -404,177 +410,160 @@ const Ratings = () => {
                   backgroundColor: "#f0f0f0",
                 }}
               >
-                Capabilities/Attributes
+                {attribute.name}
               </TableCell>
-              {attributes.map((attribute) => (
-                <TableCell
-                  key={attribute.id}
-                  style={{
-                    fontSize: "1rem",
-                    fontWeight: "bold",
-                    border: "1px solid #ddd",
-                    color: "#283593",
-                    backgroundColor: "#f0f0f0",
-                  }}
-                >
-                  {attribute.name}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {components.map((component) => (
-              <React.Fragment key={component.id}>
-                <TableRow>
-                  <TableCell
-                    style={{ fontSize: "1.125rem", border: "1px solid #ddd" }}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <IconButton
-                        onClick={() => handleToggleExpand(component.id)}
-                      >
-                        {expandedComponents[component.id] ? (
-                          <ExpandLess />
-                        ) : (
-                          <ExpandMore />
-                        )}
-                      </IconButton>
-                      <Typography
-                        variant="h6"
-                        component="h2"
-                        style={{ fontSize: "1.125rem", fontWeight: "bold" }}
-                      >
-                        {component.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  {attributes.map((attribute) => (
-                    <TableCell
-                      key={`${component.id}-${attribute.id}`}
-                      style={{ border: "1px solid #ddd" }}
-                    ></TableCell>
-                  ))}
-                </TableRow>
-                {expandedComponents[component.id] &&
-                  capabilities
-                    .filter((cap) => cap.componentId === component.id)
-                    .flatMap((cap) => cap.capabilities)
-                    .map((capability) => (
-                      <TableRow key={capability.id}>
-                        <TableCell
-                          style={{
-                            paddingLeft: "2rem",
-                            fontSize: "1rem",
-                            border: "1px solid #ddd",
-                          }}
-                        >
-                          {capability.name}
-                        </TableCell>
-                        {attributes.map((attribute) => (
-                          <TableCell
-                            key={`${capability.id}-${attribute.id}`}
-                            style={{ border: "1px solid #ddd" }}
-                          >
-                            <Box display="flex" alignItems="center">
-                              <TextField
-                                select
-                                label="Rate"
-                                value={(() => {
-                                  const key = `${capability.id}-${attribute.id}`;
-                                  const selected = selectedRatings[key];
-                                  const submitted = submittedRatings[key];
-                                  return selected || submitted || "";
-                                })()}
-                                onChange={(e) =>
-                                  handleRatingChange(
-                                    capability.id,
-                                    attribute.id,
-                                    e.target.value
-                                  )
-                                }
-                                fullWidth
-                                style={{ fontSize: "0.875rem" }}
-                              >
-                                {ratingOptions.map((option) => (
-                                  <MenuItem key={option} value={option}>
-                                    {option}
-                                  </MenuItem>
-                                ))}
-                              </TextField>
-                              <IconButton
-                                aria-label="edit"
-                                size="small"
-                                onClick={() =>
-                                  handleEditClick(capability.id, attribute.id)
-                                }
-                              >
-                                <Tooltip
-                                  title={
-                                    !selectedRatings[
-                                      `${capability.id}-${attribute.id}`
-                                    ]
-                                      ? "Submit a rating before adding comments"
-                                      : "Add comments"
-                                  }
-                                >
-                                  <Edit fontSize="small" />
-                                </Tooltip>
-                              </IconButton>
-                            </Box>
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-              </React.Fragment>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {components.map((component) => (
+            <React.Fragment key={component.id}>
+              <TableRow>
+                <TableCell
+                  style={{ fontSize: "1.125rem", border: "1px solid #ddd" }}
+                >
+                  <Box display="flex" alignItems="center">
+                    <IconButton onClick={() => handleToggleExpand(component.id)}>
+                      {expandedComponents[component.id] ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )}
+                    </IconButton>
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      style={{ fontSize: "1.125rem", fontWeight: "bold" }}
+                    >
+                      {component.name}
+                    </Typography>
+                  </Box>
+                </TableCell>
+                {attributes.map((attribute) => (
+                  <TableCell
+                    key={`${component.id}-${attribute.id}`}
+                    style={{ border: "1px solid #ddd" }}
+                  ></TableCell>
+                ))}
+              </TableRow>
+              {expandedComponents[component.id] &&
+                capabilities
+                  .filter((cap) => cap.componentId === component.id)
+                  .flatMap((cap) => cap.capabilities)
+                  .map((capability) => (
+                    <TableRow key={capability.id}>
+                      <TableCell
+                        style={{
+                          paddingLeft: "2rem",
+                          fontSize: "1rem",
+                          border: "1px solid #ddd",
+                        }}
+                      >
+                        {capability.name}
+                      </TableCell>
+                      {attributes.map((attribute) => (
+                        <TableCell
+                          key={`${capability.id}-${attribute.id}`}
+                          style={{ border: "1px solid #ddd" }}
+                        >
+                          <Box display="flex" alignItems="center">
+                            <TextField
+                              select
+                              label="Rate"
+                              value={(() => {
+                                const key = `${capability.id}-${attribute.id}`;
+                                const selected = selectedRatings[key];
+                                const submitted = submittedRatings[key];
+                                return selected || submitted || "";
+                              })()}
+                              onChange={(e) =>
+                                handleRatingChange(
+                                  capability.id,
+                                  attribute.id,
+                                  e.target.value
+                                )
+                              }
+                              fullWidth
+                              style={{ fontSize: "0.875rem" }}
+                            >
+                              {ratingOptions.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                  {option}
+                                </MenuItem>
+                              ))}
+                            </TextField>
+                            <IconButton
+                              aria-label="edit"
+                              size="small"
+                              onClick={() =>
+                                handleEditClick(capability.id, attribute.id)
+                              }
+                            >
+                              <Tooltip
+                                title={
+                                  !selectedRatings[
+                                    `${capability.id}-${attribute.id}`
+                                  ]
+                                    ? "Submit a rating before adding comments"
+                                    : "Add comments"
+                                }
+                              >
+                                <Edit fontSize="small" />
+                              </Tooltip>
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+            </React.Fragment>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ marginTop: "2rem" }}
-        onClick={handleBatchSubmit}
-      >
-        Submit All Ratings
-      </Button>
+    <Button
+      variant="contained"
+      color="primary"
+      style={{ marginTop: "2rem" }}
+      onClick={handleBatchSubmit}
+    >
+      Submit All Ratings
+    </Button>
 
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setShowSnackbar(false)}
-        message={snackbarMessage}
-      />
+    <Snackbar
+      open={showSnackbar}
+      autoHideDuration={3000}
+      onClose={() => setShowSnackbar(false)}
+      message={snackbarMessage}
+    />
 
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Add Comments</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Comments"
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            multiline
-            rows={4}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleSaveComments} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
-  );
-};
+    <Dialog
+      open={openDialog}
+      onClose={() => setOpenDialog(false)}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogTitle>Add Comments</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Comments"
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
+          multiline
+          rows={4}
+          fullWidth
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpenDialog(false)} color="secondary">
+          Cancel
+        </Button>
+        <Button onClick={handleSaveComments} color="primary">
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </Container>
+);
 
-export default Ratings;

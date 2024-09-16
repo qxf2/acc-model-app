@@ -175,6 +175,7 @@ const Dashboard = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Capability Ratings Dashboard
       </Typography>
+
       <Typography
         variant="body1"
         style={{ marginBottom: "1.5rem", color: "#7f8c8d" }}
@@ -184,6 +185,7 @@ const Dashboard = () => {
         capabilities, helping you identify strengths, areas for improvement, and
         overall performance.
       </Typography>
+
       <TextField
         select
         label="Select ACC Model"
@@ -236,7 +238,7 @@ const Dashboard = () => {
                 <TableRow>
                   <TableCell
                     style={{
-                      fontSize: "1.125 rem",
+                      fontSize: "1.125rem",
                       border: "1px solid #ddd",
                     }}
                   >

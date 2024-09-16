@@ -411,9 +411,7 @@ const Home = () => {
       </Grid>
 
       {/* Footer */}
-      <Box
-        sx={{ padding: 2, marginTop: 6, textAlign: "center", color: "black" }}
-      >
+      <Box sx={{ padding: 2, marginTop: 6, textAlign: "center", color: "black" }}>
         <Typography variant="body2">
           Developed by{" "}
           <MuiLink href="https://www.qxf2.com" target="_blank" color="inherit">

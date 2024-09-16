@@ -107,7 +107,6 @@ function App() {
           >
             ACC Model App
           </Typography>
-
           <Button color="inherit" component={Link} to="/dashboard">
             Dashboard
           </Button>
@@ -187,10 +186,7 @@ function App() {
         <Routes>
           {/* Public routes: Always accessible */}
           <Route path="/" element={<Home />} />
-          <Route
-            path="/token"
-            element={<Login onLoginSuccess={handleLoginSuccess} />}
-          />
+          <Route path="/token" element={<Login onLoginSuccess={handleLoginSuccess} />} />
           <Route path="/registration" element={<RegistrationForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
 
