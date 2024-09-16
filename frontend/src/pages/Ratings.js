@@ -567,3 +567,6 @@ const Ratings = () => {
   </Container>
 );
 
+};
+
+export default Ratings;
