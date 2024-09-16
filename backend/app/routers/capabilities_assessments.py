@@ -258,7 +258,7 @@ def get_ratings_for_capability_assessment_by_user(
             "Error retrieving ratings for user and capability assessment: %s", error)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
-@router.get("/{capability_assessment_id}/aggregate", response_model=Dict[str, Union[int, float]])
+@router.get("/{capability_assessment_id}/aggregate", response_model=Dict[str, Union[int, float, None]])
 def get_ratings_aggregate_for_capability_assessment(
                 capability_assessment_id: int,
                 db_session: Session = Depends(get_db)
@@ -279,16 +279,19 @@ def get_ratings_aggregate_for_capability_assessment(
             db_session,
             capability_assessment_id
         )
+        logger.info("Rating for the capability assessemnt %s", ratings)
         if not ratings:
+            logger.info("No ratings found for capability assessment")
             return {
                 "capability_assessment_id": capability_assessment_id,
                 "average_rating": None
             }
 
         numeric_ratings = [RATING_MAPPING.get(rating.rating, 0) for rating in ratings]
-        print(numeric_ratings)
+        logger.info(f"Numeric ratings: {numeric_ratings}")
 
         if not numeric_ratings:
+            logger.info("No numeric ratings to calculate average")
             return {
                 "capability_assessment_id": capability_assessment_id,
                 "average_rating": None
@@ -300,8 +303,13 @@ def get_ratings_aggregate_for_capability_assessment(
         }
 
         return aggregated_rating
+
+    except ValueError as e:
+        logger.exception("Data validation error: %s", e)
+        raise HTTPException(status_code=400, detail="Data Validation Error")
+    
     except Exception as error:
         logger.exception(
-            "Error retrieving aggregated ratings for capability assessment: %s", error
+            "Unexpected error retrieving aggregated ratings for capability assessment: %s", error
         )
         raise HTTPException(status_code=500, detail="Internal Server Error")

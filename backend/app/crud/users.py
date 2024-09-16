@@ -111,6 +111,8 @@ def delete_user(db_session: Session, user_id: int):
     """
     db_user = get_user(db_session, user_id=user_id)
     if db_user:
+        db_session.query(models.Rating).filter(models.Rating.user_id == user_id).update({"user_id": None})
+        db_session.commit()
         db_session.delete(db_user)
         db_session.commit()
     return db_user

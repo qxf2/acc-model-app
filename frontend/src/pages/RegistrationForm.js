@@ -1,54 +1,51 @@
-import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import { registerUser } from '../services/registerService';
+import React, { useState } from "react";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { registerUser } from "../services/registerService";
 
 const RegistrationForm = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [designation, setDesignation] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [designation, setDesignation] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submission initiated.');
-  
+    console.log("Form submission initiated.");
+
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
-  
+
     try {
       const userData = { username, email, designation, password };
       const response = await registerUser(userData);
-  
+
       if (response.status === 201 || response.status === 200) {
         setSuccess("Registration successful! Please log in.");
-        setError('');
+        setError("");
 
-        setUsername('');
-        setEmail('');
-        setDesignation('');
-        setPassword('');
-        setConfirmPassword('');
+        setUsername("");
+        setEmail("");
+        setDesignation("");
+        setPassword("");
+        setConfirmPassword("");
 
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = "/login";
         }, 2000);
-
-
       } else {
         setError("Failed to register. Please try again.");
-        console.log('Registration failed with status:', response.status);
+        console.log("Registration failed with status:", response.status);
       }
     } catch (err) {
       setError(err.message || "An error occurred during registration.");
-      console.error('An error occurred:', err);
+      console.error("An error occurred:", err);
     }
   };
-  
 
   return (
     <Container maxWidth="sm">

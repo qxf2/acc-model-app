@@ -1,16 +1,33 @@
-import React from 'react';
-import { Box, Button, Card, CardContent, Grid, Typography } from '@mui/material';
+import React from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+} from "@mui/material";
 
-const CapabilityList = ({ components, capabilities, onEdit, onDelete, onCreate }) => {
+const CapabilityList = ({
+  components,
+  capabilities,
+  onEdit,
+  onDelete,
+  onCreate,
+}) => {
   return (
     <>
       {components.map((component) => (
         <Box key={component.id} mb={4}>
-          <Typography variant="h6" style={{ color: '#3f51b5' }} gutterBottom>
+          <Typography variant="h6" style={{ color: "#3f51b5" }} gutterBottom>
             {component.name}
           </Typography>
           <Box display="flex" justifyContent="flex-end" mb={2}>
-            <Button variant="contained" color="primary" onClick={() => onCreate(component.id)}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => onCreate(component.id)}
+            >
               Create New Capability
             </Button>
           </Box>
@@ -20,10 +37,18 @@ const CapabilityList = ({ components, capabilities, onEdit, onDelete, onCreate }
                 <Grid item xs={12} key={capability.id}>
                   <Card>
                     <CardContent>
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Box
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
                         <Box>
-                          <Typography variant="h6">{capability.name}</Typography>
-                          <Typography color="textSecondary">{capability.description}</Typography>
+                          <Typography variant="h6">
+                            {capability.name}
+                          </Typography>
+                          <Typography color="textSecondary">
+                            {capability.description}
+                          </Typography>
                         </Box>
                         <Box>
                           <Button
@@ -31,7 +56,7 @@ const CapabilityList = ({ components, capabilities, onEdit, onDelete, onCreate }
                             color="primary"
                             size="small"
                             onClick={() => onEdit(component.id, capability)}
-                            style={{ marginRight: '8px' }}
+                            style={{ marginRight: "8px" }}
                           >
                             Edit
                           </Button>
@@ -39,7 +64,9 @@ const CapabilityList = ({ components, capabilities, onEdit, onDelete, onCreate }
                             variant="outlined"
                             color="secondary"
                             size="small"
-                            onClick={() => onDelete(capability.id, component.id)}
+                            onClick={() =>
+                              onDelete(capability.id, component.id)
+                            }
                           >
                             Delete
                           </Button>

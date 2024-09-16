@@ -1,12 +1,22 @@
-import React from 'react';
-import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+import React from "react";
+import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 
-const AttributeForm = ({ isOpen, attribute, handleChange, handleSave, handleClose }) => {
+const AttributeForm = ({
+  isOpen,
+  attribute,
+  handleChange,
+  handleSave,
+  handleClose,
+}) => {
   return (
     <Modal open={isOpen} onClose={handleClose}>
-      <Box p={3} bgcolor="white" style={{ margin: 'auto', marginTop: '10%', maxWidth: '400px' }}>
+      <Box
+        p={3}
+        bgcolor="white"
+        style={{ margin: "auto", marginTop: "10%", maxWidth: "400px" }}
+      >
         <Typography variant="h6" component="h2" gutterBottom>
-          {attribute.id ? 'Edit Attribute' : 'Create New Attribute'}
+          {attribute.id ? "Edit Attribute" : "Create New Attribute"}
         </Typography>
         <TextField
           fullWidth
@@ -29,15 +39,11 @@ const AttributeForm = ({ isOpen, attribute, handleChange, handleSave, handleClos
             variant="contained"
             color="primary"
             onClick={handleSave}
-            style={{ marginRight: '8px' }}
+            style={{ marginRight: "8px" }}
           >
             Save
           </Button>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={handleClose}
-          >
+          <Button variant="outlined" color="secondary" onClick={handleClose}>
             Cancel
           </Button>
         </Box>

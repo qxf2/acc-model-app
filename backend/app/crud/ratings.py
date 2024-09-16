@@ -1,11 +1,14 @@
 """
 This module contains the CRUD (Create, Read, Update, Delete) operations related to ratings table.
 """
+import logging
 from datetime import datetime
 from typing import List
 from sqlalchemy.orm import Session
 from app import schemas, models
+from fastapi import HTTPException
 
+logger = logging.getLogger(__name__)
 
 def create_rating(db_session: Session, rating: schemas.RatingCreate, user_id: int):
     """
@@ -125,13 +128,20 @@ def get_ratings_for_capability_assessment(
     Returns:
         List[schemas.RatingRead]: A list of RatingRead schemas.
     """
-    ratings = (
-        db_session.query(models.Rating)
-        .filter(models.Rating.capability_assessment_id == capability_assessment_id)
-        .all()
-    )
+    try:
+        ratings = (
+            db_session.query(models.Rating)
+            .filter(models.Rating.capability_assessment_id == capability_assessment_id)
+            .all()
+        )
 
-    return [schemas.RatingRead.model_validate(rating) for rating in ratings]
+        if not ratings:
+            return []
+        
+        return [schemas.RatingRead.model_validate(rating) for rating in ratings]
+    except Exception as error:
+        logger.exception("Error retreiving ratings for capability assessment ID %d: %s", capability_assessment_id, error)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 def get_ratings_for_user_and_capability(db_session: Session, user_id: int, capability_id: int):
     """
