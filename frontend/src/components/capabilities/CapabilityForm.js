@@ -1,12 +1,16 @@
-import React from 'react';
-import { Box, Button, Modal, TextField, Typography } from '@mui/material';
+import React from "react";
+import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
 const CapabilityForm = ({ isOpen, onClose, capability, onChange, onSave }) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
-      <Box p={3} bgcolor="white" style={{ margin: 'auto', marginTop: '10%', maxWidth: '400px' }}>
+      <Box
+        p={3}
+        bgcolor="white"
+        style={{ margin: "auto", marginTop: "10%", maxWidth: "400px" }}
+      >
         <Typography variant="h6" component="h2" gutterBottom>
-          {capability.id ? 'Edit Capability' : 'Create New Capability'}
+          {capability.id ? "Edit Capability" : "Create New Capability"}
         </Typography>
         <TextField
           fullWidth
@@ -25,7 +29,12 @@ const CapabilityForm = ({ isOpen, onClose, capability, onChange, onSave }) => {
           margin="normal"
         />
         <Box mt={2}>
-          <Button variant="contained" color="primary" onClick={onSave} style={{ marginRight: '8px' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSave}
+            style={{ marginRight: "8px" }}
+          >
             Save
           </Button>
           <Button variant="outlined" color="secondary" onClick={onClose}>

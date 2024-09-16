@@ -1,5 +1,12 @@
-import React from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
+import React from "react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@mui/material";
 
 const ConfirmDialog = ({ isOpen, onClose, onConfirm }) => {
   return (
@@ -7,7 +14,8 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm }) => {
       <DialogTitle>Confirm Delete</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Are you sure you want to delete this capability? This action cannot be undone.
+          Are you sure you want to delete this capability? This action cannot be
+          undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

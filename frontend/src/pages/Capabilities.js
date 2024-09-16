@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Typography } from '@mui/material';
-import AccModelSelector from '../components/capabilities/AccModelSelector';
-import CapabilityForm from '../components/capabilities/CapabilityForm';
-import CapabilityList from '../components/capabilities/CapabilityList';
-import ConfirmDialog from '../components/capabilities/ConfirmDialog';
+import React, { useEffect, useState } from "react";
+import { Container, Typography } from "@mui/material";
+import AccModelSelector from "../components/capabilities/AccModelSelector";
+import CapabilityForm from "../components/capabilities/CapabilityForm";
+import CapabilityList from "../components/capabilities/CapabilityList";
+import ConfirmDialog from "../components/capabilities/ConfirmDialog";
 import {
   fetchACCModels,
   fetchComponents,
@@ -11,16 +11,20 @@ import {
   createCapability,
   updateCapability,
   deleteCapability,
-} from '../services/capabilitiesService';
+} from "../services/capabilitiesService";
 
 const Capabilities = () => {
   const [accModels, setAccModels] = useState([]);
-  const [selectedAccModel, setSelectedAccModel] = useState('');
+  const [selectedAccModel, setSelectedAccModel] = useState("");
   const [components, setComponents] = useState([]);
   const [capabilities, setCapabilities] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [currentCapability, setCurrentCapability] = useState({ name: '', description: '', component_id: '' });
+  const [currentCapability, setCurrentCapability] = useState({
+    name: "",
+    description: "",
+    component_id: "",
+  });
   const [capabilityToDelete, setCapabilityToDelete] = useState(null);
 
   useEffect(() => {
@@ -29,7 +33,7 @@ const Capabilities = () => {
         const data = await fetchACCModels();
         setAccModels(data);
       } catch (error) {
-        console.error('Error fetching ACC models:', error);
+        console.error("Error fetching ACC models:", error);
       }
     };
 
@@ -50,7 +54,7 @@ const Capabilities = () => {
           }
           setCapabilities(capabilitiesData);
         } catch (error) {
-          console.error('Error fetching components:', error);
+          console.error("Error fetching components:", error);
         }
       };
 
@@ -58,13 +62,16 @@ const Capabilities = () => {
     }
   }, [selectedAccModel]);
 
-  const handleOpenModal = (componentId, capability = { name: '', description: '', component_id: componentId }) => {
+  const handleOpenModal = (
+    componentId,
+    capability = { name: "", description: "", component_id: componentId }
+  ) => {
     setCurrentCapability(capability);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setCurrentCapability({ name: '', description: '', component_id: '' });
+    setCurrentCapability({ name: "", description: "", component_id: "" });
     setIsModalOpen(false);
   };
 
@@ -95,11 +102,16 @@ const Capabilities = () => {
         await createCapability(currentCapability);
       }
 
-      const updatedCapabilities = await fetchCapabilities(currentCapability.component_id);
-      setCapabilities((prev) => ({ ...prev, [currentCapability.component_id]: updatedCapabilities }));
+      const updatedCapabilities = await fetchCapabilities(
+        currentCapability.component_id
+      );
+      setCapabilities((prev) => ({
+        ...prev,
+        [currentCapability.component_id]: updatedCapabilities,
+      }));
       handleCloseModal();
     } catch (error) {
-      console.error('Error saving capability:', error);
+      console.error("Error saving capability:", error);
     }
   };
 
@@ -107,7 +119,9 @@ const Capabilities = () => {
     try {
       await deleteCapability(capabilityToDelete);
 
-      const updatedCapabilities = await fetchCapabilities(currentCapability.component_id);
+      const updatedCapabilities = await fetchCapabilities(
+        currentCapability.component_id
+      );
       setCapabilities((prevCapabilities) => ({
         ...prevCapabilities,
         [currentCapability.component_id]: updatedCapabilities,
@@ -115,18 +129,24 @@ const Capabilities = () => {
 
       handleCloseDialog();
     } catch (error) {
-      console.error('Error deleting capability:', error);
+      console.error("Error deleting capability:", error);
     }
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
+    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        sx={{ color: "primary.main" }}
+      >
         Capabilities
       </Typography>
       <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
-        Capabilities are the specific features or functionalities (verbs) that each Component has, such as "Add User", "Process Payment." etc.
-        They help define what each Component can do.
+        Capabilities are the specific features or functionalities (verbs) that
+        each Component has, such as "Add User", "Process Payment." etc. They
+        help define what each Component can do.
       </Typography>
 
       <AccModelSelector

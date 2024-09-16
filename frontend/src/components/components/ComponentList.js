@@ -1,5 +1,12 @@
-import React from 'react';
-import { Card, CardContent, Grid, Typography, Box, Button } from '@mui/material';
+import React from "react";
+import {
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  Box,
+  Button,
+} from "@mui/material";
 
 const ComponentList = ({ components, handleOpenModal, handleOpenDialog }) => {
   return (
@@ -8,10 +15,16 @@ const ComponentList = ({ components, handleOpenModal, handleOpenDialog }) => {
         <Grid item xs={12} key={component.id}>
           <Card>
             <CardContent>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Box>
                   <Typography variant="h6">{component.name}</Typography>
-                  <Typography color="textSecondary">{component.description}</Typography>
+                  <Typography color="textSecondary">
+                    {component.description}
+                  </Typography>
                 </Box>
                 <Box>
                   <Button
@@ -19,7 +32,7 @@ const ComponentList = ({ components, handleOpenModal, handleOpenDialog }) => {
                     color="primary"
                     size="small"
                     onClick={() => handleOpenModal(component)}
-                    style={{ marginRight: '8px' }}
+                    style={{ marginRight: "8px" }}
                   >
                     Edit
                   </Button>

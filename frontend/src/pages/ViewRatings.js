@@ -1,6 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography, MenuItem, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material';
-import { ExpandMore, ExpandLess } from '@mui/icons-material';
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  MenuItem,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+} from "@mui/material";
+import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import {
   fetchACCModels,
   fetchAttributes,
@@ -8,17 +22,17 @@ import {
   fetchCapabilitiesByComponent,
   fetchCapabilityAssessments,
   fetchUserDetails,
-  fetchRatings
-} from '../services/ratingsService'; 
+  fetchRatings,
+} from "../services/ratingsService";
 
 const ViewCapabilities = () => {
   const [accModels, setAccModels] = useState([]);
-  const [selectedAccModel, setSelectedAccModel] = useState('');
+  const [selectedAccModel, setSelectedAccModel] = useState("");
   const [components, setComponents] = useState([]);
   const [capabilities, setCapabilities] = useState([]);
   const [expandedComponents, setExpandedComponents] = useState({});
   const [attributes, setAttributes] = useState([]);
-  const [capabilityAssessments, setCapabilityAssessments] = useState({}); 
+  const [capabilityAssessments, setCapabilityAssessments] = useState({});
   const [ratings, setRatings] = useState({});
   const [user, setUser] = useState(null);
 
@@ -31,7 +45,7 @@ const ViewCapabilities = () => {
         const attributesData = await fetchAttributes();
         setAttributes(attributesData);
       } catch (error) {
-        console.error('Error fetching initial data:', error);
+        console.error("Error fetching initial data:", error);
       }
     };
 
@@ -42,10 +56,12 @@ const ViewCapabilities = () => {
     if (selectedAccModel) {
       const fetchComponentsData = async () => {
         try {
-          const componentsData = await fetchComponentsByAccModel(selectedAccModel);
+          const componentsData = await fetchComponentsByAccModel(
+            selectedAccModel
+          );
           setComponents(componentsData);
         } catch (error) {
-          console.error('Error fetching components:', error);
+          console.error("Error fetching components:", error);
         }
       };
 
@@ -59,7 +75,9 @@ const ViewCapabilities = () => {
         try {
           const allCapabilities = await Promise.all(
             components.map(async (component) => {
-              const capabilitiesData = await fetchCapabilitiesByComponent(component.id);
+              const capabilitiesData = await fetchCapabilitiesByComponent(
+                component.id
+              );
               return {
                 componentId: component.id,
                 capabilities: capabilitiesData,
@@ -68,7 +86,7 @@ const ViewCapabilities = () => {
           );
           setCapabilities(allCapabilities);
         } catch (error) {
-          console.error('Error fetching capabilities:', error);
+          console.error("Error fetching capabilities:", error);
         }
       };
 
@@ -79,10 +97,13 @@ const ViewCapabilities = () => {
   useEffect(() => {
     const fetchCapabilityAssessmentsData = async () => {
       try {
-        const assessments = await fetchCapabilityAssessments(capabilities, attributes);
+        const assessments = await fetchCapabilityAssessments(
+          capabilities,
+          attributes
+        );
         setCapabilityAssessments(assessments);
       } catch (error) {
-        console.error('Error fetching capability assessments:', error);
+        console.error("Error fetching capability assessments:", error);
       }
     };
 
@@ -94,15 +115,15 @@ const ViewCapabilities = () => {
   useEffect(() => {
     const fetchUserDetailsData = async () => {
       try {
-        const authToken = localStorage.getItem('authToken');
+        const authToken = localStorage.getItem("authToken");
         if (!authToken) {
-          console.error('User is not authenticated');
+          console.error("User is not authenticated");
           return;
         }
         const userData = await fetchUserDetails(authToken);
         setUser(userData);
       } catch (error) {
-        console.error('Error fetching user details:', error);
+        console.error("Error fetching user details:", error);
       }
     };
 
@@ -117,7 +138,7 @@ const ViewCapabilities = () => {
           setRatings(ratingsData);
         }
       } catch (error) {
-        console.error('Error fetching ratings:', error);
+        console.error("Error fetching ratings:", error);
       }
     };
 
@@ -125,14 +146,14 @@ const ViewCapabilities = () => {
   }, [user, capabilityAssessments]);
 
   const handleToggleExpand = (componentId) => {
-    setExpandedComponents(prevState => ({
+    setExpandedComponents((prevState) => ({
       ...prevState,
       [componentId]: !prevState[componentId],
     }));
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: '2rem' }}>
+    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
       <Typography variant="h4" component="h1" gutterBottom>
         View Capabilities
       </Typography>
@@ -151,7 +172,7 @@ const ViewCapabilities = () => {
         ))}
       </TextField>
 
-      <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
+      <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -167,34 +188,47 @@ const ViewCapabilities = () => {
                 <TableRow>
                   <TableCell>
                     <Box display="flex" alignItems="center">
-                      <IconButton onClick={() => handleToggleExpand(component.id)}>
-                        {expandedComponents[component.id] ? <ExpandLess /> : <ExpandMore />}
+                      <IconButton
+                        onClick={() => handleToggleExpand(component.id)}
+                      >
+                        {expandedComponents[component.id] ? (
+                          <ExpandLess />
+                        ) : (
+                          <ExpandMore />
+                        )}
                       </IconButton>
-                      <Typography variant="h6" component="h2" style={{ fontSize: '1.25rem' }}>
+                      <Typography
+                        variant="h6"
+                        component="h2"
+                        style={{ fontSize: "1.25rem" }}
+                      >
                         {component.name}
                       </Typography>
                     </Box>
                   </TableCell>
                   {attributes.map((attribute) => (
-                    <TableCell key={`${component.id}-${attribute.id}`}>
-                    </TableCell>
+                    <TableCell
+                      key={`${component.id}-${attribute.id}`}
+                    ></TableCell>
                   ))}
                 </TableRow>
-                {expandedComponents[component.id] && capabilities
-                  .filter(cap => cap.componentId === component.id)
-                  .flatMap(cap => cap.capabilities)
-                  .map((capability) => (
-                    <TableRow key={capability.id}>
-                      <TableCell style={{ paddingLeft: '2rem' }}>
-                        {capability.name}
-                      </TableCell>
-                      {attributes.map((attribute) => (
-                        <TableCell key={`${capability.id}-${attribute.id}`}>
-                          {ratings[`${capability.id}-${attribute.id}`]?.rating || 'N/A'}
+                {expandedComponents[component.id] &&
+                  capabilities
+                    .filter((cap) => cap.componentId === component.id)
+                    .flatMap((cap) => cap.capabilities)
+                    .map((capability) => (
+                      <TableRow key={capability.id}>
+                        <TableCell style={{ paddingLeft: "2rem" }}>
+                          {capability.name}
                         </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
+                        {attributes.map((attribute) => (
+                          <TableCell key={`${capability.id}-${attribute.id}`}>
+                            {ratings[`${capability.id}-${attribute.id}`]
+                              ?.rating || "N/A"}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
               </React.Fragment>
             ))}
           </TableBody>

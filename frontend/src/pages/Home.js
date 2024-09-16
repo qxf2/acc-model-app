@@ -30,26 +30,36 @@ const Home = () => {
           sx={{ color: "#7f8c8d", marginBottom: 4 }}
         >
           Effortlessly build a structured{" "}
-          <MuiLink href="https://qxf2.com/where-start-testing" target="_blank" sx={{ textDecoration: "none", color: "#3498db" }}>
+          <MuiLink
+            href="https://qxf2.com/where-start-testing"
+            target="_blank"
+            sx={{ textDecoration: "none", color: "#3498db" }}
+          >
             ACC model
           </MuiLink>{" "}
           offering clarity and coverage for effective testing.
         </Typography>
-        
-        <Typography variant="h6" align="center" gutterBottom>
-            To get started, please{" "}
-            <MuiLink href="/registration" sx={{ textDecoration: "none", color: "#3498db" }}>
-              register
-            </MuiLink>{" "}
-            or{" "}
-            <MuiLink href="/token" sx={{ textDecoration: "none", color: "#3498db" }}>
-              login
-            </MuiLink>{" "}
-            if you already have an account.
-            <br />
-            Then, begin by defining Attributes, Components, and Capabilities for your project.
-          </Typography>
 
+        <Typography variant="h6" align="center" gutterBottom>
+          To get started, please{" "}
+          <MuiLink
+            href="/registration"
+            sx={{ textDecoration: "none", color: "#3498db" }}
+          >
+            register
+          </MuiLink>{" "}
+          or{" "}
+          <MuiLink
+            href="/token"
+            sx={{ textDecoration: "none", color: "#3498db" }}
+          >
+            login
+          </MuiLink>{" "}
+          if you already have an account.
+          <br />
+          Start by creating an ACC Model, then break down the project into
+          Components and Capabilities.
+        </Typography>
       </Box>
 
       {/* Main Sections */}
@@ -71,9 +81,9 @@ const Home = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               transition: "0.3s",
-              "&:hover": { 
+              "&:hover": {
                 boxShadow: 6,
-                border: '2px solid #3498db',
+                border: "2px solid #3498db",
               },
             }}
           >
@@ -136,9 +146,9 @@ const Home = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               transition: "0.3s",
-              "&:hover": { 
+              "&:hover": {
                 boxShadow: 6,
-                border: "1px solid #3498db"
+                border: "1px solid #3498db",
               },
             }}
           >
@@ -179,7 +189,7 @@ const Home = () => {
                   variant="contained"
                   sx={{
                     backgroundColor: "#3498db",
-                    "&:hover": { 
+                    "&:hover": {
                       backgroundColor: "#2980b9",
                       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
                     },
@@ -201,9 +211,9 @@ const Home = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               transition: "0.3s",
-              "&:hover": { 
+              "&:hover": {
                 boxShadow: 6,
-                border: '2px solid #3498db',
+                border: "2px solid #3498db",
               },
             }}
           >
@@ -244,7 +254,7 @@ const Home = () => {
                   variant="contained"
                   sx={{
                     backgroundColor: "#3498db",
-                    "&:hover": { 
+                    "&:hover": {
                       backgroundColor: "#2980b9",
                       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
                     },
@@ -277,9 +287,9 @@ const Home = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               transition: "0.3s",
-              "&:hover": { 
+              "&:hover": {
                 boxShadow: 6,
-                border: '2px solid #3498db',
+                border: "2px solid #3498db",
               },
             }}
           >
@@ -320,7 +330,7 @@ const Home = () => {
                   variant="contained"
                   sx={{
                     backgroundColor: "#3498db",
-                    "&:hover": { 
+                    "&:hover": {
                       backgroundColor: "#2980b9",
                       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
                     },
@@ -342,10 +352,10 @@ const Home = () => {
               flexDirection: "column",
               justifyContent: "space-between",
               transition: "0.3s",
-              "&:hover": { 
+              "&:hover": {
                 boxShadow: 6,
-                border: '2px solid #3498db',
-             },
+                border: "2px solid #3498db",
+              },
             }}
           >
             <CardContent
@@ -386,7 +396,7 @@ const Home = () => {
                   variant="contained"
                   sx={{
                     backgroundColor: "#3498db",
-                    "&:hover": { 
+                    "&:hover": {
                       backgroundColor: "#2980b9",
                       boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
                     },
@@ -401,28 +411,22 @@ const Home = () => {
       </Grid>
 
       {/* Footer */}
-      <Box
-            sx={{ padding: 2, marginTop: 6, textAlign: "center", color: "black" }}
+      <Box sx={{ padding: 2, marginTop: 6, textAlign: "center", color: "black" }}>
+        <Typography variant="body2">
+          Developed by{" "}
+          <MuiLink href="https://www.qxf2.com" target="_blank" color="inherit">
+            Qxf2 Services
+          </MuiLink>{" "}
+          |{" "}
+          <MuiLink
+            href="https://github.com/qxf2/acc-model-app"
+            target="_blank"
+            color="inherit"
           >
-            <Typography variant="body2">
-              Developed by{" "}
-              <MuiLink 
-                href="https://www.qxf2.com"
-                target="_blank"
-                color="inherit"
-              >
-                Qxf2 Services
-              </MuiLink>{" "}
-              |{" "}
-              <MuiLink
-                href="https://github.com/qxf2/acc-model-app"
-                target="_blank"
-                color="inherit"
-              >
-                GitHub
-              </MuiLink>
-            </Typography>
-          </Box>
+            GitHub
+          </MuiLink>
+        </Typography>
+      </Box>
     </Container>
   );
 };

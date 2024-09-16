@@ -1,9 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
-  Box, Container, Typography, MenuItem, TextField, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, IconButton, Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Tooltip
-} from '@mui/material';
-import { ExpandMore, ExpandLess, Edit } from '@mui/icons-material';
+  Box,
+  Container,
+  Typography,
+  MenuItem,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
+  Tooltip,
+} from "@mui/material";
+import { ExpandMore, ExpandLess, Edit } from "@mui/icons-material";
 import {
   fetchACCModels,
   fetchAttributes,
@@ -15,12 +33,11 @@ import {
   fetchRatingOptions,
   submitRating,
   submitComments,
-} from '../services/ratingsService';
-
+} from "../services/ratingsService";
 
 const Ratings = () => {
   const [accModels, setAccModels] = useState([]);
-  const [selectedAccModel, setSelectedAccModel] = useState('');
+  const [selectedAccModel, setSelectedAccModel] = useState("");
   const [components, setComponents] = useState([]);
   const [capabilities, setCapabilities] = useState([]);
   const [expandedComponents, setExpandedComponents] = useState({});
@@ -36,10 +53,9 @@ const Ratings = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [currentCapability, setCurrentCapability] = useState(null);
   const [currentAttribute, setCurrentAttribute] = useState(null);
-  const [comments, setComments] = useState('');
+  const [comments, setComments] = useState("");
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,7 +66,7 @@ const Ratings = () => {
         const attributesData = await fetchAttributes();
         setAttributes(attributesData);
       } catch (error) {
-        console.error('Error fetching initial data:', error);
+        console.error("Error fetching initial data:", error);
       }
     };
 
@@ -61,10 +77,12 @@ const Ratings = () => {
     if (selectedAccModel) {
       const fetchComponentsData = async () => {
         try {
-          const componentsData = await fetchComponentsByAccModel(selectedAccModel);
+          const componentsData = await fetchComponentsByAccModel(
+            selectedAccModel
+          );
           setComponents(componentsData);
         } catch (error) {
-          console.error('Error fetching components:', error);
+          console.error("Error fetching components:", error);
         }
       };
 
@@ -78,7 +96,9 @@ const Ratings = () => {
         try {
           const allCapabilities = await Promise.all(
             components.map(async (component) => {
-              const capabilitiesData = await fetchCapabilitiesByComponent(component.id);
+              const capabilitiesData = await fetchCapabilitiesByComponent(
+                component.id
+              );
               return {
                 componentId: component.id,
                 capabilities: capabilitiesData,
@@ -87,7 +107,7 @@ const Ratings = () => {
           );
           setCapabilities(allCapabilities);
         } catch (error) {
-          console.error('Error fetching capabilities:', error);
+          console.error("Error fetching capabilities:", error);
         }
       };
 
@@ -98,10 +118,13 @@ const Ratings = () => {
   useEffect(() => {
     const fetchCapabilityAssessmentsData = async () => {
       try {
-        const assessments = await fetchCapabilityAssessments(capabilities, attributes);
+        const assessments = await fetchCapabilityAssessments(
+          capabilities,
+          attributes
+        );
         setCapabilityAssessments(assessments);
       } catch (error) {
-        console.error('Error fetching capability assessments:', error);
+        console.error("Error fetching capability assessments:", error);
       }
     };
 
@@ -113,21 +136,20 @@ const Ratings = () => {
   useEffect(() => {
     const fetchUserDetailsData = async () => {
       try {
-        const authToken = localStorage.getItem('authToken');
+        const authToken = localStorage.getItem("authToken");
         if (!authToken) {
-          console.error('User is not authenticated');
+          console.error("User is not authenticated");
           return;
         }
         const userData = await fetchUserDetails(authToken);
         setUser(userData);
       } catch (error) {
-        console.error('Error fetching user details:', error);
+        console.error("Error fetching user details:", error);
       }
     };
 
     fetchUserDetailsData();
   }, []);
-
 
   useEffect(() => {
     const fetchRatingsData = async () => {
@@ -138,40 +160,42 @@ const Ratings = () => {
 
           const userSubmittedRatings = {};
           for (const [key, value] of Object.entries(ratingsData)) {
-            userSubmittedRatings[key] = value.rating || '';
+            userSubmittedRatings[key] = value.rating || "";
           }
-          console.log('Fetched Ratings Data:', ratingsData);
-          console.log('User Submitted Ratings:', userSubmittedRatings);
+          console.log("Fetched Ratings Data:", ratingsData);
+          console.log("User Submitted Ratings:", userSubmittedRatings);
           setSubmittedRatings(userSubmittedRatings);
 
           const additionalRatingData = {};
           for (const [key, value] of Object.entries(ratingsData)) {
             additionalRatingData[key] = {
-              comments: value.comments || '',
-              id: value.id || '',
+              comments: value.comments || "",
+              id: value.id || "",
             };
           }
-          console.log('Populated Additional Rating Data:', additionalRatingData);
+          console.log(
+            "Populated Additional Rating Data:",
+            additionalRatingData
+          );
           setAdditionalRatingData(additionalRatingData);
         }
       } catch (error) {
-        console.error('Error fetching ratings:', error);
+        console.error("Error fetching ratings:", error);
       }
     };
-  
+
     fetchRatingsData();
   }, [user, capabilityAssessments]);
-  
 
   useEffect(() => {
     const fetchRatingOptionsData = async () => {
-      console.log("Ratings component mounted")
+      console.log("Ratings component mounted");
       try {
         const options = await fetchRatingOptions();
-        console.log('Rating options are:', options);
+        console.log("Rating options are:", options);
         setRatingOptions(options);
       } catch (error) {
-        console.error('Error fetching rating options:', error);
+        console.error("Error fetching rating options:", error);
       }
     };
 
@@ -186,21 +210,22 @@ const Ratings = () => {
   };
 
   const handleToggleExpand = (componentId) => {
-    setExpandedComponents(prevState => ({
+    setExpandedComponents((prevState) => ({
       ...prevState,
       [componentId]: !prevState[componentId],
     }));
   };
-  
 
   const handleEditClick = (capabilityId, attributeId) => {
-    console.log(`Edit clicked for Capability ID: ${capabilityId}, Attribute ID: ${attributeId}`);
+    console.log(
+      `Edit clicked for Capability ID: ${capabilityId}, Attribute ID: ${attributeId}`
+    );
     setCurrentCapability(capabilityId);
     setCurrentAttribute(attributeId);
     const key = `${capabilityId}-${attributeId}`;
-    
-    const existingComments = additionalRatingData[key]?.comments || '';
-    const ratingId = additionalRatingData[key]?.id || '';
+
+    const existingComments = additionalRatingData[key]?.comments || "";
+    const ratingId = additionalRatingData[key]?.id || "";
 
     console.log("Fetched Rating ID:", ratingId);
     console.log("Existing Comments:", existingComments);
@@ -211,50 +236,51 @@ const Ratings = () => {
     setOpenDialog(true);
   };
 
-  
- 
   const handleSaveComments = async () => {
     try {
-      const authToken = localStorage.getItem('authToken');
+      const authToken = localStorage.getItem("authToken");
       if (!authToken) {
-        console.error('User is not authenticated');
+        console.error("User is not authenticated");
         return;
       }
 
       const key = `${currentCapability}-${currentAttribute}`;
-      const rating = submitRating[key];
+      const rating = additionalRatingData[key]?.id;
 
       if (!rating) {
-        console.error('Rating not found');
-        setSnackbarMessage('Please submit a rating before adding a comment.');
+        console.error("Rating not found");
+        setSnackbarMessage("Please submit a rating before adding a comment.");
+        setShowSnackbar(true);
+        return;
+      }
+
+      if (!rating) {
+        console.error("Rating not found");
+        setSnackbarMessage("Please submit a rating before adding a comment.");
         setShowSnackbar(true);
         return;
       }
   
-      if (ratingId) {
-        await submitComments(ratingId, comments, authToken);
-        console.log(`Comments for Rating ID: ${ratingId} submitted successfully!`);
-        setOpenDialog(false);
-      } else {
-        console.error('Rating ID not found');
-      }
+      // Proceed to submit the comment
+      await submitComments(rating, comments, authToken);
+      console.log(`Comments for Rating ID: ${rating} submitted successfully!`);
+      setOpenDialog(false);
+  
     } catch (error) {
-      console.error('Error submitting comments:', error);
-      alert(`Failed to submit comments.`);
+      console.error("Error submitting comments:", error);
+      alert("Failed to submit comments.");
       setShowSnackbar(true);
     }
   };
   
-    
-
   const handleBatchSubmit = async () => {
     try {
-      const authToken = localStorage.getItem('authToken');
+      const authToken = localStorage.getItem("authToken");
       if (!authToken) {
-        console.error('User is not authenticated');
+        console.error("User is not authenticated");
         return;
       }
-  
+
       const ratingsToSubmit = Object.entries(selectedRatings)
         .filter(([key, value]) => value !== submittedRatings[key])
         .map(([key, value]) => {
@@ -269,13 +295,13 @@ const Ratings = () => {
             key,
           };
         })
-        .filter(entry => entry !== null);
-  
+        .filter((entry) => entry !== null);
+
       if (ratingsToSubmit.length === 0) {
-        console.log('No ratings to submit.');
+        console.log("No ratings to submit.");
         return;
       }
-  
+
       // const results = await Promise.allSettled(
       //   ratingsToSubmit.map(({ capabilityAssessmentId, rating }) =>
       //     submitRating(capabilityAssessmentId, rating, authToken)
@@ -284,133 +310,181 @@ const Ratings = () => {
 
       const results = await Promise.allSettled(
         ratingsToSubmit.map(async ({ capabilityAssessmentId, rating, key }) => {
-          const ratingId = await submitRating(capabilityAssessmentId, rating, authToken);
-          
+          const ratingId = await submitRating(
+            capabilityAssessmentId,
+            rating,
+            authToken
+          );
+
           setAdditionalRatingData((prev) => ({
             ...prev,
             [key]: {
               ...(prev[key] || {}),
               id: ratingId,
-            }
+            },
           }));
 
           return ratingId;
         })
       );
-  
-      const successfulSubmissions = results.filter(result => result.status === 'fulfilled');
-      const failedSubmissions = results.filter(result => result.status === 'rejected');
-  
+
+      const successfulSubmissions = results.filter(
+        (result) => result.status === "fulfilled"
+      );
+      const failedSubmissions = results.filter(
+        (result) => result.status === "rejected"
+      );
+
       if (failedSubmissions.length > 0) {
-        console.error('Some ratings failed to submit:', failedSubmissions);
+        console.error("Some ratings failed to submit:", failedSubmissions);
       }
-  
+
       if (successfulSubmissions.length > 0) {
-        console.log('Ratings submitted successfully:', successfulSubmissions.map(r => r.value));
+        console.log(
+          "Ratings submitted successfully:",
+          successfulSubmissions.map((r) => r.value)
+        );
         setSubmittedRatings((prev) => ({
           ...prev,
           ...selectedRatings,
         }));
-        setSnackbarMessage('Ratings submitted successfully!');
+        setSnackbarMessage("Ratings submitted successfully!");
         setShowSnackbar(true);
       } else {
-        console.log('No ratings were successfully submitted.');
+        console.log("No ratings were successfully submitted.");
       }
     } catch (error) {
-      console.error('Error submitting ratings:', error);
-      setSnackbarMessage('Failed to submit ratings.');
+      console.error("Error submitting ratings:", error);
+      setSnackbarMessage("Failed to submit ratings.");
       setShowSnackbar(true);
     }
   };
-  
 
   return (
-    <Container maxWidth="md" style={{ marginTop: '2rem' }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'primary.main' }}>
-        Assess Software Capabilities
-      </Typography>
-      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
-        Rate the effectiveness of each Capability based on its performance. Your ratings help assess how well each feature meets the intended quality standards.
-      </Typography>
+  <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+    <Typography variant="h4" component="h1" gutterBottom sx={{ color: "primary.main" }}>
+      Assess Software Capabilities
+    </Typography>
+    <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+      Rate the effectiveness of each Capability based on its performance. Your ratings help assess how well each feature meets the intended quality standards.
+    </Typography>
 
-      <TextField
-        select
-        label="Select ACC Model"
-        value={selectedAccModel}
-        onChange={(e) => setSelectedAccModel(e.target.value)}
-        fullWidth
-        margin="normal"
-      >
-        {accModels.map((model) => (
-          <MenuItem key={model.id} value={model.id}>
-            {model.name}
-          </MenuItem>
-        ))}
-      </TextField>
+    <TextField
+      select
+      label="Select ACC Model"
+      value={selectedAccModel}
+      onChange={(e) => setSelectedAccModel(e.target.value)}
+      fullWidth
+      margin="normal"
+    >
+      {accModels.map((model) => (
+        <MenuItem key={model.id} value={model.id}>
+          {model.name}
+        </MenuItem>
+      ))}
+    </TextField>
 
-      <TableContainer component={Paper} style={{ marginTop: '2rem' }}>
-        <Table>
-          <TableHead>
-            <TableRow style={{ backgroundColor: '#f0f0f0' }}>
-              <TableCell style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd', color: '#283593', backgroundColor: "#f0f0f0" }}>
-                Capabilities/Attributes
+    <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
+      <Table>
+        <TableHead>
+          <TableRow style={{ backgroundColor: "#f0f0f0" }}>
+            <TableCell
+              style={{
+                fontSize: "1rem",
+                fontWeight: "bold",
+                border: "1px solid #ddd",
+                color: "#283593",
+                backgroundColor: "#f0f0f0",
+              }}
+            >
+              Capabilities/Attributes
+            </TableCell>
+            {attributes.map((attribute) => (
+              <TableCell
+                key={attribute.id}
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  border: "1px solid #ddd",
+                  color: "#283593",
+                  backgroundColor: "#f0f0f0",
+                }}
+              >
+                {attribute.name}
               </TableCell>
-              {attributes.map((attribute) => (
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {components.map((component) => (
+            <React.Fragment key={component.id}>
+              <TableRow>
                 <TableCell
-                  key={attribute.id}
-                  style={{ fontSize: '1rem', fontWeight: 'bold', border: '1px solid #ddd', color: '#283593', backgroundColor: "#f0f0f0" }}
+                  style={{ fontSize: "1.125rem", border: "1px solid #ddd" }}
                 >
-                  {attribute.name}
+                  <Box display="flex" alignItems="center">
+                    <IconButton onClick={() => handleToggleExpand(component.id)}>
+                      {expandedComponents[component.id] ? (
+                        <ExpandLess />
+                      ) : (
+                        <ExpandMore />
+                      )}
+                    </IconButton>
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      style={{ fontSize: "1.125rem", fontWeight: "bold" }}
+                    >
+                      {component.name}
+                    </Typography>
+                  </Box>
                 </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {components.map((component) => (
-              <React.Fragment key={component.id}>
-                <TableRow>
+                {attributes.map((attribute) => (
                   <TableCell
-                    style={{ fontSize: '1.125rem', border: '1px solid #ddd' }}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <IconButton onClick={() => handleToggleExpand(component.id)}>
-                        {expandedComponents[component.id] ? <ExpandLess /> : <ExpandMore />}
-                      </IconButton>
-                      <Typography variant="h6" component="h2" style={{ fontSize: '1.125rem', fontWeight: 'bold' }}>
-                        {component.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  {attributes.map((attribute) => (
-                    <TableCell key={`${component.id}-${attribute.id}`} style={{ border: '1px solid #ddd' }}>
-                    </TableCell>
-                  ))}
-                </TableRow>
-                {expandedComponents[component.id] && capabilities
-                  .filter(cap => cap.componentId === component.id)
-                  .flatMap(cap => cap.capabilities)
+                    key={`${component.id}-${attribute.id}`}
+                    style={{ border: "1px solid #ddd" }}
+                  ></TableCell>
+                ))}
+              </TableRow>
+              {expandedComponents[component.id] &&
+                capabilities
+                  .filter((cap) => cap.componentId === component.id)
+                  .flatMap((cap) => cap.capabilities)
                   .map((capability) => (
                     <TableRow key={capability.id}>
-                      <TableCell style={{ paddingLeft: '2rem', fontSize: '1rem', border: '1px solid #ddd' }}>
+                      <TableCell
+                        style={{
+                          paddingLeft: "2rem",
+                          fontSize: "1rem",
+                          border: "1px solid #ddd",
+                        }}
+                      >
                         {capability.name}
                       </TableCell>
                       {attributes.map((attribute) => (
-                        <TableCell key={`${capability.id}-${attribute.id}`} style={{ border: '1px solid #ddd' }}>
+                        <TableCell
+                          key={`${capability.id}-${attribute.id}`}
+                          style={{ border: "1px solid #ddd" }}
+                        >
                           <Box display="flex" alignItems="center">
                             <TextField
                               select
                               label="Rate"
-                              value={
-                                (() => {
-                                  const key = `${capability.id}-${attribute.id}`;
-                                  const selected = selectedRatings[key];
-                                  const submitted = submittedRatings[key];
-                                  return selected || submitted || '';
-                                })()
+                              value={(() => {
+                                const key = `${capability.id}-${attribute.id}`;
+                                const selected = selectedRatings[key];
+                                const submitted = submittedRatings[key];
+                                return selected || submitted || "";
+                              })()}
+                              onChange={(e) =>
+                                handleRatingChange(
+                                  capability.id,
+                                  attribute.id,
+                                  e.target.value
+                                )
                               }
-                              onChange={(e) => handleRatingChange(capability.id, attribute.id, e.target.value)}
                               fullWidth
-                              style={{ fontSize: '0.875rem' }}
+                              style={{ fontSize: "0.875rem" }}
                             >
                               {ratingOptions.map((option) => (
                                 <MenuItem key={option} value={option}>
@@ -421,62 +495,75 @@ const Ratings = () => {
                             <IconButton
                               aria-label="edit"
                               size="small"
-                              onClick={() => handleEditClick(capability.id, attribute.id)}
+                              onClick={() =>
+                                handleEditClick(capability.id, attribute.id)
+                              }
                             >
-                              <Tooltip title={!selectedRatings[`${capability.id}-${attribute.id}`] ? "Submit a rating before adding comments" : "Add comments"}>
-                              <Edit fontSize="small" />
-                            </Tooltip>
+                              <Tooltip
+                                title={
+                                  !selectedRatings[
+                                    `${capability.id}-${attribute.id}`
+                                  ]
+                                    ? "Submit a rating before adding comments"
+                                    : "Add comments"
+                                }
+                              >
+                                <Edit fontSize="small" />
+                              </Tooltip>
                             </IconButton>
                           </Box>
                         </TableCell>
                       ))}
                     </TableRow>
                   ))}
-              </React.Fragment>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </React.Fragment>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
 
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ marginTop: '2rem' }}
-        onClick={handleBatchSubmit}
-      >
-        Submit All Ratings
-      </Button>
+    <Button
+      variant="contained"
+      color="primary"
+      style={{ marginTop: "2rem" }}
+      onClick={handleBatchSubmit}
+    >
+      Submit All Ratings
+    </Button>
 
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setShowSnackbar(false)}
-        message={snackbarMessage}
-      />
+    <Snackbar
+      open={showSnackbar}
+      autoHideDuration={3000}
+      onClose={() => setShowSnackbar(false)}
+      message={snackbarMessage}
+    />
 
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Add Comments</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Comments"
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            multiline
-            rows={4}
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={handleSaveComments} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
-  );
-};
+    <Dialog
+      open={openDialog}
+      onClose={() => setOpenDialog(false)}
+      maxWidth="sm"
+      fullWidth
+    >
+      <DialogTitle>Add Comments</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Comments"
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
+          multiline
+          rows={4}
+          fullWidth
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpenDialog(false)} color="secondary">
+          Cancel
+        </Button>
+        <Button onClick={handleSaveComments} color="primary">
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </Container>
+);
 
-export default Ratings;

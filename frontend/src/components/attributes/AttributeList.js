@@ -1,5 +1,12 @@
-import React from 'react';
-import { Grid, Card, CardContent, Typography, Button, Box } from '@mui/material';
+import React from "react";
+import {
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Box,
+} from "@mui/material";
 
 const AttributeList = ({ attributes, handleOpenModal, handleOpenDialog }) => {
   return (
@@ -8,10 +15,16 @@ const AttributeList = ({ attributes, handleOpenModal, handleOpenDialog }) => {
         <Grid item xs={12} key={attribute.id}>
           <Card>
             <CardContent>
-              <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Box>
                   <Typography variant="h6">{attribute.name}</Typography>
-                  <Typography color="textSecondary">{attribute.description}</Typography>
+                  <Typography color="textSecondary">
+                    {attribute.description}
+                  </Typography>
                 </Box>
                 <Box>
                   <Button
@@ -19,7 +32,7 @@ const AttributeList = ({ attributes, handleOpenModal, handleOpenDialog }) => {
                     color="primary"
                     size="small"
                     onClick={() => handleOpenModal(attribute)}
-                    style={{ marginRight: '8px' }}
+                    style={{ marginRight: "8px" }}
                   >
                     Edit
                   </Button>

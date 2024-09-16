@@ -1,12 +1,16 @@
-import React from 'react';
-import { Box, Button, Modal, TextField, Typography } from '@mui/material';
+import React from "react";
+import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
 const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose }) => {
   return (
     <Modal open={isOpen} onClose={handleClose}>
-      <Box p={3} bgcolor="white" style={{ margin: 'auto', marginTop: '10%', maxWidth: '400px' }}>
+      <Box
+        p={3}
+        bgcolor="white"
+        style={{ margin: "auto", marginTop: "10%", maxWidth: "400px" }}
+      >
         <Typography variant="h6" component="h2" gutterBottom>
-          {user.id ? 'Edit User' : 'Create New User'}
+          {user.id ? "Edit User" : "Create New User"}
         </Typography>
         <TextField
           fullWidth
@@ -38,7 +42,7 @@ const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose }) => {
             variant="contained"
             color="primary"
             onClick={handleSave}
-            style={{ marginRight: '8px' }}
+            style={{ marginRight: "8px" }}
           >
             Save
           </Button>
