@@ -35,6 +35,88 @@ router = APIRouter(
 
 logger = logging.getLogger(__name__)
 
+
+@router.post("/batch/", response_model=Dict[str, Union[List[schemas.RatingRead], Dict[str, str]]])
+def upsert_capability_assessment_ratings(
+        batch_request: schemas.BatchRatingRequest,
+        db_session: Session = Depends(get_db),
+        current_user: schemas.UserRead = Depends(get_current_user)
+):
+    """
+    Creates or updates ratings for capability assessments in batch.
+    """
+    ids = [rating.capability_assessment_id for rating in batch_request.ratings]
+    existing_assessments = {ca.id for ca in crud.get_capability_assessments_by_ids(db_session, ids)}
+
+    logging.info("Existing assessments: %s", existing_assessments)
+
+    valid_ratings = []
+    errors = {}
+    for rating in batch_request.ratings:
+        if rating.capability_assessment_id not in existing_assessments:
+            errors[rating.capability_assessment_id] = "Capability Assessment not found"
+            continue
+
+        existing_rating = crud.get_rating_by_user_and_assessment(
+            db_session, user_id=current_user.id,
+            capability_assessment_id=rating.capability_assessment_id
+        )
+
+        if existing_rating:
+            updated_rating = rating_crud.update_rating(
+                db_session=db_session, db_rating=existing_rating, rating=rating
+            )
+            valid_ratings.append(updated_rating)
+        else:
+            new_rating = rating_crud.create_rating(
+                db_session=db_session, rating=rating, user_id=current_user.id
+            )
+            valid_ratings.append(new_rating)
+
+    response = {
+        "ratings": valid_ratings,
+        "errors": errors if errors else None
+    }
+    return response
+
+@router.post("/bulk/ids", response_model=List[schemas.CapabilityAssessmentId])
+def get_bulk_capability_assessment_ids(
+            request: schemas.CapabilityAssessmentBulkRequest,
+            db_session: Session = Depends(get_db)
+):
+    """
+    Retrieves capability assessment IDs for the given capability IDs and attribute IDs.
+
+    Args:
+        request: A request object containing capability IDs and attribute IDs.
+        db_session: The database session. Defaults to Depends(get_db).
+
+    Returns:
+        A list of capability assessment IDs.
+    """
+    try:
+        assessment_ids = crud.get_bulk_capability_assessments(
+            db_session=db_session,
+            capability_ids=request.capability_ids,
+            attribute_ids=request.attribute_ids
+        )
+
+        if not assessment_ids:
+            raise HTTPException(
+                status_code=404,
+                detail="No capability assessments found for the provided IDs"
+            )
+        logger.info("The assessment Ids ", assessment_ids)
+        return assessment_ids
+
+    except Exception as error:
+        logger.exception("Error retrieving capability assessment IDs: %s", error)
+        raise HTTPException(
+            status_code=500,
+            detail="An unexpected error occurred while retrieving capability assessment IDs"
+        )
+
+
 @router.post("/{capability_assessment_id}/", response_model=schemas.RatingRead)
 def upsert_capability_assessment_rating(
         capability_assessment_id: int,
@@ -288,7 +370,6 @@ def get_ratings_aggregate_for_capability_assessment(
             }
 
         numeric_ratings = [RATING_MAPPING.get(rating.rating, 0) for rating in ratings]
-        logger.info(f"Numeric ratings: {numeric_ratings}")
 
         if not numeric_ratings:
             logger.info("No numeric ratings to calculate average")
@@ -304,12 +385,89 @@ def get_ratings_aggregate_for_capability_assessment(
 
         return aggregated_rating
 
-    except ValueError as e:
-        logger.exception("Data validation error: %s", e)
+    except ValueError as error:
+        logger.exception("Data validation error: %s", error)
         raise HTTPException(status_code=400, detail="Data Validation Error")
-    
     except Exception as error:
         logger.exception(
             "Unexpected error retrieving aggregated ratings for capability assessment: %s", error
         )
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.post("/aggregates", response_model=List[Dict[str, Union[int, float, None]]])
+def get_bulk_ratings_aggregate(
+            capability_assessment_ids: List[int],
+            db_session: Session = Depends(get_db)
+):
+    """
+    Retrieves aggregated ratings for a list of capability assessments.
+
+    Args:
+        capability_assessment_ids: List of capability assessment IDs.
+        db_session: The database session.
+
+    Returns:
+        A list of dictionaries with the capability assessment ID and the average rating.
+    """
+    logger.info("Received capability_assessment_ids: %s", capability_assessment_ids)
+    try:
+        results = []
+        for capability_assessment_id in capability_assessment_ids:
+            ratings = rating_crud.get_ratings_for_capability_assessment(
+                db_session, capability_assessment_id
+            )
+            if not ratings:
+                results.append({
+                    "capability_assessment_id": capability_assessment_id,
+                    "average_rating": None
+                })
+                continue
+
+            numeric_ratings = [RATING_MAPPING.get(rating.rating, 0) for rating in ratings]
+            average_rating = mean(numeric_ratings) if numeric_ratings else None
+            results.append({
+                "capability_assessment_id": capability_assessment_id,
+                "average_rating": average_rating
+            })
+
+        return results
+
+    except Exception as error:
+        logger.exception("Error retrieving bulk ratings: %s", error)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+@router.post("/ratings/batch/", response_model=List[schemas.RatingRead])
+def get_ratings_for_capability_assessments_by_user(
+                user_id: int,
+                capability_assessment_ids: List[int],
+                db_session: Session = Depends(get_db)
+):
+    """
+    Retrieves all ratings associated for multiple capability assessments provided by a user.
+
+    Args:
+        user_id: The ID of the user.
+        capability_assessment_ids: List of capability assessment IDs.
+        db_session: The database session.
+
+    Returns:
+        A list of ratings associated with the user and capability assessments.
+    """
+    try:
+        user_ratings = rating_crud.get_ratings_for_user_and_capability_assessments(
+            db_session=db_session,
+            user_id=user_id,
+            capability_assessment_ids=capability_assessment_ids
+        )
+
+        logger.info("Retrieved ratings for user ID %s and capability assessments IDs %s",
+                    user_id, capability_assessment_ids)
+        logger.info("The ratings are %s \n", user_ratings)
+        return user_ratings or []
+
+    except Exception as error:
+        logger.exception(
+            "Error retrieving ratings for user and capability assessments: %s", error)
         raise HTTPException(status_code=500, detail="Internal Server Error")

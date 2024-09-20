@@ -71,6 +71,19 @@ export const fetchCapabilityAssessments = async (capabilities, attributes) => {
   }
 };
 
+export const fetchBulkCapabilityAssessmentIDs = async (capabilityIds, attributeIds) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/capability-assessments/bulk/ids`,
+      { capability_ids: capabilityIds, attribute_ids: attributeIds }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching capability assessment IDs:", error);
+    throw error;
+  }
+};
+
 export const fetchUserDetails = async (authToken) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/users/users/me/`, {
@@ -83,30 +96,31 @@ export const fetchUserDetails = async (authToken) => {
   }
 };
 
-export const fetchRatings = async (user, capabilityAssessments) => {
+
+export const fetchBulkRatings = async (user, capabilityAssessments) => {
   try {
+    const capabilityAssessmentIds = capabilityAssessments;
+
+    const response = await axios.post(`${API_BASE_URL}/capability-assessments/ratings/batch/`, capabilityAssessmentIds, {
+      params: {
+        user_id: user.id,
+      },
+    });
+
     const ratingsData = {};
-    for (const [key, assessment] of Object.entries(capabilityAssessments)) {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/capability-assessments/${assessment.id}/user/${user.id}/`
-        );
-        ratingsData[key] = response.data[0] || {};
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          ratingsData[key] = {};
-        } else {
-          console.error("Error fetching ratings:", error);
-          throw error;
-        }
-      }
-    }
+    response.data.forEach(rating => {
+      ratingsData[rating.capability_assessment_id] = rating;
+    });
+
     return ratingsData;
   } catch (error) {
     console.error("Error fetching ratings:", error);
     throw error;
   }
 };
+
+
+
 
 export const fetchRatingOptions = async () => {
   try {
@@ -118,29 +132,6 @@ export const fetchRatingOptions = async () => {
   }
 };
 
-// export const submitRatings = async (ratings, authToken) => {
-//   try {
-//     const responses = await Promise.all(
-//       ratings.map(rating =>
-//         axios.post(
-//           `${API_BASE_URL}/capability-assessments/${rating.capabilityAssessmentId}/`,
-//           {
-//             capability_assessment_id: rating.capabilityAssessmentId,
-//             rating: rating.rating,
-//             timestamp: new Date().toISOString(),
-//           },
-//           {
-//             headers: { Authorization: `Bearer ${authToken}` },
-//           }
-//         )
-//       )
-//     );
-//     return responses.map(response => response.data);
-//   } catch (error) {
-//     console.error('Error submitting ratings:', error);
-//     throw error;
-//   }
-// };
 
 export const submitRating = async (
   capabilityAssessmentId,
@@ -219,6 +210,65 @@ export const fetchAggregatedRatings = async (capabilityAssessmentId) => {
       `Error fetching aggregated rating for ${capabilityAssessmentId}:`,
       error
     );
+    throw error;
+  }
+};
+
+export const fetchBulkAggregatedRatings = async (capabilityAssessmentIds) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/capability-assessments/aggregates`,
+      capabilityAssessmentIds
+    );
+    console.log("Fetched bulk aggregated ratings:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching bulk aggregated ratings:", error);
+    throw error;
+  }
+};
+
+export const submitRatingsBatch = async (ratings, authToken) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/capability-assessments/batch/`,
+      { ratings },
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Batch ratings submitted successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error submitting batch ratings:", error);
+    throw error;
+  }
+};
+
+
+export const fetchCapabilityAssessment = async (capabilityAssessmentId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/capability-assessments/${capabilityAssessmentId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error(`Failed to fetch data, status code: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error fetching capability assessment:", error);
     throw error;
   }
 };

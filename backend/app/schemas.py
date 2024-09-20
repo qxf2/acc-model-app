@@ -4,7 +4,7 @@ This module contains the Pydantic models used to define the structure of the dat
 
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
-from typing import Optional
+from typing import Optional, List
 from enum import Enum
 from typing import Union
 
@@ -128,6 +128,20 @@ class CapabilityAssessmentRead(CapabilityAssessmentBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+class CapabilityAssessmentBulkRequest(BaseModel):
+    """
+    Model for Bulk CapabilityAssessments
+    """
+    capability_ids: List[int]
+    attribute_ids: List[int]
+
+class CapabilityAssessmentId(BaseModel):
+    """
+    Model for reading a CapabilityAssessment along with its capability and attribute ids
+    """
+    capability_assessment_id: int
+    capability_id: int
+    attribute_id: int
 
 class UserBase(BaseModel):
     username: str = Field(min_length=1, description="The name must have at least one character")
@@ -160,6 +174,9 @@ class RatingRead(RatingBase):
 class RatingUpdate(BaseModel):
     comments: Optional[str] = None
     timestamp: Optional[datetime] = None
+
+class BatchRatingRequest(BaseModel):
+    ratings: List[RatingCreate]
 
 class CommentBase(BaseModel):
     rating_id: int

@@ -292,6 +292,26 @@ def get_capability_assessment(
         return schemas.CapabilityAssessmentRead.model_validate(capability_assessment)
     return None
 
+def get_capability_assessments_by_ids(
+                db_session: Session, ids: List[int]
+    ) -> List[schemas.CapabilityAssessmentRead]:
+    """
+    Retrieves multiple capability assessments by their IDs.
+
+    Args:
+        db_session (Session): The database session to use for the retrieval.
+        ids (List[int]): List of IDs of the capability assessments to retrieve.
+
+    Returns:
+        List[schemas.CapabilityAssessmentRead]: List of retrieved capability assessments.
+    """
+    capability_assessments = (
+        db_session.query(models.CapabilityAssessment)
+        .filter(models.CapabilityAssessment.id.in_(ids))
+        .all()
+    )
+
+    return [schemas.CapabilityAssessmentRead.model_validate(ca) for ca in capability_assessments]
 
 def get_capability_assessment_by_capability_and_attribute(
                 db_session: Session, capability_id: int, attribute_id: int
@@ -321,6 +341,34 @@ def get_capability_assessment_by_capability_and_attribute(
         return schemas.CapabilityAssessmentRead.model_validate(capability_assessment)
     return None
 
+
+def get_bulk_capability_assessments(
+        db_session: Session, capability_ids: List[int], attribute_ids: List[int]
+    ) -> List[dict]:
+    """
+    Retrieves capability assessments for multiple capabilities and attributes.
+
+    Args:
+        db_session (Session): The database session to use for the query.
+        capability_ids (List[int]): List of capability IDs.
+        attribute_ids (List[int]): List of attribute IDs.
+
+    Returns:
+        List[schemas.CapabilityAssessmentRead]: List of capability assessments.
+    """
+    assessments = db_session.query(models.CapabilityAssessment).filter(
+        models.CapabilityAssessment.capability_id.in_(capability_ids),
+        models.CapabilityAssessment.attribute_id.in_(attribute_ids)
+    ).all()
+
+    return [
+        {
+            "capability_assessment_id": assessment.id,
+            "capability_id": assessment.capability_id,
+            "attribute_id": assessment.attribute_id,
+        }
+        for assessment in assessments
+    ]
 
 def get_rating_by_user_and_assessment(
                 db_session: Session, user_id: int, capability_assessment_id: int):

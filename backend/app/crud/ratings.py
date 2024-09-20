@@ -5,8 +5,8 @@ import logging
 from datetime import datetime
 from typing import List
 from sqlalchemy.orm import Session
-from app import schemas, models
 from fastapi import HTTPException
+from app import schemas, models
 
 logger = logging.getLogger(__name__)
 
@@ -137,10 +137,11 @@ def get_ratings_for_capability_assessment(
 
         if not ratings:
             return []
-        
+
         return [schemas.RatingRead.model_validate(rating) for rating in ratings]
     except Exception as error:
-        logger.exception("Error retreiving ratings for capability assessment ID %d: %s", capability_assessment_id, error)
+        logger.exception("Error retreiving ratings for capability assessment ID %d: %s",
+                         capability_assessment_id, error)
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 def get_ratings_for_user_and_capability(db_session: Session, user_id: int, capability_id: int):
@@ -204,6 +205,27 @@ def get_ratings_for_user_and_capability_assessment(
     )
 
     return user_ratings
+
+def get_ratings_for_user_and_capability_assessments(
+        db_session: Session,
+        user_id: int,
+        capability_assessment_ids: List[int]):
+    """
+    Retrieves all ratings for a specific user across multiple capability assessments.
+
+    Args:
+        db (Session): The database session.
+        user_id (int): The ID of the user.
+        capability_assessment_ids (List[int]): List of capability assessment IDs.
+
+    Returns:
+        List[Rating]: A list of ratings for the given user and capability assessments.
+    """
+    return db_session.query(models.Rating).filter(
+        models.Rating.user_id == user_id,
+        models.Rating.capability_assessment_id.in_(capability_assessment_ids)
+    ).all()
+
 
 def get_all_ratings_for_user(db_session: Session, user_id: int) -> List[models.Rating]:
     """

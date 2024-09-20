@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.fixed-column-capability {
+  font-size: 1.125rem;
+}
+
+.fixed-column {
+  font-size: 1rem;
+  font-weight: bold;
+  border: 1px solid #ddd;
+  color: #283593;
+  background-color: #f0f0f0;
+  min-width: 150px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
