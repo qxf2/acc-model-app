@@ -419,7 +419,8 @@ const Ratings = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+    <Container maxWidth="xl" 
+    style={{ marginTop: "2rem", paddingLeft: "1rem", paddingRight: "1rem"}}>
       <Typography
         variant="h4"
         component="h1"

@@ -193,8 +193,15 @@ const Dashboard = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="xl" 
+    style={{ marginTop: "2rem", paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
+    >
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        gutterBottom
+        sx={{ color: "primary.main" }}
+      >
         Capability Ratings Dashboard
       </Typography>
 
