@@ -35,6 +35,7 @@ import "./App.css";
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleAuthentication = async () => {
@@ -70,10 +71,15 @@ function App() {
       } else {
         setIsAuthenticated(false);
       }
+      setIsLoading(false);
     };
 
     handleAuthentication();
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
