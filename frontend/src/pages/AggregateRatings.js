@@ -20,8 +20,8 @@ import {
   fetchAttributes,
   fetchComponentsByAccModel,
   fetchCapabilitiesByComponent,
-  fetchCapabilityAssessments,
-  fetchAggregatedRatings,
+  fetchBulkAggregatedRatings,
+  fetchBulkCapabilityAssessmentIDs,
 } from "../services/ratingsService";
 
 const THRESHOLD_RATING_MAPPING = {
@@ -65,7 +65,7 @@ const Dashboard = () => {
   }
 
   function mapRatingToColor(ratingDescription) {
-    return RATING_COLOR_MAPPING[ratingDescription] || "#ffffff"; // Default to white if description is not found
+    return RATING_COLOR_MAPPING[ratingDescription] || "#ffffff";
   }
 
   useEffect(() => {
@@ -127,39 +127,61 @@ const Dashboard = () => {
   }, [components]);
 
   useEffect(() => {
-    const fetchCapabilityAssessmentsData = async () => {
-      try {
-        const assessments = await fetchCapabilityAssessments(
-          capabilities,
-          attributes
-        );
-        setCapabilityAssessments(assessments);
-        console.log("Fetched capability assessments:", assessments);
+    const fetchCapabilityAssessmentsAndRatings = async () => {
+      console.log(
+        "Trying to bulk fetch the capability assessments and ratings"
+      );
 
-        const aggregatedRatingsData = {};
-        for (const [key, assessment] of Object.entries(assessments)) {
-          try {
-            const { average_rating } = await fetchAggregatedRatings(
-              assessment.id
-            );
-            const description = getRatingDescription(average_rating);
-            aggregatedRatingsData[key] = description;
-          } catch (error) {
-            console.error(
-              `Error fetching aggregated ratings for ${key}:`,
-              error
-            );
-          }
+      if (capabilities.length > 0 && attributes.length > 0) {
+        try {
+          const capabilityIds = capabilities.flatMap((cap) =>
+            cap.capabilities.map((c) => c.id)
+          );
+          const attributeIds = attributes.map((attr) => attr.id);
+
+          console.log("Capability IDs:", capabilityIds);
+          console.log("Attribute IDs:", attributeIds);
+
+          const assessmentData = await fetchBulkCapabilityAssessmentIDs(
+            capabilityIds,
+            attributeIds
+          );
+
+          const assessmentMap = {};
+          const assessmentIds = [];
+
+          assessmentData.forEach((assessment) => {
+            const key = `${assessment.capability_id}-${assessment.attribute_id}`;
+            assessmentMap[key] = assessment.capability_assessment_id;
+            assessmentIds.push(assessment.capability_assessment_id);
+          });
+
+          setCapabilityAssessments(assessmentMap);
+          console.log("Capability Assessments Map:", assessmentMap);
+
+          const aggregatedRatings = await fetchBulkAggregatedRatings(
+            assessmentIds
+          );
+
+          const aggregatedRatingsMap = {};
+          aggregatedRatings.forEach((rating) => {
+            const description = getRatingDescription(rating.average_rating);
+            aggregatedRatingsMap[rating.capability_assessment_id] = description;
+          });
+
+          setAggregatedRatings(aggregatedRatingsMap);
+          console.log("Aggregated Ratings Map:", aggregatedRatingsMap);
+        } catch (error) {
+          console.error(
+            "Error fetching capability assessment data or ratings:",
+            error
+          );
         }
-        setAggregatedRatings(aggregatedRatingsData);
-        console.log("Aggregated ratings:", aggregatedRatingsData);
-      } catch (error) {
-        console.error("Error fetching capability assessments:", error);
       }
     };
 
     if (capabilities.length > 0 && attributes.length > 0) {
-      fetchCapabilityAssessmentsData();
+      fetchCapabilityAssessmentsAndRatings();
     }
   }, [capabilities, attributes]);
 
@@ -171,8 +193,15 @@ const Dashboard = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="xl" 
+    style={{ marginTop: "2rem", paddingLeft: "0.5rem", paddingRight: "0.5rem" }}
+    >
+      <Typography 
+        variant="h4" 
+        component="h1" 
+        gutterBottom
+        sx={{ color: "primary.main" }}
+      >
         Capability Ratings Dashboard
       </Typography>
 
@@ -205,15 +234,7 @@ const Dashboard = () => {
         <Table style={{ border: "1px solid #ddd" }}>
           <TableHead>
             <TableRow>
-              <TableCell
-                style={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                  border: "1px solid #ddd",
-                  color: "#283593",
-                  backgroundColor: "#f0f0f0",
-                }}
-              >
+              <TableCell className="fixed-column fixed-column-capability">
                 Capabilities/Attributes
               </TableCell>
               {attributes.map((attribute) => (
@@ -270,6 +291,7 @@ const Dashboard = () => {
                     </TableCell>
                   ))}
                 </TableRow>
+
                 {expandedComponents[component.id] &&
                   capabilities
                     .filter((cap) => cap.componentId === component.id)
@@ -285,10 +307,16 @@ const Dashboard = () => {
                         >
                           {capability.name}
                         </TableCell>
+
                         {attributes.map((attribute) => {
-                          const capabilityAssessmentId = `${capability.id}-${attribute.id}`;
+                          const key = `${capability.id}-${attribute.id}`;
+
+                          const capabilityAssessmentId =
+                            capabilityAssessments[key];
+
                           const ratingDescription =
                             aggregatedRatings[capabilityAssessmentId] || "N/A";
+
                           const ratingColor =
                             mapRatingToColor(ratingDescription);
 
