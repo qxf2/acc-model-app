@@ -25,18 +25,20 @@ import {
 } from "../services/ratingsService";
 
 const THRESHOLD_RATING_MAPPING = {
-  Stable: [3.5, 4],
-  Acceptable: [2.5, 3.49],
+  "Stable": [3.5, 4],
+  "Acceptable": [2.5, 3.49],
   "Low impact": [1.5, 2.49],
   "Critical Concern": [0, 1.49],
+  "Not Applicable": [0, 0],
 };
 
 const RATING_COLOR_MAPPING = {
-  Stable: "#a9d1a1",
-  Acceptable: "#f1e0a1",
+  "Stable": "#a9d1a1",
+  "Acceptable": "#f1e0a1",
   "Low impact": "#f5b877",
   "Critical Concern": "#e57373",
-  "No Rating": "#e0e0e0",
+  "Not Applicable": "#e0e0e0",
+  "No Rating": "#f5f5f5",
 };
 
 const Dashboard = () => {

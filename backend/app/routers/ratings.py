@@ -16,13 +16,16 @@ RATING_VALUES = [
     "Stable",
     "Acceptable",
     "Low impact",
-    "Critical Concern"]
+    "Critical Concern",
+    "Not Applicable"
+]
 
 RATING_MAPPING = {
     "Stable": 4,
     "Acceptable": 3,
     "Low impact": 2,
-    "Critical Concern": 1
+    "Critical Concern": 1,
+    "Not Applicable": 0
 }
 
 

@@ -369,7 +369,11 @@ def get_ratings_aggregate_for_capability_assessment(
                 "average_rating": None
             }
 
-        numeric_ratings = [RATING_MAPPING.get(rating.rating, 0) for rating in ratings]
+        numeric_ratings = [
+            RATING_MAPPING.get(rating.rating) 
+            for rating in ratings 
+            if RATING_MAPPING.get(rating.rating) is not None and RATING_MAPPING.get(rating.rating) > 0
+        ]
 
         if not numeric_ratings:
             logger.info("No numeric ratings to calculate average")
@@ -424,7 +428,12 @@ def get_bulk_ratings_aggregate(
                 })
                 continue
 
-            numeric_ratings = [RATING_MAPPING.get(rating.rating, 0) for rating in ratings]
+            numeric_ratings = [
+                RATING_MAPPING.get(rating.rating) 
+                for rating in ratings 
+                if RATING_MAPPING.get(rating.rating) is not None and RATING_MAPPING.get(rating.rating) > 0
+            ]
+
             average_rating = mean(numeric_ratings) if numeric_ratings else None
             results.append({
                 "capability_assessment_id": capability_assessment_id,
