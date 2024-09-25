@@ -19,6 +19,7 @@ const AccModels = () => {
     description: "",
   });
   const [modelToDelete, setModelToDelete] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getACCModels = async () => {
@@ -35,11 +36,13 @@ const AccModels = () => {
 
   const handleOpenModal = (model = { name: "", description: "" }) => {
     setCurrentModel(model);
+    setErrorMessage("");
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setCurrentModel({ name: "", description: "" });
+    setErrorMessage("");
     setIsModalOpen(false);
   };
 
@@ -68,10 +71,16 @@ const AccModels = () => {
       const data = await fetchACCModels();
       setModels(data);
       handleCloseModal();
+      setErrorMessage("");
     } catch (error) {
       console.error("Error saving ACC model:", error);
-    }
-  };
+      if (error.response && error.response.status === 400) {
+        setErrorMessage("ACC model with this name already exists.");
+      } else {
+        setErrorMessage("An error occurred while saving the model.");
+      }
+  }
+};
 
   const handleDelete = async () => {
     try {
@@ -109,6 +118,7 @@ const AccModels = () => {
         handleChange={handleChange}
         handleSave={handleSave}
         handleClose={handleCloseModal}
+        errorMessage={errorMessage}
       />
       <ConfirmDialog
         isOpen={isDialogOpen}

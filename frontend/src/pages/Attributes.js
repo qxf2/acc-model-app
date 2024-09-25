@@ -19,6 +19,7 @@ const Attributes = () => {
     description: "",
   });
   const [attributeToDelete, setAttributeToDelete] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getAttributes = async () => {
@@ -35,11 +36,13 @@ const Attributes = () => {
 
   const handleOpenModal = (attribute = { name: "", description: "" }) => {
     setCurrentAttribute(attribute);
+    setErrorMessage("");
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setCurrentAttribute({ name: "", description: "" });
+    setErrorMessage("");
     setIsModalOpen(false);
   };
 
@@ -68,8 +71,14 @@ const Attributes = () => {
       const data = await fetchAttributes();
       setAttributes(data);
       handleCloseModal();
+      setErrorMessage("");
     } catch (error) {
       console.error("Error saving attribute:", error);
+      if (error.response && error.response.status === 400) {
+        setErrorMessage("Attribute with this name already exists.");
+      } else {
+        setErrorMessage("An error occurred while saving the Attribute.");
+      }
     }
   };
 
@@ -120,6 +129,7 @@ const Attributes = () => {
         handleChange={handleChange}
         handleSave={handleSave}
         handleClose={handleCloseModal}
+        errorMessage={errorMessage}
       />
       <ConfirmDialog
         isOpen={isDialogOpen}

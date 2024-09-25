@@ -26,6 +26,7 @@ const Capabilities = () => {
     component_id: "",
   });
   const [capabilityToDelete, setCapabilityToDelete] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getACCModels = async () => {
@@ -67,11 +68,13 @@ const Capabilities = () => {
     capability = { name: "", description: "", component_id: componentId }
   ) => {
     setCurrentCapability(capability);
+    setErrorMessage("");
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setCurrentCapability({ name: "", description: "", component_id: "" });
+    setErrorMessage("");
     setIsModalOpen(false);
   };
 
@@ -109,11 +112,18 @@ const Capabilities = () => {
         ...prev,
         [currentCapability.component_id]: updatedCapabilities,
       }));
+      setErrorMessage("");
       handleCloseModal();
     } catch (error) {
       console.error("Error saving capability:", error);
+      if (error.response && error.response.status === 400) {
+        setErrorMessage("Capability with this name already exists.");
+      } else {
+        setErrorMessage("An error occurred while saving the capability.");
+      }
     }
   };
+    
 
   const handleDelete = async () => {
     try {
@@ -167,6 +177,7 @@ const Capabilities = () => {
         capability={currentCapability}
         onChange={handleChange}
         onSave={handleSave}
+        errorMessage={errorMessage}
       />
       <ConfirmDialog
         isOpen={isDialogOpen}

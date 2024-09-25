@@ -7,6 +7,7 @@ const AttributeForm = ({
   handleChange,
   handleSave,
   handleClose,
+  errorMessage,
 }) => {
   return (
     <Modal open={isOpen} onClose={handleClose}>
@@ -34,6 +35,12 @@ const AttributeForm = ({
           onChange={handleChange}
           margin="normal"
         />
+        {errorMessage && (
+          <Typography color="error" style={{ marginTop: '10px' }}>
+            {errorMessage}
+          </Typography>
+        )}
+
         <Box mt={2}>
           <Button
             variant="contained"

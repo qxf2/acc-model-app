@@ -20,6 +20,7 @@ const Users = () => {
     password: "",
   });
   const [userToDelete, setUserToDelete] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getUsers = async () => {
@@ -38,11 +39,13 @@ const Users = () => {
     user = { username: "", email: "", password: "" }
   ) => {
     setCurrentUser(user);
+    setErrorMessage("");
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setCurrentUser({ username: "", email: "", password: "" });
+    setErrorMessage("");
     setIsModalOpen(false);
   };
 
@@ -71,8 +74,14 @@ const Users = () => {
       const data = await fetchUsers();
       setUsers(data);
       handleCloseModal();
+      setErrorMessage("");
     } catch (error) {
-      console.error("Error saving user:", error);
+      console.error("Error saving User:", error);
+      if (error.response && error.response.status === 400) {
+        setErrorMessage("User with this name already exists.");
+      } else {
+        setErrorMessage("An error occurred while saving the User.");
+      }
     }
   };
 
@@ -112,6 +121,7 @@ const Users = () => {
         handleChange={handleChange}
         handleSave={handleSave}
         handleClose={handleCloseModal}
+        errorMessage={errorMessage}
       />
       <ConfirmDialog
         isOpen={isDialogOpen}
