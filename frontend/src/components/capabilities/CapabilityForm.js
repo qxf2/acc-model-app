@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
-const CapabilityForm = ({ isOpen, onClose, capability, onChange, onSave }) => {
+const CapabilityForm = ({ isOpen, onClose, capability, onChange, onSave, errorMessage }) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box
@@ -28,6 +28,11 @@ const CapabilityForm = ({ isOpen, onClose, capability, onChange, onSave }) => {
           onChange={onChange}
           margin="normal"
         />
+        {errorMessage && (
+          <Typography color="error" style={{ marginTop: '10px' }}>
+            {errorMessage}
+          </Typography>
+        )}
         <Box mt={2}>
           <Button
             variant="contained"

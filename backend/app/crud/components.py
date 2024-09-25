@@ -3,6 +3,7 @@ This module contains the CRUD (Create, Read, Update, Delete) operations related 
 """
 from typing import List
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from fastapi import HTTPException
 from app import schemas, models
 from app.crud import acc_models
@@ -126,10 +127,13 @@ def get_component_by_name_and_acc_model_id(db_session: Session, name: str, acc_m
         or None if no match is found.
     """
 
+    normalized_name = name.strip().lower()
+
     return (
         db_session.query(models.Component)
         .filter(
-            models.Component.name == name, models.Component.acc_model_id == acc_model_id
+            func.lower(models.Component.name) == normalized_name,
+            models.Component.acc_model_id == acc_model_id
         )
         .first()
     )
@@ -147,6 +151,8 @@ def create_component(db_session: Session, component: schemas.ComponentCreate):
         models.Component: The newly created component instance.
     """
 
+    normalized_name = component.name.strip()
+
     acc_model = acc_models.get_acc_model(db_session, component.acc_model_id)
     if acc_model is None:
         raise HTTPException(
@@ -154,7 +160,7 @@ def create_component(db_session: Session, component: schemas.ComponentCreate):
         )
 
     existing_component = get_component_by_name_and_acc_model_id(
-        db_session, name=component.name, acc_model_id=component.acc_model_id
+        db_session, name=normalized_name, acc_model_id=component.acc_model_id
     )
     if existing_component:
         raise HTTPException(
@@ -162,7 +168,11 @@ def create_component(db_session: Session, component: schemas.ComponentCreate):
             detail="Component with this name already exists in this ACC model",
         )
 
-    db_component = models.Component(**component.model_dump())
+    db_component = models.Component(
+        name=normalized_name,
+        description=component.description,
+        acc_model_id=component.acc_model_id,
+    )
     db_session.add(db_component)
     db_session.commit()
     db_session.refresh(db_component)

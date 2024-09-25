@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 
-const AccModelForm = ({ isOpen, model, handleChange, handleSave, handleClose }) => {
+const AccModelForm = ({ isOpen, model, handleChange, handleSave, handleClose, errorMessage }) => {
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box p={3} bgcolor="white" style={{ margin: 'auto', marginTop: '10%', maxWidth: '400px' }}>
@@ -24,6 +24,11 @@ const AccModelForm = ({ isOpen, model, handleChange, handleSave, handleClose }) 
           onChange={handleChange}
           margin="normal"
         />
+        {errorMessage && (
+          <Typography color="error" style={{ marginTop: '10px' }}>
+            {errorMessage}
+          </Typography>
+        )}
         <Box mt={2}>
           <Button
             variant="contained"

@@ -2,7 +2,9 @@
 This module defines the API endpoints related to users.
 """
 
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from passlib.context import CryptContext
 from app import models, schemas
 
@@ -58,8 +60,28 @@ def get_user_by_username(db_session: Session, username: str):
     Returns:
         User: The user corresponding to the provided username, or None if not found.
     """
-    user = db_session.query(models.User).filter(models.User.username == username).first()
+    normalized_username = username.lower().lower()
+    user = db_session.query(models.User).filter(
+        func.lower(models.User.username) == normalized_username
+    ).first()
     return user
+
+def get_user_by_email(db_session: Session, email: str):
+    """
+    Retrieves a user from the database based on the provided email, case-insensitively.
+
+    Args:
+        db (Session): The database session.
+        email (str): The email of the user to retrieve.
+
+    Returns:
+        User: The user corresponding to the provided email, or None if not found.
+    """
+    normalized_email = email.strip().lower()
+    return db_session.query(models.User).filter(
+        func.lower(models.User.email) == normalized_email
+    ).first()
+
 
 def get_users(db_session: Session, limit: int = 100):
     """
@@ -86,12 +108,31 @@ def create_user(db_session: Session, user: schemas.UserCreate):
     Returns:
         User: The newly created user in the database.
     """
+    normalized_username = user.username.strip().lower()
+    normalized_email = user.email.strip().lower()
+
+    existing_user_by_username = get_user_by_username(db_session, normalized_username)
+    if existing_user_by_username:
+        raise HTTPException(
+            status_code=400,
+            detail="User with this username already exists",
+        )
+
+    # Check if the email already exists
+    existing_user_by_email = get_user_by_email(db_session, normalized_email)
+    if existing_user_by_email:
+        raise HTTPException(
+            status_code=400,
+            detail="User with this email already exists",
+        )
+
     hashed_password = get_password_hash(user.password)
     db_user = models.User(
-        username=user.username,
+        username=normalized_username,
         hashed_password=hashed_password,
-        email=user.email,
-        designation=user.designation)
+        email=normalized_email,
+        designation=user.designation
+    )
     db_session.add(db_user)
     db_session.commit()
     db_session.refresh(db_user)
@@ -111,7 +152,9 @@ def delete_user(db_session: Session, user_id: int):
     """
     db_user = get_user(db_session, user_id=user_id)
     if db_user:
-        db_session.query(models.Rating).filter(models.Rating.user_id == user_id).update({"user_id": None})
+        db_session.query(models.Rating).filter(
+            models.Rating.user_id == user_id
+        ).update({"user_id": None})
         db_session.commit()
         db_session.delete(db_user)
         db_session.commit()

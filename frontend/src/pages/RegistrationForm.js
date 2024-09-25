@@ -62,6 +62,7 @@ const RegistrationForm = () => {
             margin="normal"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username should be min 3 characters"
             required
           />
           <TextField
@@ -71,6 +72,7 @@ const RegistrationForm = () => {
             margin="normal"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email should be min 3 characters"
             required
           />
           <TextField
@@ -88,6 +90,7 @@ const RegistrationForm = () => {
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password must be atleast 6 characters long"
             required
           />
           <TextField

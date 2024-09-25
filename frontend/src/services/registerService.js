@@ -16,9 +16,15 @@ export const registerUser = async (userData) => {
       if (status === 400) {
         const errorMessage = data.detail || "A registration error occurred.";
 
-        if (errorMessage.includes("already exists")) {
+        if (errorMessage.includes("User with this username already exists")) {
           throw new Error(
             "User with this username already exists. Please try a different username."
+          );
+        }
+
+        if (errorMessage.includes("User with this email already exists")) {
+          throw new Error(
+            "User with this email already exists. Please try a different email."
           );
         }
 

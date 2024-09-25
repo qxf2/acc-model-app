@@ -6,9 +6,9 @@ operations related to capabilities table.
 from typing import List
 from typing import Optional
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from fastapi import HTTPException
 from app import models, schemas
-
 
 def get_capability(db_session: Session, capability_id: int):
     """
@@ -59,10 +59,12 @@ def get_capability_by_name_and_component_id(
         and component ID, or None if no match is found.
     """
 
+    normalized_name = name.strip().lower()
+
     return (
         db_session.query(models.Capability)
         .filter(
-            models.Capability.name == name,
+            func.lower(models.Capability.name) == normalized_name,
             models.Capability.component_id == component_id,
         )
         .first()
@@ -121,6 +123,8 @@ def create_capability(db_session: Session, capability: schemas.CapabilityCreate)
         models.Capability: The newly created Capability.
     """
 
+    normalized_name = capability.name.strip()
+
     component = (
         db_session.query(models.Component)
         .filter(models.Component.id == capability.component_id)
@@ -132,14 +136,18 @@ def create_capability(db_session: Session, capability: schemas.CapabilityCreate)
         )
 
     existing_capability = get_capability_by_name_and_component_id(
-        db_session, name=capability.name, component_id=capability.component_id
+        db_session, name=normalized_name, component_id=capability.component_id
     )
     if existing_capability:
         raise HTTPException(
             status_code=400, detail="Capability name already in use in this component"
         )
 
-    db_capability = models.Capability(**capability.model_dump())
+    db_capability = models.Capability(
+        name=normalized_name,
+        description=capability.description,
+        component_id=capability.component_id,
+    )
     db_session.add(db_capability)
     db_session.commit()
     db_session.refresh(db_capability)

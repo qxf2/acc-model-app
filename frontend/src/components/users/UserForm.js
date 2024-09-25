@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
-const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose }) => {
+const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose, errorMessage }) => {
+
   return (
     <Modal open={isOpen} onClose={handleClose}>
       <Box
@@ -19,6 +20,7 @@ const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose }) => {
           value={user.username}
           onChange={handleChange}
           margin="normal"
+          placeholder="Username should be min 3 characters"
         />
         <TextField
           fullWidth
@@ -27,6 +29,7 @@ const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose }) => {
           value={user.email}
           onChange={handleChange}
           margin="normal"
+          placeholder="Email should be min 3 characters"
         />
         <TextField
           fullWidth
@@ -36,7 +39,13 @@ const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose }) => {
           value={user.password}
           onChange={handleChange}
           margin="normal"
+          placeholder="Password must be atleast 6 characters long"
         />
+        {errorMessage && (
+          <Typography color="error" style={{ marginTop: '10px' }}>
+            {errorMessage}
+          </Typography>
+        )}
         <Box mt={2}>
           <Button
             variant="contained"

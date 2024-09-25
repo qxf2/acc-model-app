@@ -3,6 +3,7 @@ This module contains the CRUD (Create, Read, Update, Delete) operations related 
 """
 
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app import schemas, models
 
 
@@ -52,9 +53,12 @@ def get_attribute_by_name(db_session: Session, name: str):
         models.Attribute: The attribute with the specified name,
         or None if no such attribute exists.
     """
+    normalized_name = name.strip().lower()
 
     return (
-        db_session.query(models.Attribute).filter(models.Attribute.name == name).first()
+        db_session.query(models.Attribute).
+        filter(func.lower(models.Attribute.name) == normalized_name)
+        .first()
     )
 
 
@@ -69,8 +73,12 @@ def create_attribute(db_session: Session, attribute: schemas.AttributeCreate):
     Returns:
         models.Attribute: The newly created Attribute instance.
     """
+    existing_attribute = get_attribute_by_name(db_session, name=attribute.name)
 
-    db_attribute = models.Attribute(**attribute.model_dump())
+    if existing_attribute:
+        raise ValueError(f"An Attribute with the name '{attribute.name}' already exists.")
+
+    db_attribute = models.Attribute(name=attribute.name.strip(), description=attribute.description)
     db_session.add(db_attribute)
     db_session.commit()
     db_session.refresh(db_attribute)

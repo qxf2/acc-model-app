@@ -23,6 +23,7 @@ const Components = () => {
     description: "",
   });
   const [componentToDelete, setComponentToDelete] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const getACCModels = async () => {
@@ -56,6 +57,7 @@ const Components = () => {
     component = { name: "", description: "", acc_model_id: selectedAccModel }
   ) => {
     setCurrentComponent(component);
+    setErrorMessage("");
     setIsModalOpen(true);
   };
 
@@ -65,6 +67,7 @@ const Components = () => {
       description: "",
       acc_model_id: selectedAccModel,
     });
+    setErrorMessage("");
     setIsModalOpen(false);
   };
 
@@ -95,6 +98,11 @@ const Components = () => {
       handleCloseModal();
     } catch (error) {
       console.error("Error saving component:", error);
+      if (error.response && error.response.status === 400) {
+        setErrorMessage("Component with this name already exists.");
+      } else {
+        setErrorMessage("An error occurred while saving the component.");
+      }
     }
   };
 
@@ -156,6 +164,7 @@ const Components = () => {
         handleChange={handleChange}
         handleSave={handleSave}
         handleClose={handleCloseModal}
+        errorMessage={errorMessage}
       />
       <ConfirmDialog
         isOpen={isDialogOpen}

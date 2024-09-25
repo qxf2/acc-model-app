@@ -12,7 +12,11 @@ class ACCModelBase(BaseModel):
     """
     Base model for ACCModel with common properties
     """
-    name: str = Field(min_length=1, description="The name must have atleast one character")
+    name: str = Field(
+        min_length=3,
+        max_length=100,
+        description="The name must have atleast three characters and upto 100 characters"
+    )
     description: Optional[str] = None
 
 class ACCModelCreate(ACCModelBase):
@@ -35,7 +39,11 @@ class ComponentBase(BaseModel):
     """
     Base model for Component with common properties
     """
-    name: str = Field(min_length=1, description="The name must have atleast one character")
+    name: str = Field(
+        min_length=1,
+        max_length=100,
+        description="The name must have atleast three characters and upto 100 characters"
+    )
     description: Optional[str] = None
     acc_model_id: int
 
@@ -57,7 +65,11 @@ class AttributeBase(BaseModel):
     """
     Base model for Attribute with common properties
     """
-    name: str = Field(min_length=1, description="The name must have atleast one character")
+    name: str = Field(
+        min_length=3,
+        max_length=100,
+        description="The name must have atleast three characters and upto 100 characters"
+    )
     description: Optional[str] = None
 
 class AttributeCreate(AttributeBase):
@@ -78,7 +90,11 @@ class CapabilityBase(BaseModel):
     """
     Base model for Capability with common properties
     """
-    name: str = Field(min_length=1, description="The name must have atleast one character")
+    name: str = Field(
+        min_length=1,
+        max_length=100,
+        description="The name must have atleast three characters and upto 100 characters"
+    )
     description: Optional[str] = None
     component_id: int
 
@@ -144,12 +160,23 @@ class CapabilityAssessmentId(BaseModel):
     attribute_id: int
 
 class UserBase(BaseModel):
-    username: str = Field(min_length=1, description="The name must have at least one character")
-    email: str = Field(min_length=1, description="The email must have at least one character")
+    username: str = Field(
+        min_length=3,
+        max_length=100,
+        description="The name must have atleast three characters and upto 100 characters"
+    )
+    email: str = Field(
+        min_length=3,
+        max_length=100,
+        description="The email must have at least one character"
+    )
     designation: Optional[str] = None
 
 class UserCreate(UserBase):
-    password: str = Field(min_length=6, description="The password must have at least 6 characters")
+    password: str = Field(
+        min_length=6,
+        description="The password must have at least 6 characters"
+    )
 
 class UserRead(UserBase):
     id: int
