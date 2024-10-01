@@ -9,7 +9,7 @@ const theme = createTheme({
       main: '#ff7043',  // Coral
     },
     background: {
-      default: '#fafafa',  // Very light gray
+      default: '#f5f5f5',  // Very light gray
       paper: '#ffffff',  // White for paper elements
     },
     text: {
