@@ -10,6 +10,27 @@ import {
 } from "@mui/material";
 import { ExpandMore, ExpandLess, Edit } from "@mui/icons-material";
 
+/**
+ * A table for displaying and editing capability ratings.
+ *
+ * @param {object} components A list of component objects with their IDs and names.
+ * @param {object} attributes A list of attribute objects with their IDs and names.
+ * @param {object} expandedComponents A dictionary mapping component IDs to booleans
+ *   of whether the component is currently expanded.
+ * @param {function} handleToggleExpand A function to call when a component row is
+ *   clicked. It takes the ID of the component row.
+ * @param {object} capabilities A list of capability objects with their IDs, names,
+ *   and component IDs.
+ * @param {object} ratings A dictionary mapping capability IDs and attribute IDs to
+ *   rating values.
+ * @param {function} handleRatingChange A function to call when a rating value is
+ *   changed. It takes the capability ID, attribute ID, and new rating value.
+ * @param {function} handleOpenModal A function to call when the edit icon is
+ *   clicked. It takes the capability ID and attribute ID.
+ * @param {array} ratingOptions A list of rating options.
+ *
+ * @returns {ReactElement} A table element.
+ */
 const RatingsTable = ({
   components,
   attributes,

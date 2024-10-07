@@ -8,6 +8,14 @@ import {
   Button,
 } from "@mui/material";
 
+/**
+ * A dialog that asks the user to confirm that they want to delete an ACC model.
+ *
+ * @param {boolean} isOpen - Whether the dialog is open or not.
+ * @param {function} handleClose - Called when the user clicks the cancel button.
+ * @param {function} handleConfirm - Called when the user clicks the confirm button.
+ * @returns {React.ReactElement} The ConfirmDialog component.
+ */
 const ConfirmDialog = ({ isOpen, handleClose, handleConfirm }) => {
   return (
     <Dialog open={isOpen} onClose={handleClose}>

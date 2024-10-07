@@ -8,6 +8,17 @@ import {
   Box,
 } from "@mui/material";
 
+/**
+ * A React component for displaying a list of attributes.
+ *
+ * @param {Object[]} attributes - An array of attribute objects to display.
+ * @param {Function} handleOpenModal - A function to be called when the user
+ *   clicks the "Edit" button on an attribute. It should take the attribute
+ *   being edited as an argument.
+ * @param {Function} handleOpenDialog - A function to be called when the user
+ *   clicks the "Delete" button on an attribute. It should take the id of the
+ *   attribute being deleted as an argument.
+ */
 const AttributeList = ({ attributes, handleOpenModal, handleOpenDialog }) => {
   return (
     <Grid container spacing={2}>
