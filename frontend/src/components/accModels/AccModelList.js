@@ -8,6 +8,17 @@ import {
   Button,
 } from "@mui/material";
 
+/**
+ * A React component for displaying a list of ACC models.
+ *
+ * @param {Object[]} models - An array of ACC model objects to display.
+ * @param {Function} handleOpenModal - A function to be called when the user
+ *   clicks the "Edit" button on an ACC model. It should take the ACC model
+ *   being edited as an argument.
+ * @param {Function} handleOpenDialog - A function to be called when the user
+ *   clicks the "Delete" button on an ACC model. It should take the id of the
+ *   ACC model being deleted as an argument.
+ */
 const AccModelList = ({ models, handleOpenModal, handleOpenDialog }) => {
   return (
     <Grid container spacing={2}>

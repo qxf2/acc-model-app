@@ -1,6 +1,21 @@
 import React from "react";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
+/**
+ * A React component for creating or editing a capability through a form.
+ *
+ * @param {bool} isOpen - Whether the form should be shown or not.
+ * @param {function} onClose - A function to be called when the user clicks
+ *   the "Cancel" button.
+ * @param {Object} capability - The capability to be edited, or an empty object
+ *   if a new capability is being created.
+ * @param {function} onChange - A function to be called when the user changes
+ *   the value of one of the form fields.
+ * @param {function} onSave - A function to be called when the user clicks
+ *   the "Save" button.
+ * @param {string} errorMessage - An error message to be shown to the user,
+ *   or an empty string if no error message should be shown.
+ */
 const CapabilityForm = ({ isOpen, onClose, capability, onChange, onSave, errorMessage }) => {
   return (
     <Modal open={isOpen} onClose={onClose}>

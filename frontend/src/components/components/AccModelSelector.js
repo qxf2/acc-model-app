@@ -1,6 +1,14 @@
 import React from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
+/**
+ * A React component for selecting an ACC model from a list.
+ *
+ * @param {Object[]} accModels - An array of ACC model objects to display.
+ * @param {string} selectedAccModel - The id of the currently selected ACC model.
+ * @param {function} handleSelect - A function to be called when the user selects an ACC model.
+ *   It should take the id of the selected ACC model as an argument.
+ */
 const AccModelSelector = ({ accModels, selectedAccModel, handleSelect }) => {
   return (
     <FormControl fullWidth margin="normal" variant="outlined">

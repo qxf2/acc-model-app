@@ -21,11 +21,7 @@ import {
   Snackbar,
   Tooltip,
 } from "@mui/material";
-import {
-  ExpandMore,
-  ExpandLess,
-  Edit,
-} from "@mui/icons-material";
+import { ExpandMore, ExpandLess, Edit } from "@mui/icons-material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -44,6 +40,14 @@ import {
   fetchCapabilityAssessment,
 } from "../services/ratingsService";
 
+/**
+ * The Ratings component renders a page for users to rate the effectiveness of
+ * each capability in an ACC model. The page displays a table with the
+ * capabilities and attributes as columns, and the user can select a rating from
+ * a dropdown menu. The user can also add comments to a submission by clicking
+ * on the edit icon next to the rating dropdown. The user can submit all their
+ * ratings at once by clicking the "Submit All Ratings" button.
+ */
 const Ratings = () => {
   const [accModels, setAccModels] = useState([]);
   const [selectedAccModel, setSelectedAccModel] = useState("");
@@ -66,6 +70,7 @@ const Ratings = () => {
   const [failureDetails, setFailureDetails] = useState([]);
   const [openFailureDialog, setOpenFailureDialog] = useState(false);
 
+  /* Fetches the ACC models and attributes when the component mounts. */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -79,11 +84,17 @@ const Ratings = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    fetchData(); // Initial data fetching is triggered
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
+
+  /*
+   * Fetches the components associated with the selected ACC model and stores
+   * them in the components state variable.
+   */
   useEffect(() => {
     if (selectedAccModel) {
+
       const fetchComponentsData = async () => {
         try {
           const componentsData = await fetchComponentsByAccModel(
@@ -95,10 +106,16 @@ const Ratings = () => {
         }
       };
 
-      fetchComponentsData();
+      fetchComponentsData(); // Runs whenever `selectedAccModel` changes
     }
   }, [selectedAccModel]);
 
+
+  /**
+   * Fetches the capabilities for all components in the components state
+   * variable, mapping each capability to its associated component ID.
+   * Stores the capabilities in the capabilities state variable.
+   */
   useEffect(() => {
     if (components.length > 0) {
       const fetchCapabilitiesData = async () => {
@@ -122,11 +139,19 @@ const Ratings = () => {
 
       fetchCapabilitiesData();
     }
-  }, [components]);
+  }, [components]); // Runs whenever `components` changes
 
+
+  /**
+   * Fetches the user details for the currently authenticated user,
+   * and stores the result in the `user` state variable.
+   * If there is no authenticated user, or error fetching the user details, 
+   * logs a console error.
+   */
   useEffect(() => {
     const fetchUserDetailsData = async () => {
       try {
+        // Retrieves auth token from local storage to authenticate the user
         const authToken = localStorage.getItem("authToken");
         if (!authToken) {
           console.error("User is not authenticated");
@@ -142,8 +167,16 @@ const Ratings = () => {
     if (!user) {
       fetchUserDetailsData();
     }
-  }, [user]);
+  }, [user]); // Runs when the `user` state changes
 
+  /**
+   * Fetches the capability assessments for the current user, given the capabilities
+   * and attributes that have been loaded. If either of these are empty, this
+   * function simply logs a message and does nothing.
+   *
+   * The function fetches the capability assessment IDs for the given capability and
+   * attribute IDs and then maps the assessment data.
+   */
   useEffect(() => {
     const fetchCapabilityAssessmentsData = async () => {
       console.log("Trying to bulk fetch the capability assessments");
@@ -178,12 +211,24 @@ const Ratings = () => {
         console.log("Waiting for capabilities and attributes to be loaded...");
       }
     };
-
+    // Only fetch capability assessments when both capabilities and attributes are loaded
     if (capabilities.length > 0 && attributes.length > 0) {
       fetchCapabilityAssessmentsData();
     }
-  }, [capabilities, attributes]);
+  }, [capabilities, attributes]); // Runs when `capabilities` or `attributes` state changes
 
+  /**
+   * Fetches the ratings data for the current user and capability assessments.
+   *
+   * The function checks if the user and capability assessments are loaded. If
+   * both are loaded, it fetches the ratings data in bulk and populates the
+   * `ratings` state with the ratings data. It also populates the
+   * `submittedRatings` and `additionalRatingData` states by mapping the ratings
+   * data to the capability assessment IDs.
+   *
+   * If there is an error while fetching the ratings data, the error is logged to
+   * the console.
+   */
   useEffect(() => {
     const fetchRatingsData = async () => {
       try {
@@ -223,11 +268,15 @@ const Ratings = () => {
       }
     };
 
+    // Fetch ratings only when the user is set and capability assessments are available
     if (user && Object.keys(capabilityAssessments).length > 0) {
       fetchRatingsData();
     }
-  }, [user, capabilityAssessments]);
+  }, [user, capabilityAssessments]); // Runs when `user` or `capabilityAssessments` state changes
 
+  /**
+   * Fetches the rating options from the API and sets the fetched options into state
+   */
   useEffect(() => {
     const fetchRatingOptionsData = async () => {
       try {
@@ -237,12 +286,19 @@ const Ratings = () => {
         console.error("Error fetching rating options:", error);
       }
     };
-
+     // Only fetch rating options if they have not been loaded yet
     if (!ratingOptions || ratingOptions.length === 0) {
-      fetchRatingOptionsData();
+      fetchRatingOptionsData(); // Only runs when `ratingOptions` state changes
     }
   });
 
+  /**
+   * Updates the selected ratings in the state with the newly selected value.
+   *
+   * @param {string} capabilityId The ID of the capability
+   * @param {string} attributeId The ID of the attribute
+   * @param {string} value The newly selected rating value
+   */
   const handleRatingChange = (capabilityId, attributeId, value) => {
     setSelectedRatings((prev) => ({
       ...prev,
@@ -250,6 +306,10 @@ const Ratings = () => {
     }));
   };
 
+  /**
+   * Handles expanding or collapsing a component's capability list
+   * @param {number} componentId - ID of the component to expand or collapse
+   */
   const handleToggleExpand = (componentId) => {
     setExpandedComponents((prevState) => ({
       ...prevState,
@@ -257,6 +317,13 @@ const Ratings = () => {
     }));
   };
 
+  /**
+   * Handles the edit button click by fetching the latest capability assessment
+   * data for the given capability and attribute, and then opens the modal dialog
+   * with the existing rating and comments pre-populated.
+   * @param {string} capabilityId The ID of the capability
+   * @param {string} attributeId The ID of the attribute
+   */
   const handleEditClick = async (capabilityId, attributeId) => {
     console.log(
       `Edit clicked for Capability ID: ${capabilityId}, Attribute ID: ${attributeId}`
@@ -303,7 +370,14 @@ const Ratings = () => {
       console.error("Error fetching capability assessment data:", error);
     }
   };
-
+  /**
+   * Handles the submission of the ratings in a batch.
+   *
+   * Filters the currently selected ratings to only include the ones that have
+   * not been previously submitted. Submits each rating in parallel, and shows a
+   * snackbar with the results. If there are any failures, opens an error dialog
+   * with the details of the failed submissions.
+   */
   const handleBatchSubmit = async () => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -312,6 +386,7 @@ const Ratings = () => {
         return;
       }
 
+      // Filter the selected ratings to only include the ones that have not been previously submitted
       const ratingsToSubmit = Object.entries(selectedRatings)
         .filter(([key, value]) => value !== submittedRatings[key])
         .map(([key, value]) => {
@@ -333,6 +408,7 @@ const Ratings = () => {
         return;
       }
 
+      // Submit the ratings in parallel
       const results = await Promise.allSettled(
         ratingsToSubmit.map(async ({ capabilityAssessmentId, rating, key }) => {
           const ratingId = await submitRating(
@@ -341,6 +417,7 @@ const Ratings = () => {
             authToken
           );
 
+          // Save the rating ID to the additional rating data
           setAdditionalRatingData((prev) => ({
             ...prev,
             [key]: {
@@ -349,10 +426,12 @@ const Ratings = () => {
             },
           }));
 
+          // Return the result with the key and rating ID
           return { key, ratingId };
         })
       );
 
+      // Split the results into successful and failed submissions
       const successfulSubmissions = results.filter(
         (result) => result.status === "fulfilled"
       );
@@ -360,6 +439,7 @@ const Ratings = () => {
         (result) => result.status === "rejected"
       );
 
+      // If there are any failed submissions, open an error dialog with the details
       if (failedSubmissions.length > 0) {
         console.error("Some ratings failed to submit:", failedSubmissions);
         const failureDetails = failedSubmissions.map((failure) => ({
@@ -370,6 +450,7 @@ const Ratings = () => {
         setOpenFailureDialog(true);
       }
 
+      // If there are any successful submissions, show a success snackbar
       if (successfulSubmissions.length > 0) {
         console.log(
           "Ratings submitted successfully:",
@@ -391,6 +472,12 @@ const Ratings = () => {
     }
   };
 
+  /**
+   * Saves the comments for a given rating ID.
+   * @param {string} ratingId - The ID of the rating to save comments for.
+   * @param {string} comments - The comments to save for the given rating ID.
+   * @return {Promise} A promise that resolves when the comments have been saved.
+   */
   const handleSaveComments = async () => {
     try {
       const authToken = localStorage.getItem("authToken");
@@ -419,22 +506,38 @@ const Ratings = () => {
   };
 
   return (
-    <Container maxWidth="xl" 
-    style={{ marginTop: "2rem", paddingLeft: "1rem", paddingRight: "1rem"}}>
+    // The main container for the page.
+    <Container
+      maxWidth="xl"
+      className="custom-container"
+    >
+      {/* The title of the page */}
       <Typography
         variant="h4"
         component="h1"
         gutterBottom
         sx={{ color: "primary.main" }}
       >
-        Assess Software Capabilities
+        Assess Software Capabilities      
       </Typography>
-      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+
+      {/* The description for the page. */}
+      <Typography 
+        variant="body1"
+        style={{ marginBottom: "1.5rem", color: "#7f8c8d" }}
+      >
         Rate the effectiveness of each Capability based on its performance. Your
         ratings help assess how well each feature meets the intended quality
         standards.
+
+        <br />
+        <br />
+        Select an ACC Model first. Then, expand components to reveal their capabilities. 
+        You can select multiple ratings and click the 'Submit All Ratings' button at the 
+        bottom of the page to save your ratings
       </Typography>
 
+      {/* Dropdown to select an ACC model. */}
       <TextField
         select
         label="Select ACC Model"
@@ -443,29 +546,51 @@ const Ratings = () => {
         fullWidth
         margin="normal"
       >
+        {/* Generate options for each ACC model. */}
         {accModels.map((model) => (
           <MenuItem key={model.id} value={model.id}>
             {model.name}
           </MenuItem>
         ))}
       </TextField>
-
-      <TableContainer component={Paper} style={{ marginTop: "2rem" }}>
-        <Table style={{ tableLayout: "fixed", width: "100%" }}>
+        
+      {/* Container for the table that displays the ratings */}
+      <TableContainer 
+        component={Paper} 
+        style={{ marginTop: "2rem", width: "100%", overflow: "auto" }}>
+        {/* The table that displays the ratings */}
+        <Table 
+          style={{ border: "1px solid #ddd", tableLayout: "fixed" }}
+        >
           <TableHead>
-            <TableRow style={{ backgroundColor: "#f0f0f0" }}>
-              <TableCell className="fixed-column fixed-column-capability">
-                Capabilities/Attributes
+            <TableRow>
+              {/* The first column which shows the component name */}
+              <TableCell
+                style={{
+                  width: "200px", // Fixed width for the first column
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  border: "1px solid #ddd",
+                  color: "#283593",
+                  backgroundColor: "#d0d0d0",
+                }}
+              >
               </TableCell>
+
+              {/* Generate table header cells (attribute's name.) */}
               {attributes.map((attribute) => (
                 <TableCell
                   key={attribute.id}
                   style={{
+                    width: "180px", // Fixed width for each attribute column
                     fontSize: "1rem",
                     fontWeight: "bold",
                     border: "1px solid #ddd",
                     color: "#283593",
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "#d0d0d0",
+                    minWidth: "150px", // Ensures each column has a minimum width
+                    overflowWrap: "break-word", // Allow long text to wrap
+                    whiteSpace: "normal", // Prevents long words from overflowing
                   }}
                 >
                   {attribute.name}
@@ -474,13 +599,19 @@ const Ratings = () => {
             </TableRow>
           </TableHead>
           <TableBody>
+            {/* Generate rows for each component */}
             {components.map((component) => (
               <React.Fragment key={component.id}>
+                {/* The first row for the component (with the component name) */}
                 <TableRow>
                   <TableCell
-                    style={{ fontSize: "1.125rem", border: "1px solid #ddd" }}
+                    style={{ 
+                      fontSize: "1.125rem",
+                      border: "1px solid #ddd",
+                    }}
                   >
                     <Box display="flex" alignItems="center">
+                      {/* Expand/collapse the component's rows */}
                       <IconButton
                         onClick={() => handleToggleExpand(component.id)}
                       >
@@ -490,6 +621,7 @@ const Ratings = () => {
                           <ExpandMore />
                         )}
                       </IconButton>
+                      {/* The component name */}
                       <Typography
                         variant="h6"
                         component="h2"
@@ -499,6 +631,7 @@ const Ratings = () => {
                       </Typography>
                     </Box>
                   </TableCell>
+                  {/* Empty cells for the component's row */}
                   {attributes.map((attribute) => (
                     <TableCell
                       key={`${component.id}-${attribute.id}`}
@@ -506,12 +639,15 @@ const Ratings = () => {
                     ></TableCell>
                   ))}
                 </TableRow>
+
+                {/* Generate rows for each capability of the component */}
                 {expandedComponents[component.id] &&
                   capabilities
                     .filter((cap) => cap.componentId === component.id)
                     .flatMap((cap) => cap.capabilities)
                     .map((capability) => (
                       <TableRow key={capability.id}>
+                        {/* The first column with the capability name */}
                         <TableCell
                           style={{
                             paddingLeft: "2rem",
@@ -521,12 +657,15 @@ const Ratings = () => {
                         >
                           {capability.name}
                         </TableCell>
+                        {/* Generate cells for each attribute of the capability */}
                         {attributes.map((attribute) => (
                           <TableCell
                             key={`${capability.id}-${attribute.id}`}
                             style={{ border: "1px solid #ddd" }}
                           >
+                            {/* Container for the rating and edit buttons */}
                             <Box display="flex" alignItems="center">
+                              {/* Rating dropdown */}
                               <TextField
                                 select
                                 label="Rate"
@@ -535,7 +674,7 @@ const Ratings = () => {
                                   const capabilityAssessmentId =
                                     capabilityAssessments[key];
 
-                                  const selected = selectedRatings[key]; 
+                                  const selected = selectedRatings[key];
                                   const submitted =
                                     submittedRatings[capabilityAssessmentId];
 
@@ -551,12 +690,14 @@ const Ratings = () => {
                                 fullWidth
                                 style={{ fontSize: "0.875rem" }}
                               >
+                                {/* Generate options for the rating dropdown */}
                                 {ratingOptions.map((option) => (
                                   <MenuItem key={option} value={option}>
                                     {option}
                                   </MenuItem>
                                 ))}
                               </TextField>
+                              {/* Edit button */}
                               <IconButton
                                 aria-label="edit"
                                 size="small"
@@ -587,6 +728,7 @@ const Ratings = () => {
         </Table>
       </TableContainer>
 
+      {/* Button to submit all the ratings at once */}
       <Button
         variant="contained"
         color="primary"
@@ -596,6 +738,7 @@ const Ratings = () => {
         Submit All Ratings
       </Button>
 
+      {/* Notification for the user when the ratings are successfully submitted */}
       <Snackbar
         open={showSnackbar}
         autoHideDuration={3000}
@@ -603,6 +746,7 @@ const Ratings = () => {
         message={snackbarMessage}
       />
 
+      {/* Dialog for the user to add comments for a rating */}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -611,6 +755,7 @@ const Ratings = () => {
       >
         <DialogTitle>Add Comments</DialogTitle>
         <DialogContent>
+          {/* Text field for the comments */}
           <TextField
             label="Comments"
             value={comments}
@@ -621,14 +766,18 @@ const Ratings = () => {
           />
         </DialogContent>
         <DialogActions>
+          {/* Cancel button */}
           <Button onClick={() => setOpenDialog(false)} color="secondary">
             Cancel
           </Button>
+          {/* Save button */}
           <Button onClick={handleSaveComments} color="primary">
             Save
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Dialog to show the user which ratings failed to submit */}
       <Dialog
         open={openFailureDialog}
         onClose={() => setOpenFailureDialog(false)}
@@ -637,6 +786,7 @@ const Ratings = () => {
       >
         <DialogTitle>Submission Failed</DialogTitle>
         <DialogContent>
+          {/* List of failed ratings */}
           {failureDetails.length > 0 ? (
             <List>
               {failureDetails.map((detail, index) => (
@@ -653,12 +803,13 @@ const Ratings = () => {
           )}
         </DialogContent>
         <DialogActions>
+          {/* Close button */}
           <Button onClick={() => setOpenFailureDialog(false)} color="primary">
             Close
           </Button>
         </DialogActions>
-      </Dialog>
-    </Container>
+      </Dialog>    
+      </Container>
   );
 };
 

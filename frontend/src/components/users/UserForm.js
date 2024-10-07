@@ -1,6 +1,21 @@
 import React, { useState } from "react";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 
+/**
+ * A React component for creating or editing a user through a form.
+ *
+ * @param {bool} isOpen - Whether the form should be shown or not.
+ * @param {Object} user - The user to be edited, or an empty object
+ *   if a new user is being created.
+ * @param {function} handleChange - A function to be called when the user
+ *   changes the value of one of the form fields.
+ * @param {function} handleSave - A function to be called when the user clicks
+ *   the "Save" button.
+ * @param {function} handleClose - A function to be called when the user clicks
+ *   the "Cancel" button.
+ * @param {string} errorMessage - An error message to be shown to the user,
+ *   or an empty string if no error message should be shown.
+ */
 const UserForm = ({ isOpen, user, handleChange, handleSave, handleClose, errorMessage }) => {
 
   return (

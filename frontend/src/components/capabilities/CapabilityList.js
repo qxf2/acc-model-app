@@ -8,6 +8,11 @@ import {
   Typography,
 } from "@mui/material";
 
+/**
+ * The component renders a list of components, each with its associated
+ * capabilities. The component also renders a "Create New Capability" button
+ * for each component.
+ */
 const CapabilityList = ({
   components,
   capabilities,

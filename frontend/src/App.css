@@ -53,3 +53,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.custom-container {
+  margin-top: 2rem; /* margin at the top */
+  padding-left: 0.25rem; /* remove left padding */
+  padding-right: 0.25rem; /* remove right padding */
+  background-color: #f7f7f7; /* background color */
+  width: 100%; /* make the width 100% */
+}
