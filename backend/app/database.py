@@ -2,25 +2,25 @@
 This module sets up the database connection and session for SQLAlchemy.
 """
 
+import os
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
+load_dotenv()
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-Base = declarative_base()
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) # pylint: disable=invalid-name
 
 def get_db():
     """
     Generator function that yields a SQLAlchemy SessionLocal instance.
     """
-    db = SessionLocal()
+    database_session = SessionLocal()
     try:
-        yield db
+        yield database_session
     finally:
-        db.close()
+        database_session.close()
