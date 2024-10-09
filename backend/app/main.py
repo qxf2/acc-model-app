@@ -1,17 +1,30 @@
+"""
+This module initializes and configures the FastAPI application,
+sets up logging, and defines the main entry point for the backend API.
+"""
+
 import logging
 import os
 import sys
 import uvicorn
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(base_dir)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
 
-from app.routers import acc_models, attributes, capabilities, components, users, security, ratings, capabilities_assessments
-from app.database import Base, engine
+from app.routers import (
+    acc_models,
+    attributes,
+    capabilities,
+    components,
+    users,
+    security,
+    ratings,
+    capabilities_assessments,
+)
 from logging_config import setup_logging
 
 # Configure the root logger
@@ -24,7 +37,11 @@ logger = logging.getLogger(__name__)
 
 logging.info("Starting application...")
 
-origins = ["http://localhost", "http://localhost:3000", "https://acc-model-app.netlify.app"]
+origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "https://acc-model-app.netlify.app",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,12 +51,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 async def root():
+    """
+    Root endpoint of the ACC model app.
+    """
     return {"message": "This is an application for catpure ACC model for your projects"}
+
 
 @app.middleware("http")
 async def log_request_validation_error(request: Request, call_next):
+    """
+    Log validation errors and return a 422 response with the validation errors.
+    """
     try:
         response = await call_next(request)
         return response
@@ -48,16 +73,21 @@ async def log_request_validation_error(request: Request, call_next):
         return JSONResponse(status_code=422, content={"detail": e.errors()})
     except Exception as e:
         logging.error(f"Unexpected error: {str(e)}")
-        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+        return JSONResponse(
+            status_code=500, content={"detail": "Internal server error"}
+        )
 
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    print(f"Unhandled exception: {exc}")
+    """
+    Handles any unhandled exceptions that occur while processing a request.
+    """
     return JSONResponse(
         status_code=500,
-        content={"detail": "An unexpected error occurred. Please try again later."}
+        content={"detail": "An unexpected error occurred. Please try again later."},
     )
+
 
 app.include_router(acc_models.router)
 app.include_router(attributes.router)
@@ -67,8 +97,6 @@ app.include_router(users.router)
 app.include_router(security.router)
 app.include_router(ratings.router)
 app.include_router(capabilities_assessments.router)
-
-Base.metadata.create_all(bind=engine)
 
 logger.info("Starting the backend...")
 
