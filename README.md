@@ -29,7 +29,7 @@ This application allows you to efficiently construct, manage, and assess an ACC 
 ## Technologies Used
 - **Frontend:** React, Material-UI
 - **Backend:** FastAPI
-- **Database:** SQLite
+- **Database:** Postgres
 - **Authentication:** JWT (JSON Web Tokens)
 
 ## Prerequisites
@@ -39,13 +39,13 @@ This application allows you to efficiently construct, manage, and assess an ACC 
 - **React** and other JavaScript dependencies
 
 
-## Setup Instructions
+## Setup Instructions (for Ubuntu)
 To set up the project locally, follow these instructions:
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/qxf2/acc-model-app.git
+   cd acc-model-app
 
 2. Generate 'SECRET_KEY'.
    This is essential for cryptograhic signing within the application. To generate the key, run the following command in your terminal:
@@ -65,25 +65,81 @@ To set up the project locally, follow these instructions:
    * Ensure '.env' is listed in your '.gitignore' file to prevent it from being committed to version control.
 
 
-2. Setup Backend and Frontend. Detailed instructions below.
+### PostgreSQL Setup
+
+1. Install PostgreSQL(if you don't have it already):
+    ```bash
+    sudo apt update
+    sudo apt install postgresql postgresql-contrib
+
+   Verify the installation:
+   ```bash
+    psql --version
+
+2. Start the PostgreSQL service:
+
+    ```bash
+    sudo service postgresql start
+    sudo service postgresql status
+
+3. Setup a new PostgreSQL user and database:
+
+   Log in as the default postgres user:
+    ```bash
+    sudo -u postgres psql
+
+   Inside the psql prompt, run the following commands to create a new user and database:
+
+   ```bash
+    CREATE USER 'your_username' WITH PASSWORD 'your_password';
+    CREATE DATABASE your_db_name;
+    GRANT ALL PRIVILEGES ON DATABASE your_db_name TO your_username;
+    \q
+
+4. Verify the connection. 
+
+    ```bash
+    psql -U your_username -d your_db_name -h 127.0.0.1 -W
+
+    When prompted, enter the password you set for the user. If the connection is successful, you will see a PostgreSQL prompt (e.g., your_db_name=#), indicating that you can interact with the database and run queries.
+
+5.  Update the .env file 
+    Once you have created the PostgreSQL user and database, you'll need to specify the connection details in the .env file. The DATABASE_URL is a string that defines how your application connects to the PostgreSQL database, including the username, password, host, and database name.
+
+    Add the following line to your .env file, replacing the placeholders with your actual values:
+    ```bash
+    DATABASE_URL='postgresql://your_username:your_password@localhost/your_db_name'
 
 ### Backend (FastAPI)
 
 1. Navigate to the backend directory:
+
     ```bash
     cd backend
 
 2. Create a virtual environment and activate it:
+
     ```bash
     python -m venv venv
     source venv/bin/activate 
 
 3. Install the required Python packages:
+
     ```bash
     pip install -r requirements.txt
 
-4. Run the backend server:
+4. Set up database migrations with Alembic: 
+
+    **Note**: The migration files for the initial setup have already been generated and are included in the repository. You only need to apply the migration.
+
+    Make sure you are in the main project folder. To apply existing migrations, run:
+    
     ```bash
+    alembic upgrade head
+
+5. Run the backend server:
+    ```bash
+    cd backend
     uvicorn app.main:app --reload
 
 The API will be available at `http://127.0.0.1:8000`. 
