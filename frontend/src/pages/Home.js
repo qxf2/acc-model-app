@@ -12,6 +12,21 @@ import {
 import { Link } from "react-router-dom";
 import { Settings, ListAlt, Assessment } from "@mui/icons-material";
 
+/**
+ * The Home component is the main page of the application. It serves as a
+ * landing page that introduces the user to the application and provides links
+ * to the core functions of the application.
+ *
+ * The page is divided into three main sections: the hero section, the main
+ * sections, and the assessment section. The hero section provides a brief
+ * overview of the application and its benefits. The main sections provide links
+ * to the core functions of the application, such as defining attributes,
+ * listing components, and mapping capabilities. The assessment section
+ * provides links to the ratings and dashboard pages.
+ *
+ * The page also includes a footer section that provides links to the
+ * application's GitHub repository and the company's website.
+ */
 const Home = () => {
   return (
     <Container>

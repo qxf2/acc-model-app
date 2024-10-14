@@ -40,13 +40,26 @@ import {
   fetchCapabilityAssessment,
 } from "../services/ratingsService";
 
+
 /**
- * The Ratings component renders a page for users to rate the effectiveness of
- * each capability in an ACC model. The page displays a table with the
- * capabilities and attributes as columns, and the user can select a rating from
- * a dropdown menu. The user can also add comments to a submission by clicking
- * on the edit icon next to the rating dropdown. The user can submit all their
- * ratings at once by clicking the "Submit All Ratings" button.
+ * Component for the ratings page.
+ *
+ * This component displays a table of ratings for each capability
+ * and attribute of the selected ACC model. It also allows the user
+ * to select a rating and add comments for each capability.
+ *
+ * It fetches the ACC models, attributes, components, capabilities, 
+ * capability assessments and rating options from the API and stores them in the state.
+ *
+ * When the user selects a rating or adds comments, it saves the selected rating in the state.
+ *
+ * When the user submits the ratings, it submits the selected ratings in bulk
+ * to the API and shows a notification when the ratings are successfully submitted.
+ *
+ * If there are any failures while submitting the ratings, it shows an error dialog
+ * with the details of the failed submissions.
+ *
+ * @return {ReactElement} The component for the ratings page.
  */
 const Ratings = () => {
   const [accModels, setAccModels] = useState([]);
@@ -84,7 +97,7 @@ const Ratings = () => {
       }
     };
 
-    fetchData(); // Initial data fetching is triggered
+    fetchData();
   }, []); // Empty dependency array ensures this runs only once when the component mounts
 
 
@@ -179,18 +192,12 @@ const Ratings = () => {
    */
   useEffect(() => {
     const fetchCapabilityAssessmentsData = async () => {
-      console.log("Trying to bulk fetch the capability assessments");
-
       if (capabilities.length > 0 && attributes.length > 0) {
         try {
           const capabilityIds = capabilities.flatMap((cap) =>
             cap.capabilities.map((c) => c.id)
           );
           const attributeIds = attributes.map((attr) => attr.id);
-
-          console.log("Capability IDs:", capabilityIds);
-          console.log("Attribute IDs:", attributeIds);
-
           const assessmentData = await fetchBulkCapabilityAssessmentIDs(
             capabilityIds,
             attributeIds
@@ -203,7 +210,6 @@ const Ratings = () => {
           });
 
           setCapabilityAssessments(assessmentMap);
-          console.log("Capability Assessments:", assessmentMap);
         } catch (error) {
           console.error("Error fetching capability assessment data:", error);
         }
@@ -239,7 +245,6 @@ const Ratings = () => {
             user,
             capabilityAssessmentIds
           );
-          console.log("The ratings Data set in bulk is", ratingsData);
           setRatings(ratingsData);
 
           const userSubmittedRatings = {};
@@ -255,11 +260,6 @@ const Ratings = () => {
           });
 
           console.log("User Submitted Ratings:", userSubmittedRatings);
-          console.log(
-            "Populated Additional Rating Data:",
-            additionalRatingData
-          );
-
           setSubmittedRatings(userSubmittedRatings);
           setAdditionalRatingData(additionalRatingData);
         }
@@ -325,17 +325,9 @@ const Ratings = () => {
    * @param {string} attributeId The ID of the attribute
    */
   const handleEditClick = async (capabilityId, attributeId) => {
-    console.log(
-      `Edit clicked for Capability ID: ${capabilityId}, Attribute ID: ${attributeId}`
-    );
     const assessmentKey = `${capabilityId}-${attributeId}`;
 
     const capabilityAssessmentId = capabilityAssessments[assessmentKey];
-    console.log(
-      "The capability assessment id retreived after click is ",
-      capabilityAssessmentId
-    );
-
     if (!capabilityAssessmentId) {
       console.error(
         `Capability Assessment ID not found for key: ${assessmentKey}`
@@ -353,10 +345,6 @@ const Ratings = () => {
 
         const existingComments = latestAssessment.comments || "";
         const ratingId = latestAssessment.id || "";
-
-        console.log("Fetched Rating ID from API:", ratingId);
-        console.log("Existing Comments from API:", existingComments);
-
         setComments(existingComments);
         setRatingId(ratingId);
         setOpenDialog(true);

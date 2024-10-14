@@ -12,6 +12,20 @@ import ComponentList from "../components/components/ComponentList";
 import AccModelSelector from "../components/components/AccModelSelector";
 import ConfirmDialog from "../components/components/ConfirmDialog";
 
+/**
+ * A React component for displaying and editing components for a selected
+ * ACC model.
+ *
+ * The component displays a list of components for the selected ACC model,
+ * and for each component, it displays a link to edit the component and a
+ * button to delete the component. The component also displays a form to
+ * create a new component.
+ *
+ * The component fetches the list of ACC models and the list of components for
+ * the selected ACC model from the server when it mounts.
+ *
+ * @returns {JSX.Element} The rendered React component.
+ */
 const Components = () => {
   const [accModels, setAccModels] = useState([]);
   const [selectedAccModel, setSelectedAccModel] = useState("");
@@ -85,6 +99,7 @@ const Components = () => {
     const { name, value } = e.target;
     setCurrentComponent((prev) => ({ ...prev, [name]: value }));
   };
+
 
   const handleSave = async () => {
     try {

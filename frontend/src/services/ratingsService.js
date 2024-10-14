@@ -96,7 +96,6 @@ export const fetchUserDetails = async (authToken) => {
   }
 };
 
-
 export const fetchBulkRatings = async (user, capabilityAssessments) => {
   try {
     const capabilityAssessmentIds = capabilityAssessments;
@@ -119,9 +118,6 @@ export const fetchBulkRatings = async (user, capabilityAssessments) => {
   }
 };
 
-
-
-
 export const fetchRatingOptions = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/rating-options`);
@@ -131,7 +127,6 @@ export const fetchRatingOptions = async () => {
     throw error;
   }
 };
-
 
 export const submitRating = async (
   capabilityAssessmentId,
@@ -155,10 +150,7 @@ export const submitRating = async (
         },
       }
     );
-
-    console.log("The user Rating submitted successfully:", response.data);
     const ratingId = response.data.id;
-    console.log("Rating ID:", ratingId);
     return ratingId;
   } catch (error) {
     console.error("Error submitting rating:", error);
@@ -171,9 +163,6 @@ export const submitComments = async (ratingId, comments, authToken) => {
       comments: comments,
       timestamp: new Date().toISOString(),
     };
-
-    console.log("Submitting comments with payload:", payload);
-
     const response = await axios.put(
       `${API_BASE_URL}/capability-assessments/ratings/${ratingId}/`,
       payload,
@@ -184,8 +173,6 @@ export const submitComments = async (ratingId, comments, authToken) => {
         },
       }
     );
-
-    console.log("Comments submitted successfully:", response.data);
   } catch (error) {
     console.error(
       "Error submitting comments:",
@@ -195,14 +182,10 @@ export const submitComments = async (ratingId, comments, authToken) => {
   }
 };
 
-export const fetchAggregatedRatings = async (capabilityAssessmentId) => {
+export const fetchAggregatedRating = async (capabilityAssessmentId) => {
   try {
     const response = await axios.get(
       `${API_BASE_URL}/capability-assessments/${capabilityAssessmentId}/aggregate`
-    );
-    console.log(
-      `Fetched aggregated rating for ${capabilityAssessmentId}:`,
-      response.data
     );
     return response.data;
   } catch (error) {
@@ -220,7 +203,6 @@ export const fetchBulkAggregatedRatings = async (capabilityAssessmentIds) => {
       `${API_BASE_URL}/capability-assessments/aggregates`,
       capabilityAssessmentIds
     );
-    console.log("Fetched bulk aggregated ratings:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching bulk aggregated ratings:", error);
@@ -248,7 +230,6 @@ export const submitRatingsBatch = async (ratings, authToken) => {
     throw error;
   }
 };
-
 
 export const fetchCapabilityAssessment = async (capabilityAssessmentId) => {
   try {

@@ -10,6 +10,16 @@ import UserForm from "../components/users/UserForm";
 import UserList from "../components/users/UserList";
 import ConfirmDialog from "../components/users/ConfirmDialog";
 
+/**
+ * A React component for managing users.
+ *
+ * This component fetches a list of users from the server when it mounts,
+ * and displays them in a list. It also provides a button to create a new user,
+ * and a form to edit an existing user. The form is opened by clicking on a
+ * user in the list. The form is also used to delete an existing user.
+ *
+ * @returns {JSX.Element} The rendered React component.
+ */
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,6 +74,13 @@ const Users = () => {
     setCurrentUser((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Saves the current user to the server.
+   *
+   * If the current user has an id, it will be updated. Otherwise, it will be created.
+   * If the save is successful, the list of users is refetched and the modal is closed.
+   * If an error occurs, an error message is displayed.
+   */
   const handleSave = async () => {
     try {
       if (currentUser.id) {

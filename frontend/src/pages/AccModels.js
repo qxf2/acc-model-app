@@ -10,6 +10,17 @@ import AccModelForm from "../components/accModels/AccModelForm";
 import AccModelList from "../components/accModels/AccModelList";
 import ConfirmDialog from "../components/accModels/ConfirmDialog";
 
+/**
+ * A React component for displaying a list of ACC models.
+ *
+ * This component fetches a list of ACC models from the server when it mounts,
+ * and displays them in a list. It also provides a button to create a new ACC
+ * model, and a form to edit an existing ACC model. The form is opened by
+ * clicking on an ACC model in the list. The form is also used to delete an
+ * ACC model.
+ *
+ * @returns {JSX.Element} The rendered React component.
+ */
 const AccModels = () => {
   const [models, setModels] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +72,13 @@ const AccModels = () => {
     setCurrentModel((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Saves the current ACC model to the server.
+   *
+   * If the current ACC model has an id, it will be updated. Otherwise, it will be created.
+   * If the save is successful, the list of ACC models is refetched and the modal is closed.
+   * If an error occurs, an error message is displayed.
+   */
   const handleSave = async () => {
     try {
       if (currentModel.id) {

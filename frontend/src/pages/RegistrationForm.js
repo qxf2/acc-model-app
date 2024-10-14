@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { registerUser } from "../services/registerService";
 
+  /**
+   * RegistrationForm is a component that renders a registration form for
+   * users. It accepts a username, email, designation, password and
+   * confirmation password and submits the data to the backend for
+   * registration. It also displays any error messages that occur during
+   * registration.
+   */
 const RegistrationForm = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

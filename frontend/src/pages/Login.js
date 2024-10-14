@@ -3,6 +3,18 @@ import { Button, TextField, Typography, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/loginService";
 
+/**
+ * A React component for logging in to the application.
+ *
+ * This component renders a login form with fields for username and password.
+ * When the form is submitted, it calls the `login` function and stores the
+ * returned access token in local storage. It also calls the `onLoginSuccess`
+ * function, which is passed in as a prop, to allow the parent component to
+ * handle the login success.
+ *
+ * @param {function} onLoginSuccess - A function to be called after a successful
+ *   login.
+ */
 const Login = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

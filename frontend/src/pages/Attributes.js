@@ -10,6 +10,18 @@ import AttributeForm from "../components/attributes/AttributeForm";
 import AttributeList from "../components/attributes/AttributeList";
 import ConfirmDialog from "../components/attributes/ConfirmDialog";
 
+
+/**
+ * A React component for displaying and managing attributes.
+ *
+ * The component provides a list of all attributes, a form for creating new
+ * attributes and editing existing ones, and a confirm dialog for deleting
+ * attributes.
+ *
+ * The attributes are fetched from the server when the component mounts and are
+ * stored in the component's state. The component also provides functions for
+ * creating, updating, and deleting attributes.
+ */
 const Attributes = () => {
   const [attributes, setAttributes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +73,13 @@ const Attributes = () => {
     setCurrentAttribute((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Saves the current attribute to the server.
+   *
+   * If the current attribute has an id, it will be updated. Otherwise, it will be created.
+   * If the save is successful, the list of attributes is refetched and the modal is closed.
+   * If an error occurs, an error message is displayed.
+   */
   const handleSave = async () => {
     try {
       if (currentAttribute.id) {
