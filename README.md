@@ -72,10 +72,12 @@ To set up the project locally, follow these instructions:
     ```bash
     sudo apt update
     sudo apt install postgresql postgresql-contrib
+    ```
 
    Verify the installation:
    ```bash
     psql --version
+   ```
 
 2. Start the PostgreSQL service:
 
@@ -88,7 +90,7 @@ To set up the project locally, follow these instructions:
    Log in as the default postgres user:
     ```bash
     sudo -u postgres psql
-
+   ```
    Inside the psql prompt, run the following commands to create a new user and database:
 
    ```bash
@@ -101,6 +103,7 @@ To set up the project locally, follow these instructions:
 
     ```bash
     psql -U your_username -d your_db_name -h 127.0.0.1 -W
+    ```
 
     When prompted, enter the password you set for the user. If the connection is successful, you will see a PostgreSQL prompt (e.g., your_db_name=#), indicating that you can interact with the database and run queries.
 
