@@ -72,7 +72,7 @@ def create_component(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while creating the component",
-        )
+        ) from error
 
 
 @router.get("/", response_model=List[schemas.ComponentRead])
@@ -99,7 +99,7 @@ def read_all_components(limit: int = 100, db_session: Session = Depends(get_db))
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while retrieving the components",
-        )
+        ) from error
 
 
 @router.get("/acc_model/{acc_model_id}", response_model=List[schemas.ComponentRead])
@@ -132,7 +132,7 @@ def read_components_by_acc_model(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An internal server error occurred while fetching components for acc_model_id",
-        )
+        ) from error
 
 
 @router.get("/id/{component_id}", response_model=schemas.ComponentRead)
@@ -165,7 +165,7 @@ def read_component(component_id: int, db_session: Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while fetching the component.",
-        )
+        ) from error
 
 
 @router.put("/id/{component_id}", response_model=schemas.ComponentRead)
@@ -217,7 +217,7 @@ def update_component(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while updating the component.",
-        )
+        ) from error
 
 
 @router.delete("/{component_id}", response_model=schemas.ComponentRead)
@@ -260,4 +260,4 @@ def delete_component(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while deleting the component.",
-        )
+        ) from error

@@ -78,7 +78,7 @@ def create_capability(
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while creating the capability",
-        )
+        ) from error
 
 
 @router.get("/", response_model=List[schemas.CapabilityRead])
@@ -97,7 +97,7 @@ def read_capabilities(limit: int = 100, db_session: Session = Depends(get_db)):
         capabilities = crud.get_capabilities(db_session, limit=limit)
         logger.info("Retrieved %s capabilities", len(capabilities))
         return capabilities
-    
+
     except HTTPException as http_error:
         logger.error("Client error: %s", http_error.detail)
         raise http_error
@@ -106,7 +106,7 @@ def read_capabilities(limit: int = 100, db_session: Session = Depends(get_db)):
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while retrieving the capabilities",
-        )
+        ) from error
 
 
 @router.get("/{capability_id}", response_model=schemas.CapabilityRead)
@@ -136,7 +136,7 @@ def read_capability(capability_id: int, db_session: Session = Depends(get_db)):
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while retrieving the capability",
-        )
+        ) from error
 
 
 @router.get("/component/{component_id}", response_model=List[schemas.CapabilityRead])
@@ -174,7 +174,7 @@ def read_capabilities_by_component(
         raise HTTPException(
             status_code=500,
             detail="An error occurred while retrieving the capabilities of the component",
-        )
+        ) from error
 
 
 @router.put("/{capability_id}", response_model=schemas.CapabilityRead)
@@ -232,7 +232,7 @@ def update_capability(
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while updating the capability",
-        )
+        ) from error
 
 
 @router.delete("/{capability_id}", response_model=schemas.CapabilityRead)
@@ -274,4 +274,4 @@ def delete_capability(
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while deleting the capability",
-        )
+        ) from error

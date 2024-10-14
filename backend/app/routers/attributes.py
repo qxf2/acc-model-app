@@ -76,7 +76,7 @@ def create_attribute(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while creating the attribute.",
-        )
+        ) from error
 
 @router.get("/", response_model=List[schemas.AttributeRead])
 def read_attributes(limit: int = 100, db_session: Session = Depends(get_db)):
@@ -103,7 +103,7 @@ def read_attributes(limit: int = 100, db_session: Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An  unexpected error occurred while fetching the attributes.",
-        )
+        ) from error
 
 @router.get("/{attribute_id}", response_model=schemas.AttributeRead)
 def read_attribute(attribute_id: int, db_session: Session = Depends(get_db)):
@@ -124,7 +124,7 @@ def read_attribute(attribute_id: int, db_session: Session = Depends(get_db)):
             logger.warning("Attribute with ID %d not found", attribute_id)
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Attribute not found")
         return attribute
-    
+
     except HTTPException as http_error:
         logger.error("Client error: %s", http_error.detail)
         raise http_error
@@ -133,7 +133,7 @@ def read_attribute(attribute_id: int, db_session: Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while fetching the attribute.",
-        )
+        ) from error
 
 @router.put("/{attribute_id}", response_model=schemas.AttributeRead)
 def update_attribute(
@@ -176,7 +176,7 @@ def update_attribute(
         )
         logger.info("Attribute with ID %d updated successfully", attribute_id)
         return updated_attribute
-    
+
     except HTTPException as http_error:
         logger.error("Client error: %s", http_error.detail)
         raise http_error
@@ -185,7 +185,7 @@ def update_attribute(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while updating the attribute.",
-        )
+        ) from error
 
 
 @router.delete("/{attribute_id}", response_model=schemas.AttributeRead)
@@ -216,7 +216,7 @@ def delete_attribute(
         deleted_attribute = crud.delete_attribute(db_session, attribute_id=attribute_id)
         logger.info("Attribute with ID %d deleted successfully", attribute_id)
         return deleted_attribute
-    
+
     except HTTPException as http_error:
         logger.error("Client error: %s", http_error.detail)
         raise http_error
@@ -226,4 +226,4 @@ def delete_attribute(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal Server Error",
-        )
+        ) from error

@@ -106,7 +106,7 @@ def update_rating(db_session: Session, db_rating: models.Rating, rating: schemas
     if rating.rating is not None:
         db_rating.rating = rating.rating
     if rating.comments is not None:
-        db_rating.comments = rating.comments  # Update comments here
+        db_rating.comments = rating.comments
     if rating.timestamp is not None:
         db_rating.timestamp = rating.timestamp
 
@@ -142,7 +142,7 @@ def get_ratings_for_capability_assessment(
     except Exception as error:
         logger.exception("Error retreiving ratings for capability assessment ID %d: %s",
                          capability_assessment_id, error)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
 
 def get_ratings_for_user_and_capability(db_session: Session, user_id: int, capability_id: int):
     """

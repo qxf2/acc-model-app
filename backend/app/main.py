@@ -15,6 +15,7 @@ from pydantic import ValidationError
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 
+from logging_config import setup_logging  # pylint: disable=wrong-import-position
 from app.routers import (
     acc_models,
     attributes,
@@ -25,7 +26,6 @@ from app.routers import (
     ratings,
     capabilities_assessments,
 )
-from logging_config import setup_logging
 
 # Configure the root logger
 setup_logging()
@@ -63,23 +63,31 @@ async def root():
 @app.middleware("http")
 async def log_request_validation_error(request: Request, call_next):
     """
-    Log validation errors and return a 422 response with the validation errors.
+    Middleware to log validation errors and handle responses for invalid requests.
+    Args:
+        request (Request): The HTTP request object.
+        call_next (Callable): A function that takes the request as a parameter
+            and returns a response.
+
+    Returns:
+        JSONResponse: A response object, which may include validation error details 
+        or a general internal server error message.
     """
     try:
         response = await call_next(request)
         return response
-    except ValidationError as e:
-        logging.error(f"Validation error: {e.json()}")
-        return JSONResponse(status_code=422, content={"detail": e.errors()})
-    except Exception as e:
-        logging.error(f"Unexpected error: {str(e)}")
+    except ValidationError as error:
+        logging.error("Validation error: %s", error.json())
+        return JSONResponse(status_code=422, content={"detail": error.errors()})
+    except Exception as error:
+        logging.error("Unexpected error: %s", str(error))
         return JSONResponse(
             status_code=500, content={"detail": "Internal server error"}
         )
 
 
 @app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
+async def global_exception_handler(request: Request, exc: Exception): # pylint: disable=unused-argument
     """
     Handles any unhandled exceptions that occur while processing a request.
     """

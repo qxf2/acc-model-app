@@ -1,12 +1,11 @@
 """
-This module contains the Pydantic models used to define the structure of the data that the API will handle.
+This module contains the Pydantic models used to
+define the structure of the data that the API will handle.
 """
 
 from datetime import datetime
+from typing import Optional, List, Union
 from pydantic import BaseModel, ConfigDict, Field
-from typing import Optional, List
-from enum import Enum
-from typing import Union
 
 class ACCModelBase(BaseModel):
     """
@@ -34,7 +33,7 @@ class ACCModelRead(ACCModelBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
-   
+
 class ComponentBase(BaseModel):
     """
     Base model for Component with common properties
@@ -58,7 +57,7 @@ class ComponentRead(ComponentBase):
     Model for reading a Component
     """
     id: int
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 class AttributeBase(BaseModel):
@@ -160,6 +159,9 @@ class CapabilityAssessmentId(BaseModel):
     attribute_id: int
 
 class UserBase(BaseModel):
+    """
+    Base model for User with common properties
+    """
     username: str = Field(
         min_length=3,
         max_length=100,
@@ -173,53 +175,84 @@ class UserBase(BaseModel):
     designation: Optional[str] = None
 
 class UserCreate(UserBase):
+    """
+    Model for creating a User
+    """
     password: str = Field(
         min_length=6,
         description="The password must have at least 6 characters"
     )
 
 class UserRead(UserBase):
+    """
+    Model for reading a User
+    """
     id: int
 
     model_config = ConfigDict(from_attributes=True)
 
 class RatingBase(BaseModel):
+    """
+    Base model for a Rating with common properties
+    """
     capability_assessment_id: int
     rating: str
     comments: Optional[str] = None
     timestamp: Optional[datetime] = None
-    
+
 class RatingCreate(RatingBase):
-    pass
+    """
+    Model for creating a Rating
+    """
 
 class RatingRead(RatingBase):
+    """
+    Model for reading a Rating
+    """
     id: int
     user_id: int
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 class RatingUpdate(BaseModel):
+    """
+    Model for updating a Rating
+    """
     comments: Optional[str] = None
     timestamp: Optional[datetime] = None
 
 class BatchRatingRequest(BaseModel):
+    """
+    Model for creating a batch of Ratings
+    """
     ratings: List[RatingCreate]
 
 class CommentBase(BaseModel):
+    """
+    Base model for a Comment with common properties
+    """
     rating_id: int
     comment_text: str
     timestamp: Optional[datetime] = None
 
 class CommentCreate(CommentBase):
-    pass
+    """
+    Model for creating a Comment
+    """
 
 class CommentRead(CommentBase):
+    """
+    Model for reading a Comment
+    """
     id: int
     user_id: int
-    
+
     model_config = ConfigDict(from_attributes=True)
 
 class CommentUpdate(BaseModel):
+    """
+    Model for updating a Comment
+    """
     comment_text: Optional[str] = None
     timestamp: Optional[datetime] = None
 

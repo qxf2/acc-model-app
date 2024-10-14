@@ -2,14 +2,26 @@
 This module defines the API endpoints related to capability assessments.
 
 The endpoints are:
-- `POST /capability-assessments/{capability_assessment_id}/`:
-        Creates or updates a rating for a capability assessment.
-- `GET /capability-assessments`:
-        Retrieves a capability assessment for a specific capability and attribute.
-- `GET /capability-assessments/{capability_assessment_id}/`:
-        Retrieves all ratings associated with a specific capability assessment.
-- `GET /capability-assessments/{capability_assessment_id}/user/{user_id}/`:
-        Retrieves all ratings associated with a capability assessment associated provided by a user.
+- POST /capability-assessments/batch/:
+    Creates or updates ratings for capability assessments in batch.
+- POST /capability-assessments/bulk/ids: 
+    Retrieves capability assessment IDs for the given capability IDs and attribute IDs.
+- POST /capability-assessments/{capability_assessment_id}/:
+    Creates or updates a rating for a specific capability assessment.
+- PUT /capability-assessments/ratings/{rating_id}/:
+    Updates an existing rating, including comments.
+- GET /capability-assessments:
+    Retrieves a capability assessment for a specific capability and attribute.
+- GET /capability-assessments/{capability_assessment_id}/:
+   - Retrieves all ratings associated with a specific capability assessment.
+- GET /capability-assessments/{capability_assessment_id}/user/{user_id}/:
+   - Retrieves all ratings for a capability assessment provided by a specific user.
+- GET /capability-assessments/{capability_assessment_id}/aggregate:
+   - Retrieves aggregated ratings for a specific capability assessment.
+- POST /capability-assessments/aggregates
+   - Retrieves aggregated ratings for a list of capability assessments.
+- POST /capability-assessments/ratings/batch/
+   - Retrieves all ratings for multiple capability assessments provided by a user.
 
 The endpoints use the `get_db` dependency to get a database session.
 The endpoints use the `crud` module to perform the database operations.
@@ -106,7 +118,6 @@ def get_bulk_capability_assessment_ids(
                 status_code=404,
                 detail="No capability assessments found for the provided IDs"
             )
-        logger.info("The assessment Ids ", assessment_ids)
         return assessment_ids
 
     except Exception as error:
@@ -114,7 +125,7 @@ def get_bulk_capability_assessment_ids(
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while retrieving capability assessment IDs"
-        )
+        ) from error
 
 
 @router.post("/{capability_assessment_id}/", response_model=schemas.RatingRead)
@@ -171,7 +182,7 @@ def upsert_capability_assessment_rating(
         logger.exception("Error creating or updating rating: %s", error)
         raise HTTPException(
             status_code=500,
-            detail="An unexpected error occurred while creating or updating the rating")
+            detail="An unexpected error occurred") from error
 
 @router.put("/ratings/{rating_id}/", response_model=schemas.RatingRead)
 def update_rating(
@@ -218,7 +229,7 @@ def update_rating(
         raise HTTPException(
             status_code=500,
             detail="An unexpected error occurred while updating the rating"
-        )
+        ) from error
 
 
 @router.get("/", response_model=schemas.CapabilityAssessmentRead)
@@ -259,7 +270,7 @@ def get_capability_assessment(
         logger.exception("Error retrieving capability assessment: %s", error)
         raise HTTPException(
             status_code=500,
-            detail="An unexpected error occurred while retrieving the capability assessment")
+            detail="An unexpected error occurred") from error
 
 
 @router.get("/{capability_assessment_id}/", response_model=List[schemas.RatingRead])
@@ -304,7 +315,7 @@ def get_ratings_for_capability_assessment(
     except Exception as error:
         logger.exception(
             "Error retrieving ratings for capability assessment: %s", error)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
 
 
 @router.get("/{capability_assessment_id}/user/{user_id}/", response_model=List[schemas.RatingRead])
@@ -338,9 +349,10 @@ def get_ratings_for_capability_assessment_by_user(
     except Exception as error:
         logger.exception(
             "Error retrieving ratings for user and capability assessment: %s", error)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
 
-@router.get("/{capability_assessment_id}/aggregate", response_model=Dict[str, Union[int, float, None]])
+@router.get("/{capability_assessment_id}/aggregate",
+            response_model=Dict[str, Union[int, float, None]])
 def get_ratings_aggregate_for_capability_assessment(
                 capability_assessment_id: int,
                 db_session: Session = Depends(get_db)
@@ -370,9 +382,10 @@ def get_ratings_aggregate_for_capability_assessment(
             }
 
         numeric_ratings = [
-            RATING_MAPPING.get(rating.rating) 
-            for rating in ratings 
-            if RATING_MAPPING.get(rating.rating) is not None and RATING_MAPPING.get(rating.rating) > 0
+            mapped_rating for rating in ratings
+            if (
+                mapped_rating := RATING_MAPPING.get(rating.rating)
+                ) is not None and mapped_rating > 0
         ]
 
         if not numeric_ratings:
@@ -391,12 +404,12 @@ def get_ratings_aggregate_for_capability_assessment(
 
     except ValueError as error:
         logger.exception("Data validation error: %s", error)
-        raise HTTPException(status_code=400, detail="Data Validation Error")
+        raise HTTPException(status_code=400, detail="Data Validation Error") from error
     except Exception as error:
         logger.exception(
             "Unexpected error retrieving aggregated ratings for capability assessment: %s", error
         )
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
 
 
 @router.post("/aggregates", response_model=List[Dict[str, Union[int, float, None]]])
@@ -429,9 +442,10 @@ def get_bulk_ratings_aggregate(
                 continue
 
             numeric_ratings = [
-                RATING_MAPPING.get(rating.rating) 
-                for rating in ratings 
-                if RATING_MAPPING.get(rating.rating) is not None and RATING_MAPPING.get(rating.rating) > 0
+                mapped_rating for rating in ratings
+                if (
+                    mapped_rating := RATING_MAPPING.get(rating.rating)
+                    ) is not None and mapped_rating > 0
             ]
 
             average_rating = mean(numeric_ratings) if numeric_ratings else None
@@ -444,7 +458,7 @@ def get_bulk_ratings_aggregate(
 
     except Exception as error:
         logger.exception("Error retrieving bulk ratings: %s", error)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
 
 
 @router.post("/ratings/batch/", response_model=List[schemas.RatingRead])
@@ -479,4 +493,4 @@ def get_ratings_for_capability_assessments_by_user(
     except Exception as error:
         logger.exception(
             "Error retrieving ratings for user and capability assessments: %s", error)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
