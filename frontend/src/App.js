@@ -32,6 +32,27 @@ import { apiRequest } from "./services/apiService";
 import Home from "./pages/Home";
 import "./App.css";
 
+/**
+ * The main App component that renders the entire application.
+ * It manages the authentication state and renders public or protected routes
+ * accordingly.
+ *
+ * Public routes:
+ *  - /
+ *  - /token
+ *  - /registration
+ *  - /dashboard
+ *
+ * Protected routes:
+ *  - /acc-models
+ *  - /attributes
+ *  - /components
+ *  - /capabilities
+ *  - /users
+ *  - /ratings
+ *
+ * @returns {React.ReactElement} The rendered App component.
+ */
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);

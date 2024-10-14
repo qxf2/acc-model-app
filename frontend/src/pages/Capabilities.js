@@ -13,6 +13,22 @@ import {
   deleteCapability,
 } from "../services/capabilitiesService";
 
+
+/**
+ * A React component for displaying and editing capabilities for a selected
+ * ACC model.
+ *
+ * The component displays a list of components for the selected ACC model,
+ * and for each component, it displays a list of capabilities. The user can
+ * create a new capability, edit an existing capability, or delete a capability.
+ * The component also displays a confirmation dialog when the user clicks the
+ * delete button.
+ *
+ * The component fetches the list of ACC models and the list of components for
+ * the selected ACC model from the server when it mounts.
+ *
+ * @returns {JSX.Element} The rendered React component.
+ */
 const Capabilities = () => {
   const [accModels, setAccModels] = useState([]);
   const [selectedAccModel, setSelectedAccModel] = useState("");
@@ -97,6 +113,13 @@ const Capabilities = () => {
     setCurrentCapability((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Saves the current capability to the server.
+   *
+   * If the current capability has an id, it will be updated. Otherwise, it will be created.
+   * If the save is successful, the list of capabilities is refetched and the modal is closed.
+   * If an error occurs, an error message is displayed.
+   */
   const handleSave = async () => {
     try {
       if (currentCapability.id) {

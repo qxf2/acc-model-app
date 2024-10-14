@@ -65,12 +65,12 @@ def create_acc_model(
     except HTTPException as http_error:
         logger.error("Client error: %s", http_error.detail)
         raise http_error
-    
+
     except Exception as error:
         logger.error("Error creating ACC model: %s", error)
+        error_message = "An unexpected error occurred while creating the ACC model."
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An unexpected error occurred while creating the ACC model.") from error
-
+                            detail=error_message) from error
 
 @router.get("/", response_model=List[schemas.ACCModelRead])
 def read_acc_models(limit: int = 100, db_session: Session = Depends(get_db)):
@@ -92,11 +92,12 @@ def read_acc_models(limit: int = 100, db_session: Session = Depends(get_db)):
     except HTTPException as http_error:
         logger.error("Client error: %s", http_error.detail)
         raise http_error
-    
+
     except Exception as error:
         logger.error("Error fetching ACC models: %s", error)
+        error_message = "An unexpected error occurred while fetching the ACC models."
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An unexpected error occurred while fetching the ACC models.")
+                            detail=error_message) from error
 
 
 @router.get("/{acc_model_id}", response_model=schemas.ACCModelRead)
@@ -118,15 +119,14 @@ def read_acc_model(acc_model_id: int, db_session: Session = Depends(get_db)):
                 status_code=status.HTTP_404_NOT_FOUND, detail="ACC model not found")
         logger.info("Fetched ACC model with ID: %d", acc_model_id)
         return acc_model
-    
+
     except HTTPException as http_error:
         logger.error("Client error: %s", http_error.detail)
         raise http_error
     except Exception as error:
         logger.error("Error fetching ACC model with ID %d: %s", acc_model_id, error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An unexpected error occurred while fetching the ACC model.")
-
+                            detail="An unexpected error occurred") from error
 
 @router.put("/{acc_model_id}", response_model=schemas.ACCModelRead)
 def update_acc_model(
@@ -176,7 +176,7 @@ def update_acc_model(
     except Exception as error:
         logger.error("Error updating ACC model with ID %d: %s", acc_model_id, error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An unexpected error occurred while updating the ACC model.")
+                            detail="An unexpected error occurred") from error
 
 
 @router.delete("/{acc_model_id}", response_model=schemas.ACCModelRead)
@@ -217,4 +217,4 @@ def delete_acc_model(
     except Exception as error:
         logger.error("Error deleting ACC model with ID %d: %s", acc_model_id, error)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="An unexpected error occurred while deleting the ACC model.")
+                            detail="An unexpected error occurred") from error

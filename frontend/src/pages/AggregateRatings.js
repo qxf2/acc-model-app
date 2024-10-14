@@ -48,6 +48,15 @@ const RATING_COLOR_MAPPING = {
   "No Rating": "#FAEBD7", // Antique White
 };
 
+/**
+ * The main component for the dashboard page.
+ * It contains the following sub-components:
+ * - A dropdown to select an ACC model.
+ * - A heatmap to display the ratings of the capabilities in a 2D matrix.
+ * - A tree table view to display the components, their capabilities, and the ratings.
+ * - A pie chart to display the distribution of the ratings.
+ * @returns {React.ReactElement} The JSX element representing the dashboard page.
+ */
 const Dashboard = () => {
   // State for holding ACC models, selected model, components, capabilities, and other data
   const [accModels, setAccModels] = useState([]);

@@ -30,6 +30,15 @@ apiClient.interceptors.response.use(
   }
 );
 
+/**
+ * Makes an HTTP request to the specified URL with the given options
+ * and returns the JSON response.
+ *
+ * @param {string} url - The URL of the API endpoint to call.
+ * @param {Object} [options] - The options to pass to the Axios client.
+ * @returns {Promise<Object>} - The JSON response from the server.
+ * @throws {Error} - If there is an error with the request.
+ */
 export const apiRequest = async (url, options) => {
   try {
     const response = await apiClient(url, options);

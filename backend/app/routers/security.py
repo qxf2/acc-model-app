@@ -100,7 +100,7 @@ def authenticate_user(username: str, password: str, db_session: Session):
         return db_user
     except Exception as error:
         logger.error("Error authenticating user %s: %s", username, error)
-        return False
+        raise
 
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
@@ -132,7 +132,7 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while creating the JWT token.",
-        )
+        ) from error
 
 def verify_refresh_token(token: str):
     """
@@ -148,18 +148,18 @@ def verify_refresh_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except error:
+    except (jwt.InvalidTokenError, jwt.ExpiredSignatureError) as error:
         logger.warning("Invalid refresh token")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token"
-        )
+        ) from error
     except Exception as error:
         logger.error("Error decoding refresh token: %s", error)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An unexpected error occurred while decoding the refresh token."
-        )
+        ) from error
 
 async def get_current_user(
                 token: str = Depends(OAUTH2_SCHEME),
@@ -186,13 +186,13 @@ async def get_current_user(
             logger.warning("JWT payload missing 'sub' field.")
             raise credentials_exception
         token_data = TokenData(username=username)
-    except InvalidTokenError as exc:
-        logger.error("Invalid token: %s", exc)
+    except InvalidTokenError as error:
+        logger.error("Invalid token: %s", error)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect token",
             headers={"WWW-Authenticate": "Bearer"},
-        ) from exc
+        ) from error
 
     user = crud.get_user_by_username(db_session, username=token_data.username)
     if user is None:
@@ -280,4 +280,4 @@ async def refresh_access_token(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error"
-        )
+        ) from error
