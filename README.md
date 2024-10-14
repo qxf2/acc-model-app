@@ -37,6 +37,7 @@ This application allows you to efficiently construct, manage, and assess an ACC 
 - **Python** (version 3.8 or later)
 - **FastAPI** and other Python dependencies
 - **React** and other JavaScript dependencies
+- **PostgreSQL** 
 
 
 ## Setup Instructions (for Ubuntu)
@@ -91,7 +92,7 @@ To set up the project locally, follow these instructions:
    Inside the psql prompt, run the following commands to create a new user and database:
 
    ```bash
-    CREATE USER 'your_username' WITH PASSWORD 'your_password';
+    CREATE USER your_username WITH PASSWORD 'your_password';
     CREATE DATABASE your_db_name;
     GRANT ALL PRIVILEGES ON DATABASE your_db_name TO your_username;
     \q
