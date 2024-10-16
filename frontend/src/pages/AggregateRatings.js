@@ -355,6 +355,9 @@ const Dashboard = () => {
       {selectedAccModel && (
         <Grid container spacing={3}>
           <Grid item xs={6}>
+          <Typography variant="h6" component="h2" gutterBottom>
+            Capability Ratings Heatmap
+          </Typography>
             <TableContainer
               component={Paper}
               style={{
@@ -416,6 +419,9 @@ const Dashboard = () => {
 
           {/* Pie Chart */}
           <Grid item xs={6}>
+            <Typography variant="h6" component="h2" gutterBottom>
+              Ratings Distribution
+            </Typography>
             <Paper
               style={{
                 height: "300px",
@@ -434,7 +440,9 @@ const Dashboard = () => {
       {selectedAccModel && (
         <Box mt={5}>
           {/* Table to show the component, attribute and capability and their ratings */}
-          <Typography variant="h6"></Typography>
+          <Typography variant="h6" component="h2" gutterBottom>
+          Component and Capability Ratings
+        </Typography>
           <TableContainer
             component={Paper}
             style={{ marginTop: "2rem", width: "100%", overflow: "auto" }}
@@ -448,11 +456,13 @@ const Dashboard = () => {
                       width: "200px", // Fixed width for the first column
                       fontSize: "1rem",
                       fontWeight: "bold",
-                      border: "1px solid #ddd",
+                      border: "1px solid #aaa",
                       color: "#283593",
                       backgroundColor: "#d0d0d0",
                     }}
-                  ></TableCell>
+                  >
+                    {/* Capability/Component Name */}
+                  </TableCell>
 
 
                   {/* Show all the attributes as table headers (dynamically render) */}

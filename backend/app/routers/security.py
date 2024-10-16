@@ -89,13 +89,16 @@ def authenticate_user(username: str, password: str, db_session: Session):
 
     try:
         db_user = crud.get_user_by_username(db_session, username=username)
-        if not db_user:
+
+        if db_user is None:
             logger.warning("No user found with username: %s", username)
-            return False
+            return None
+        
         if not verify_password(password, db_user.hashed_password):
             logger.warning(
                 "Password verification failed for user: %s", username)
             return False
+        
         logger.info("User %s authenticated successfully", username)
         return db_user
     except Exception as error:
@@ -216,11 +219,27 @@ async def login_for_access_token(
     Returns:
         Token: The access token with the username as the subject.
     """
+    if not form_data.username or not form_data.password:
+        logger.warning("Login failed, missing username or password")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Missing username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     user = authenticate_user(
         form_data.username, form_data.password, db_session)
-    if not user:
-        logger.warning("Login failed for username: %s", form_data.username)
+    
+    if user is None:
+        logger.warning("Login failed, user not found: %s", form_data.username)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User does not exist",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if user is False:
+        logger.warning("Login failed, incorrect password for user: %s", form_data.username)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

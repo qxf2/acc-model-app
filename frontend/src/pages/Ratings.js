@@ -545,7 +545,7 @@ const Ratings = () => {
       {/* Container for the table that displays the ratings */}
       <TableContainer 
         component={Paper} 
-        style={{ marginTop: "2rem", width: "100%", overflow: "auto" }}>
+        style={{ marginTop: "2rem", width: "100%", overflow: "auto", maxHeight: "100vh" }}>
         {/* The table that displays the ratings */}
         <Table 
           style={{ border: "1px solid #ddd", tableLayout: "fixed" }}
@@ -561,6 +561,9 @@ const Ratings = () => {
                   border: "1px solid #ddd",
                   color: "#283593",
                   backgroundColor: "#d0d0d0",
+                  position: "sticky",
+                  left: 0,
+                  zIndex: 3,
                 }}
               >
               </TableCell>
@@ -579,6 +582,10 @@ const Ratings = () => {
                     minWidth: "150px", // Ensures each column has a minimum width
                     overflowWrap: "break-word", // Allow long text to wrap
                     whiteSpace: "normal", // Prevents long words from overflowing
+                    position: "sticky",
+                    left: 0,
+                    top:0,
+                    zIndex: 2,
                   }}
                 >
                   {attribute.name}
@@ -596,6 +603,10 @@ const Ratings = () => {
                     style={{ 
                       fontSize: "1.125rem",
                       border: "1px solid #ddd",
+                      position: "sticky",
+                      left: 0,
+                      zIndex: 1,
+                      backgroundColor: "#d0d0d0",
                     }}
                   >
                     <Box display="flex" alignItems="center">
@@ -641,6 +652,10 @@ const Ratings = () => {
                             paddingLeft: "2rem",
                             fontSize: "1rem",
                             border: "1px solid #ddd",
+                            position: "sticky",
+                            left: 0,
+                            zIndex: 3,
+                            backgroundColor: "#d0d0d0",
                           }}
                         >
                           {capability.name}
@@ -649,7 +664,12 @@ const Ratings = () => {
                         {attributes.map((attribute) => (
                           <TableCell
                             key={`${capability.id}-${attribute.id}`}
-                            style={{ border: "1px solid #ddd" }}
+                            style={{ 
+                              border: "1px solid #ddd",
+                              zIndex: 1,
+                              position: "relative",
+                              overflow: "hidden",
+                            }}
                           >
                             {/* Container for the rating and edit buttons */}
                             <Box display="flex" alignItems="center">

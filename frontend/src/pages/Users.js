@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Box, Button } from "@mui/material";
+import { Container, Typography} from "@mui/material";
 import {
   fetchUsers,
   createUser,
@@ -116,17 +116,8 @@ const Users = () => {
   return (
     <Container maxWidth="md" style={{ marginTop: "2rem" }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Users
+        Manage Users
       </Typography>
-      <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => handleOpenModal()}
-        >
-          Create New User
-        </Button>
-      </Box>
       <UserList
         users={users}
         handleOpenModal={handleOpenModal}
