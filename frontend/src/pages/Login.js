@@ -36,8 +36,24 @@ const Login = ({ onLoginSuccess }) => {
       console.log("Token expiry time", expirationTimestamp);
       onLoginSuccess();
       navigate("/");
-    } catch (err) {
-      setError("Login failed. Please check your credentials.");
+    }
+    catch (err) {
+      if (err.response) {
+        if (err.response.status === 400) {
+          setError("Username and password must be provided.");
+        } 
+        else if (err.response.status === 404) {
+          setError("User does not exist. Please register first.");
+        } 
+        else if (err.response.status === 401) {
+          setError("Incorrect username or password.");
+        } 
+        else {
+          setError("An unexpected error occurred. Please try again.");
+        }
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 

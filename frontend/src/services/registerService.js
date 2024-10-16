@@ -13,6 +13,14 @@ export const registerUser = async (userData) => {
     if (error.response) {
       const { status, data } = error.response;
 
+      if (status === 422) {
+        const validationErrors = data.detail || [];
+        const errorMessage = validationErrors
+          .map(err => `${err.loc[1]}: ${err.msg}`)
+          .join(", ");
+        throw new Error(errorMessage);
+      }
+
       if (status === 400) {
         const errorMessage = data.detail || "A registration error occurred.";
 
