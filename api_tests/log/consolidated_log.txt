@@ -1,0 +1,14 @@
+2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created attribute with details: {'name': 'Fast_20241106_214304', 'description': 'test', 'id': 23}
+2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | 
+************************
+--------RESULT--------
+Total number of checks=1
+2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of checks passed=1
+----------------------
+************************
+
+
+2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks=0
+2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0
