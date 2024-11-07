@@ -187,8 +187,6 @@ function App() {
               <ListItemText primary="Register" />
             </ListItem>
 
-            <Divider />
-
             {isAuthenticated && (
               <>
                 <ListItem component={Link} to="/ratings">
