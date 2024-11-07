@@ -124,7 +124,7 @@ To set up the project locally, follow these instructions:
 2. Create a virtual environment and activate it:
 
     ```bash
-    python -m venv venv
+    python3.11 -m venv venv
     source venv/bin/activate 
 
 3. Install the required Python packages:
