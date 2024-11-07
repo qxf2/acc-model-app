@@ -28,15 +28,18 @@ The endpoints use the `crud` module to perform the database operations.
 """
 import logging
 from datetime import datetime
-from typing import List, Dict, Union
+from typing import List, Dict, Union, Any, Optional
 from statistics import mean
+from pydantic import BaseModel
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import DatabaseError
 from app import schemas
 from app.crud import capabilities as crud
 from app.crud import ratings as rating_crud
 from app.database import get_db
 from app.routers.security import get_current_user
+from app.crud.utils import get_full_capability_assessment_data
 from app.routers.ratings import RATING_MAPPING
 
 router = APIRouter(
@@ -47,6 +50,22 @@ router = APIRouter(
 
 logger = logging.getLogger(__name__)
 
+# Define mappings
+RATING_MAPPING = {
+    "Stable": 4,
+    "Acceptable": 3,
+    "Low impact": 2,
+    "Critical Concern": 1,
+    "Not Applicable": 0
+}
+
+THRESHOLD_RATING_MAPPING = {
+    "Stable": [3.5, 4],
+    "Acceptable": [2.5, 3.49],
+    "Low impact": [1.5, 2.49],
+    "Critical Concern": [0, 1.49],
+    "Not Applicable": [0, 0]
+}
 
 @router.post("/batch/", response_model=Dict[str, Union[List[schemas.RatingRead], Dict[str, str]]])
 def upsert_capability_assessment_ratings(
@@ -412,7 +431,7 @@ def get_ratings_aggregate_for_capability_assessment(
         raise HTTPException(status_code=500, detail="Internal Server Error") from error
 
 
-@router.post("/aggregates", response_model=List[Dict[str, Union[int, float, None]]])
+@router.post("/aggregates", response_model=List[Dict[str, Union[int, float, str, None]]])
 def get_bulk_ratings_aggregate(
             capability_assessment_ids: List[int],
             db_session: Session = Depends(get_db)
@@ -449,9 +468,18 @@ def get_bulk_ratings_aggregate(
             ]
 
             average_rating = mean(numeric_ratings) if numeric_ratings else None
+
+            rating_label = None
+            if average_rating is not None:
+                for label, (min_val, max_val) in THRESHOLD_RATING_MAPPING.items():
+                    if min_val <= average_rating <= max_val:
+                        rating_label = label
+                        break
+
             results.append({
                 "capability_assessment_id": capability_assessment_id,
-                "average_rating": average_rating
+                "average_rating": average_rating,
+                "rating_label": rating_label
             })
 
         return results
@@ -493,4 +521,223 @@ def get_ratings_for_capability_assessments_by_user(
     except Exception as error:
         logger.exception(
             "Error retrieving ratings for user and capability assessments: %s", error)
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
+
+@router.post("/historical-ratings", response_model=List[schemas.RatingHistoryRead])
+def get_historical_ratings(
+    capability_assessment_ids: List[int],
+    target_date: datetime,
+    db_session: Session = Depends(get_db)
+) -> List[schemas.RatingHistoryRead]:
+    """
+    Retrieves historical ratings for a list of capability assessments
+    for a given date.
+
+    Args:
+        capability_assessment_ids (List[int]): List of capability assessment IDs.
+        target_date (datetime): The date for which to retrieve historical ratings.
+        db_session (Session): The database session.
+
+    Returns:
+        Filtered historical rating data matching the target date.
+    """
+    logger.info("Fetching historical ratings for target date: %s", target_date)
+
+    try:
+        historical_ratings = rating_crud.get_ratings_history_for_date(
+            db_session, capability_assessment_ids, target_date
+        )
+
+        return historical_ratings
+
+    except ValueError as ve:
+        logger.exception("Value error while retrieving historical ratings: %s", ve)
+        raise HTTPException(status_code=400, detail="Invalid input value") from ve
+    except DatabaseError as db_error:
+        logger.exception("Database error while retrieving historical ratings: %s", db_error)
+        raise HTTPException(status_code=500, detail="Database error occurred") from db_error
+    except Exception as error:
+        logger.exception("Error retrieving ratings: %s", error)
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
+
+
+def get_ratings_for_target_date(
+    db_session: Session,
+    capability_assessment_ids: List[int],
+    target_date: datetime
+) -> List[schemas.RatingRead]:
+    """
+    Retrieves ratings for capability assessments based on the target date.
+
+    Args:
+        db_session (Session): The database session.
+        capability_assessment_ids (List[int]): List of capability assessment IDs.
+        target_date (datetime): The date for which to fetch ratings.
+
+    Returns:
+        List[schemas.RatingRead]: List of rating entries.
+    """
+    try:
+        ratings_data = rating_crud.get_ratings_history_for_date(
+                    db_session,
+                    capability_assessment_ids,
+                    target_date
+                )
+
+        if not ratings_data:
+            logger.info("No ratings found for the provided date.")
+
+        return ratings_data or []
+
+    except DatabaseError as db_error:
+        logger.exception("Database error while fetching ratings for target date %s: %s",
+                        target_date, db_error)
+        raise HTTPException(status_code=500, detail="Database error occurred") from db_error
+    except Exception as error:
+        logger.exception("Error fetching ratings for target date %s: %s", target_date, error)
+        raise HTTPException(status_code=500,
+                            detail="Error fetching ratings for target date") from error
+
+
+def get_historical_ratings_aggregate(
+        db_session: Session,
+        capability_assessment_ids: List[int],
+        target_date: datetime,
+) -> List[Dict[str, Any]]:
+    """
+    Fetches and aggregates historical ratings for a set of capability assessments on a target date.
+
+    Args:
+        db_session (Session): The database session.
+        capability_assessment_ids (List[int]): List of capability assessment IDs.
+        target_date (datetime): The date for which to fetch the ratings.
+
+    Returns:
+        List[Dict[str, Any]]: Aggregated rating data with detailed information.
+    """
+    try:
+        ratings_data = get_ratings_for_target_date(
+                    db_session,
+                    capability_assessment_ids,
+                    target_date
+                )
+
+        if not ratings_data:
+            logger.info("No ratings found for the provided date.")
+
+            return [
+                {
+                    "capability_assessment_id": cap_id,
+                    "average_rating": None
+                }
+                for cap_id in capability_assessment_ids
+            ]
+
+        # Aggregate ratings
+        ratings_by_assessment = {}
+        for entry in ratings_data:
+            cap_id = entry.capability_assessment_id
+            rating_value = RATING_MAPPING.get(entry.rating)
+            if rating_value is not None:
+                ratings_by_assessment.setdefault(cap_id, []).append(rating_value)
+
+        # Fetch detailed assessment data
+        detailed_assessments = get_full_capability_assessment_data(
+                    db_session,
+                    capability_assessment_ids
+                )
+        detailed_assessment_map = {
+                    item["capability_assessment_id"]: item
+                    for item in detailed_assessments
+                }
+
+        # Helper to map average rating to a label
+        def get_rating_label(average_rating: Optional[float]) -> Optional[str]:
+            if average_rating is None:
+                return None
+            return next(
+                (label for label, (min_val, max_val) in THRESHOLD_RATING_MAPPING.items()
+                 if min_val <= average_rating <= max_val),
+                None
+            )
+
+        # Populate results with aggregated data and detailed information
+        results = []
+        for cap_id in capability_assessment_ids:
+            ratings = ratings_by_assessment.get(cap_id, [])
+            average_rating = mean(ratings) if ratings else None
+            rating_label = get_rating_label(average_rating)
+            detailed_info = detailed_assessment_map.get(cap_id, {})
+
+            results.append({
+                "capability_assessment_id": cap_id,
+                "average_rating": average_rating,
+                "rating_label": rating_label,
+                "capability_name": detailed_info.get("capability_name"),
+                "attribute_name": detailed_info.get("attribute_name"),
+                "component_name": detailed_info.get("component_name"),
+                "acc_model_name": detailed_info.get("acc_model_name"),
+            })
+
+        return results
+
+    except KeyError as key_error:
+        logger.exception("Error aggregating historical ratings: %s", key_error)
+        raise HTTPException(status_code=500, detail="Internal Server Error") from key_error
+    except Exception as error:
+        logger.exception("Error retrieving historical aggregates: %s", error)
+        raise HTTPException(status_code=500, detail="Internal Server Error") from error
+
+class HistoricalGraphData(BaseModel):
+    """
+    Model to represent the results of a historical ratings comparison between two dates.
+
+    Attributes:
+        start_date (List[Dict[str, Any]]): A list of dictionaries containing the 
+        ratings for each capability assessment on the start date.
+            Each dictionary should contain the following keys:
+                - capability_assessment_id (int): The ID of the capability assessment.
+                - average_rating (float): The average rating for the capability assessment
+                - rating_label (str): The label for the rating
+                - capability_name (str): The name of the capability.
+                - attribute_name (str): The name of the attribute.
+                - component_name (str): The name of the component.
+                - acc_model_name (str): The name of the ACC model.
+        end_date (List[Dict[str, Any]]): A list of dictionaries containing 
+        the ratings for each capability assessment on the end date.
+            The same structure as the start_date attribute.
+    """
+    start_date: List[Dict[str, Any]]
+    end_date: List[Dict[str, Any]]
+
+@router.post("/historical-graph-data", response_model=HistoricalGraphData)
+def get_historical_ratings_for_graph(
+        capability_assessment_ids: List[int],
+        start_date: datetime,
+        end_date: datetime,
+        db_session: Session = Depends(get_db)
+) -> HistoricalGraphData:
+    """
+    Retrieves historical ratings for a list of capability assessments 
+    on two specific dates for comparison in graph form.
+    """
+    try:
+        results = {}
+        for date_label, target_date in [("start_date", start_date), ("end_date", end_date)]:
+            results[date_label] = get_historical_ratings_aggregate(
+                capability_assessment_ids=capability_assessment_ids,
+                target_date=target_date,
+                db_session=db_session
+            )
+
+        return HistoricalGraphData(**results)
+
+    except ValueError as ve:
+        logger.exception("Value error in historical graph data retrieval: %s", ve)
+        raise HTTPException(status_code=400, detail="Invalid input value") from ve
+    except KeyError as ke:
+        logger.exception("Key error in historical graph data retrieval: %s", ke)
+        raise HTTPException(status_code=500, detail="Data retrieval error") from ke
+    except Exception as error:
+        logger.exception("Unexpected error in historical graph data retrieval: %s", error)
         raise HTTPException(status_code=500, detail="Internal Server Error") from error

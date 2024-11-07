@@ -11,7 +11,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
  */
 const AccModelSelector = ({ accModels, selectedAccModel, handleSelect }) => {
   return (
-    <FormControl fullWidth margin="normal" variant="outlined">
+    <FormControl sx={{ width: "400px" }} margin="normal" variant="outlined">
       <InputLabel id="acc-model-select-label">Select ACC Model</InputLabel>
       <Select
         labelId="acc-model-select-label"

@@ -494,25 +494,22 @@ const Ratings = () => {
   };
 
   return (
-    // The main container for the page.
     <Container
       maxWidth="xl"
-      className="custom-container"
+      classname="custom-container"
     >
-      {/* The title of the page */}
       <Typography
         variant="h4"
         component="h1"
         gutterBottom
         sx={{ color: "primary.main" }}
       >
-        Assess Software Capabilities      
+        Rate Software Capabilities      
       </Typography>
 
-      {/* The description for the page. */}
       <Typography 
         variant="body1"
-        style={{ marginBottom: "1.5rem", color: "#7f8c8d" }}
+        style={{ marginBottom: "1.5rem", color: "primary.main" }}
       >
         Rate the effectiveness of each Capability based on its performance. Your
         ratings help assess how well each feature meets the intended quality
@@ -525,22 +522,23 @@ const Ratings = () => {
         bottom of the page to save your ratings
       </Typography>
 
-      {/* Dropdown to select an ACC model. */}
+      <Box display="flex" justifyContent="flex-start" mb={3}>
       <TextField
         select
         label="Select ACC Model"
         value={selectedAccModel}
         onChange={(e) => setSelectedAccModel(e.target.value)}
-        fullWidth
+        variant="outlined"
         margin="normal"
+        sx={{ width: "400px" }}
       >
-        {/* Generate options for each ACC model. */}
         {accModels.map((model) => (
           <MenuItem key={model.id} value={model.id}>
             {model.name}
           </MenuItem>
         ))}
       </TextField>
+      </Box>
         
       {/* Container for the table that displays the ratings */}
       <TableContainer 
@@ -559,8 +557,8 @@ const Ratings = () => {
                   fontSize: "1rem",
                   fontWeight: "bold",
                   border: "1px solid #ddd",
-                  color: "#283593",
-                  backgroundColor: "#d0d0d0",
+                  color: 'primary.main',
+                  backgroundColor: "#E4EFED",
                   position: "sticky",
                   left: 0,
                   zIndex: 3,
@@ -574,11 +572,11 @@ const Ratings = () => {
                   key={attribute.id}
                   style={{
                     width: "180px", // Fixed width for each attribute column
-                    fontSize: "1rem",
+                    fontSize: "1.25rem",
                     fontWeight: "bold",
                     border: "1px solid #ddd",
-                    color: "#283593",
-                    backgroundColor: "#d0d0d0",
+                    color: "#2E403B",
+                    backgroundColor: "#E4EFED",
                     minWidth: "150px", // Ensures each column has a minimum width
                     overflowWrap: "break-word", // Allow long text to wrap
                     whiteSpace: "normal", // Prevents long words from overflowing
@@ -601,12 +599,12 @@ const Ratings = () => {
                 <TableRow>
                   <TableCell
                     style={{ 
-                      fontSize: "1.125rem",
+                      fontSize: "1rem",
                       border: "1px solid #ddd",
                       position: "sticky",
                       left: 0,
                       zIndex: 1,
-                      backgroundColor: "#d0d0d0",
+                      backgroundColor: "#E4EFED",
                     }}
                   >
                     <Box display="flex" alignItems="center">
@@ -655,7 +653,7 @@ const Ratings = () => {
                             position: "sticky",
                             left: 0,
                             zIndex: 3,
-                            backgroundColor: "#d0d0d0",
+                            backgroundColor: "#E4EFED",
                           }}
                         >
                           {capability.name}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 import AccModelSelector from "../components/capabilities/AccModelSelector";
 import CapabilityForm from "../components/capabilities/CapabilityForm";
 import CapabilityList from "../components/capabilities/CapabilityList";
@@ -167,7 +167,7 @@ const Capabilities = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+    <Container maxWidth="xl" classname="custom-container">
       <Typography
         variant="h4"
         component="h1"
@@ -178,15 +178,18 @@ const Capabilities = () => {
       </Typography>
       <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
         Capabilities are the specific features or functionalities (verbs) that
-        each Component has, such as "Add User", "Process Payment." etc. They
+        each Component has, such as "Add User", "Process Payment." etc. <br /> They
         help define what each Component can do.
       </Typography>
 
+      <Box display="flex" justifyContent="flex-start" mb={3}>
       <AccModelSelector
         accModels={accModels}
         selectedAccModel={selectedAccModel}
         onSelectAccModel={setSelectedAccModel}
       />
+      </Box>
+
       <CapabilityList
         components={components}
         capabilities={capabilities}

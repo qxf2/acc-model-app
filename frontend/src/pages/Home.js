@@ -4,429 +4,190 @@ import {
   Typography,
   Grid,
   Button,
-  Card,
-  CardContent,
   Box,
   Link as MuiLink,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { Settings, ListAlt, Assessment } from "@mui/icons-material";
 
-/**
- * The Home component is the main page of the application. It serves as a
- * landing page that introduces the user to the application and provides links
- * to the core functions of the application.
- *
- * The page is divided into three main sections: the hero section, the main
- * sections, and the assessment section. The hero section provides a brief
- * overview of the application and its benefits. The main sections provide links
- * to the core functions of the application, such as defining attributes,
- * listing components, and mapping capabilities. The assessment section
- * provides links to the ratings and dashboard pages.
- *
- * The page also includes a footer section that provides links to the
- * application's GitHub repository and the company's website.
- */
+const styles = {
+  heroSection: {
+    backgroundColor: "#708C70", // Sage green color
+    width: "100vw",
+    minHeight: "50vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    position: "relative",
+    left: "50%",
+    marginLeft: "-50vw",
+    padding: "4rem 2rem",
+    textAlign: "center",
+  },
+  mainContainer: {
+    width: "100%",
+    maxWidth: "100vw",
+    overflowX: "hidden",
+  },
+  actionButton: {
+    margin: "0.5rem 1rem",
+    padding: "0.5rem 2rem",
+    backgroundColor: "#D1C6AD",
+    color: "#34495e",
+    fontWeight: "bold",
+    "&:hover": {
+      backgroundColor: "#B0A17F",
+    },
+  },
+};
+
 const Home = () => {
   return (
-    <Container>
+    <Container style={styles.mainContainer}>
       {/* Hero Section */}
-      <Box sx={{ padding: 6, marginBottom: 6, borderRadius: "8px" }}>
-        <Typography
-          variant="h3"
-          align="center"
-          sx={{ fontWeight: "bold", color: "#2c3e50", marginBottom: 2 }}
-        >
-          Streamline your software evaluation.
+      <Box sx={styles.heroSection}>
+        <Typography variant="h3" sx={{ fontWeight: "bold", color: "#ffffff" }}>
+          Simplify Your Software Evaluation
         </Typography>
         <Typography
           variant="h6"
-          align="center"
-          sx={{ color: "#7f8c8d", marginBottom: 4 }}
+          sx={{ color: "#f0f0f0", marginBottom: "2rem", maxWidth: "75%"}}
         >
-          Effortlessly build a structured{" "}
-          <MuiLink
-            href="https://qxf2.com/where-start-testing"
-            target="_blank"
-            sx={{ textDecoration: "none", color: "#3498db" }}
-          >
-            ACC model
-          </MuiLink>{" "}
-          offering clarity and coverage for effective testing.
+          Effortlessly build a structured ACC model offering clarity and
+          coverage for effective testing.
         </Typography>
-
-        <Typography variant="h6" align="center" gutterBottom>
-          To get started, please{" "}
-          <MuiLink
-            href="/registration"
-            sx={{ textDecoration: "none", color: "#3498db" }}
+        <Box display="flex" justifyContent="center" gap={2}>
+          <Button
+            component={Link}
+            to="/registration"
+            variant="contained"
+            sx={styles.actionButton}
           >
-            register
-          </MuiLink>{" "}
-          or{" "}
-          <MuiLink
-            href="/token"
-            sx={{ textDecoration: "none", color: "#3498db" }}
+            Register
+          </Button>
+          <Button
+            component={Link}
+            to="/token"
+            variant="contained"
+            sx={styles.actionButton}
           >
-            login
-          </MuiLink>{" "}
-          if you already have an account.
-          <br />
-          Start by creating an ACC Model, then break down the project into
-          Components and Capabilities.
+            Login
+          </Button>
+        </Box>
+        <Typography
+          variant="body1"
+          sx={{ color: "#FCFCFC", marginTop: "2rem", maxWidth: "80%"}}
+        >
+          Start by creating an ACC Model, then define key Attributes, add
+          Components, and map Capabilities.
         </Typography>
+        <Button
+            component={Link}
+            to="/acc-models"
+            variant="contained"
+            sx={styles.actionButton}
+          >
+            Get Started
+          </Button>
       </Box>
 
-      {/* Main Sections */}
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{ color: "#2980b9", marginBottom: 4 }}
+      {/* Main Content - Features Section */}
+      <Box sx={{ backgroundColor: "#f8f8f8", padding: "4rem 2rem" }}>
+        <Grid container spacing={4} justifyContent="center">
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              sx={{
+                padding: 2,
+                boxShadow: 3,
+                borderRadius: 2,
+                backgroundColor: "#ffffff",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", marginBottom: 1 }}
+              >
+                Submit Ratings
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Rate and evaluate each component for accurate insights.
+              </Typography>
+              <Button
+                component={Link}
+                to="/ratings"
+                variant="contained"
+                sx={{ marginTop: 2, backgroundColor: "#708C70" }}
+              >
+                Go to Ratings
+              </Button>
+            </Box>
+          </Grid>
+
+          {/* New Feature Card for Dashboard */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              sx={{
+                padding: 2,
+                boxShadow: 3,
+                borderRadius: 2,
+                backgroundColor: "#ffffff",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", marginBottom: 1 }}
+              >
+                Dashboard
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                View a comprehensive overview of your project ratings.
+              </Typography>
+              <Button
+                component={Link}
+                to="/dashboard"
+                variant="contained"
+                sx={{ marginTop: 2, backgroundColor: "#708C70" }}
+              >
+                Go to Dashboard
+              </Button>
+            </Box>
+          </Grid>
+
+          {/* New Feature Card for Ratings Trends */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Box
+              sx={{
+                padding: 2,
+                boxShadow: 3,
+                borderRadius: 2,
+                backgroundColor: "#ffffff",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", marginBottom: 1 }}
+              >
+                Ratings Trends
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                Track ratings over time and analyze historical data.
+              </Typography>
+              <Button
+                component={Link}
+                to="/historical-comparison"
+                variant="contained"
+                sx={{ marginTop: 2, backgroundColor: "#708C70" }}
+              >
+                Go to Trends
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Box
+        sx={{ padding: 2, marginTop: 6, textAlign: "center", color: "black" }}
       >
-        Core Functions
-      </Typography>
-      <Grid container spacing={4} justifyContent="center">
-        <Grid item xs={12} sm={6} md={4}>
-          <Card
-            sx={{
-              boxShadow: 3,
-              minHeight: "220px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              transition: "0.3s",
-              "&:hover": {
-                boxShadow: 6,
-                border: "2px solid #3498db",
-              },
-            }}
-          >
-            <CardContent
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box>
-                <Box display="flex" alignItems="center" marginBottom={2}>
-                  <Settings
-                    color="primary"
-                    fontSize="large"
-                    sx={{ marginRight: 2 }}
-                  />
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", color: "#34495e" }}
-                  >
-                    Define Attributes
-                  </Typography>
-                </Box>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  Specify the core qualities that describe your product.
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                sx={{ marginTop: "auto" }}
-              >
-                <Button
-                  component={Link}
-                  to="/attributes"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#3498db",
-                    "&:hover": {
-                      backgroundColor: "#2980b9",
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
-                >
-                  Go to Attributes
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Card
-            sx={{
-              boxShadow: 3,
-              minHeight: "220px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              transition: "0.3s",
-              "&:hover": {
-                boxShadow: 6,
-                border: "1px solid #3498db",
-              },
-            }}
-          >
-            <CardContent
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box>
-                <Box display="flex" alignItems="center" marginBottom={2}>
-                  <ListAlt
-                    color="primary"
-                    fontSize="large"
-                    sx={{ marginRight: 2 }}
-                  />
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", color: "#34495e" }}
-                  >
-                    List Components
-                  </Typography>
-                </Box>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  Break down your project into major sections or modules.
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                sx={{ marginTop: "auto" }}
-              >
-                <Button
-                  component={Link}
-                  to="/components"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#3498db",
-                    "&:hover": {
-                      backgroundColor: "#2980b9",
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
-                >
-                  Go to Components
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Card
-            sx={{
-              boxShadow: 3,
-              minHeight: "220px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              transition: "0.3s",
-              "&:hover": {
-                boxShadow: 6,
-                border: "2px solid #3498db",
-              },
-            }}
-          >
-            <CardContent
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box>
-                <Box display="flex" alignItems="center" marginBottom={2}>
-                  <Assessment
-                    color="primary"
-                    fontSize="large"
-                    sx={{ marginRight: 2 }}
-                  />
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", color: "#34495e" }}
-                  >
-                    Map Capabilities
-                  </Typography>
-                </Box>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  Identify the features of each component.
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                sx={{ marginTop: "auto" }}
-              >
-                <Button
-                  component={Link}
-                  to="/capabilities"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#3498db",
-                    "&:hover": {
-                      backgroundColor: "#2980b9",
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
-                >
-                  Go to Capabilities
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Assessment Section */}
-      <Typography
-        variant="h4"
-        align="center"
-        gutterBottom
-        sx={{ color: "#2980b9", marginTop: 6 }}
-      >
-        Assess Your Project
-      </Typography>
-      <Grid container spacing={4} justifyContent="center">
-        <Grid item xs={12} sm={6} md={4}>
-          <Card
-            sx={{
-              boxShadow: 3,
-              minHeight: "220px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              transition: "0.3s",
-              "&:hover": {
-                boxShadow: 6,
-                border: "2px solid #3498db",
-              },
-            }}
-          >
-            <CardContent
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box>
-                <Box display="flex" alignItems="center" marginBottom={2}>
-                  <Assessment
-                    color="primary"
-                    fontSize="large"
-                    sx={{ marginRight: 2 }}
-                  />
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", color: "#34495e" }}
-                  >
-                    Rate Capabilities
-                  </Typography>
-                </Box>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  Evaluate and rate the effectiveness of each capability.
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                sx={{ marginTop: "auto" }}
-              >
-                <Button
-                  component={Link}
-                  to="/ratings"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#3498db",
-                    "&:hover": {
-                      backgroundColor: "#2980b9",
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
-                >
-                  Go to Ratings
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <Card
-            sx={{
-              boxShadow: 3,
-              minHeight: "220px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              transition: "0.3s",
-              "&:hover": {
-                boxShadow: 6,
-                border: "2px solid #3498db",
-              },
-            }}
-          >
-            <CardContent
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <Box>
-                <Box display="flex" alignItems="center" marginBottom={2}>
-                  <Assessment
-                    color="primary"
-                    fontSize="large"
-                    sx={{ marginRight: 2 }}
-                  />
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: "bold", color: "#34495e" }}
-                  >
-                    View Ratings
-                  </Typography>
-                </Box>
-                <Typography variant="body2" color="textSecondary" paragraph>
-                  See a consolidated view of ratings to understand overall
-                  performance and areas for improvement.
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                sx={{ marginTop: "auto" }}
-              >
-                <Button
-                  component={Link}
-                  to="/dashboard"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#3498db",
-                    "&:hover": {
-                      backgroundColor: "#2980b9",
-                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
-                    },
-                  }}
-                >
-                  Go to Dashboard
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-
-      {/* Footer */}
-      <Box sx={{ padding: 2, marginTop: 6, textAlign: "center", color: "black" }}>
         <Typography variant="body2">
           Developed by{" "}
           <MuiLink href="https://www.qxf2.com" target="_blank" color="inherit">

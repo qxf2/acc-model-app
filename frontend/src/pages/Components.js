@@ -133,7 +133,7 @@ const Components = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+    <Container maxWidth="xl" classname="custom-container">
       <Typography
         variant="h4"
         component="h1"
@@ -144,20 +144,22 @@ const Components = () => {
       </Typography>
       <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
         Components are the major sections or building blocks (nouns) of your
-        product such as "User Management," "Shopping Cart," etc. They represent
+        product such as "User Management," "Shopping Cart," etc. <br />They represent
         the core structural pieces that make up the project.
       </Typography>
       <Typography variant="body2" color="textSecondary" paragraph>
         Remember to create an ACC Model first before listing components.
       </Typography>
 
+      <Box display="flex" justifyContent="flex-start" mb={3}>
       <AccModelSelector
         accModels={accModels}
         selectedAccModel={selectedAccModel}
         handleSelect={setSelectedAccModel}
       />
+      </Box>
 
-      <Box display="flex" justifyContent="flex-end" mb={2}>
+      <Box display="flex" justifyContent="flex-start" mt={1} mb={3}>
         <Button
           variant="contained"
           color="primary"
