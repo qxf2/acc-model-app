@@ -33,6 +33,19 @@ def test_create_acc_model_and_component(test_api_obj):
             negative=f"Failed to create ACC model. Response: {response.json() if response else response}"
         )
 
+        # set authentication details
+        attribute_details = conf.attribute_details
+
+        # Call create_attribute and get the response
+        response = test_api_obj.create_attribute(attribute_details=attribute_details, auth_details=auth_details)
+
+        result_flag = response.status_code == 200 and 'id' in response.json()
+        test_api_obj.log_result(
+            result_flag,
+            positive=f"Successfully created attribute with details: {response.json()}",
+            negative=f"Failed to create attribute with response: {response.json() if response else response}"
+        )
+
         if acc_model_result_flag:
             component_details = {
                 'name': 'Board',
