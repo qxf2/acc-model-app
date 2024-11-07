@@ -1,14 +1,17 @@
-2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created attribute with details: {'name': 'Fast_20241106_214304', 'description': 'test', 'id': 23}
-2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
+2024-11-07 14:58:30 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created ACC model with ID: 296
+2024-11-07 14:58:30 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
 
-2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | 
+2024-11-07 14:58:30 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created component with details: {'name': 'Board', 'description': 'test', 'acc_model_id': 296, 'id': 11}
+2024-11-07 14:58:30 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-11-07 14:58:30 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | 
 ************************
 --------RESULT--------
-Total number of checks=1
-2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of checks passed=1
+Total number of checks=2
+2024-11-07 14:58:31 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of checks passed=2
 ----------------------
 ************************
 
 
-2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks=0
-2024-11-06 21:43:07 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0
+2024-11-07 14:58:31 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks=0
+2024-11-07 14:58:31 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0

@@ -288,9 +288,11 @@ class APIPlayer(Results):
         return response
     
 
-    def create_component(self, Component_details, auth_details=None):
-        "adds a new component"
+    # In APIPlayer class
+    def create_component(self, component_details, auth_details=None):
+        "Adds a new component"
         result_flag = False
-        headers = self.set_header_details(auth_details)
-        response = self.api_obj.create_attribute(data=component_details, headers=headers)
+        headers = self.set_header_details(auth_details)  # Set up headers from auth_details
+        response = self.api_obj.create_component(data=component_details, headers=headers)  # Call the endpoint
         return response
+
