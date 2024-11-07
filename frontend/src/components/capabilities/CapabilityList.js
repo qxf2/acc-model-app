@@ -4,8 +4,8 @@ import {
   Button,
   Card,
   CardContent,
-  Grid,
   Typography,
+  Stack,
 } from "@mui/material";
 
 /**
@@ -21,13 +21,13 @@ const CapabilityList = ({
   onCreate,
 }) => {
   return (
-    <>
+    <Stack spacing={4} sx={{ maxWidth: "80%", ml: 0 }}>
       {components.map((component) => (
-        <Box key={component.id} mb={4}>
-          <Typography variant="h6" style={{ color: "#3f51b5" }} gutterBottom>
-            {component.name}
-          </Typography>
-          <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Box key={component.id}>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Typography variant="h6" style={{ color: "#1B3A34", fontSize: "1.5rem" }} gutterBottom>
+              {component.name}
+            </Typography>
             <Button
               variant="contained"
               color="primary"
@@ -36,55 +36,53 @@ const CapabilityList = ({
               Create New Capability
             </Button>
           </Box>
-          <Grid container spacing={2}>
+          <Stack spacing={2}>
             {capabilities[component.id] &&
               capabilities[component.id].map((capability) => (
-                <Grid item xs={12} key={capability.id}>
-                  <Card>
-                    <CardContent>
-                      <Box
-                        display="flex"
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <Box>
-                          <Typography variant="h6">
-                            {capability.name}
-                          </Typography>
-                          <Typography color="textSecondary">
-                            {capability.description}
-                          </Typography>
-                        </Box>
-                        <Box>
-                          <Button
-                            variant="outlined"
-                            color="primary"
-                            size="small"
-                            onClick={() => onEdit(component.id, capability)}
-                            style={{ marginRight: "8px" }}
-                          >
-                            Edit
-                          </Button>
-                          <Button
-                            variant="outlined"
-                            color="secondary"
-                            size="small"
-                            onClick={() =>
-                              onDelete(capability.id, component.id)
-                            }
-                          >
-                            Delete
-                          </Button>
-                        </Box>
+                <Card key={capability.id} sx={(theme) => theme.customCard}>
+                  <CardContent>
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Box>
+                        <Typography variant="h6">
+                          {capability.name}
+                        </Typography>
+                        <Typography color="textSecondary">
+                          {capability.description}
+                        </Typography>
                       </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                      <Box>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          size="small"
+                          onClick={() => onEdit(component.id, capability)}
+                          sx={{ marginRight: 1 }} // Use MUI's spacing system
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          size="small"
+                          onClick={() =>
+                            onDelete(capability.id, component.id)
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
               ))}
-          </Grid>
+          </Stack>
         </Box>
       ))}
-    </>
+    </Stack>
   );
 };
 

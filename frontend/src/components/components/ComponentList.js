@@ -2,10 +2,10 @@ import React from "react";
 import {
   Card,
   CardContent,
-  Grid,
   Typography,
   Box,
   Button,
+  Stack,
 } from "@mui/material";
 
 /**
@@ -21,47 +21,41 @@ import {
  */
 const ComponentList = ({ components, handleOpenModal, handleOpenDialog }) => {
   return (
-    <Grid container spacing={2}>
+    <Stack spacing={2} sx={{ maxWidth: "80%", ml: 0 }}>
       {components.map((component) => (
-        <Grid item xs={12} key={component.id}>
-          <Card>
-            <CardContent>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Typography variant="h6">{component.name}</Typography>
-                  <Typography color="textSecondary">
-                    {component.description}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    onClick={() => handleOpenModal(component)}
-                    style={{ marginRight: "8px" }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    onClick={() => handleOpenDialog(component.id)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
+        <Card key={component.id} sx={(theme) => theme.customCard}>
+          <CardContent>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box>
+                <Typography variant="h6">{component.name}</Typography>
+                <Typography color="textSecondary">
+                  {component.description}
+                </Typography>
               </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+              <Box>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={() => handleOpenModal(component)}
+                  sx={{ marginRight: 1 }} // Use MUI's spacing system
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  size="small"
+                  onClick={() => handleOpenDialog(component.id)}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
       ))}
-    </Grid>
+    </Stack>
   );
 };
 

@@ -2,7 +2,7 @@ import React from "react";
 import {
   Card,
   CardContent,
-  Grid,
+  Stack,
   Typography,
   Box,
   Button,
@@ -21,47 +21,42 @@ import {
  */
 const AccModelList = ({ models, handleOpenModal, handleOpenDialog }) => {
   return (
-    <Grid container spacing={2}>
+    <Stack spacing={2} sx={{ maxWidth: "80%", ml: 0 }}> {/* Left-aligned */}
       {models.map((model) => (
-        <Grid item xs={12} key={model.id}>
-          <Card>
-            <CardContent>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Typography variant="h6">{model.name}</Typography>
-                  <Typography color="textSecondary">
-                    {model.description}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    onClick={() => handleOpenModal(model)}
-                    style={{ marginRight: "8px" }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    onClick={() => handleOpenDialog(model.id)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
+        <Card
+          key={model.id}
+          sx={(theme) => theme.customCard} // Custom card style from theme
+        >
+          <CardContent>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box>
+                <Typography variant="h6">{model.name}</Typography>
+                <Typography color="textSecondary">{model.description}</Typography>
               </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+              <Box>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={() => handleOpenModal(model)}
+                  sx={{ marginRight: 1 }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  size="small"
+                  onClick={() => handleOpenDialog(model.id)}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
       ))}
-    </Grid>
+    </Stack>
   );
 };
 

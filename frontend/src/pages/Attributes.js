@@ -113,7 +113,7 @@ const Attributes = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
+    <Container maxWidth="xl" classname="custom-container">
       <Typography
         variant="h4"
         component="h1"
@@ -124,11 +124,11 @@ const Attributes = () => {
       </Typography>
       <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
         Attributes are the qualities or characteristics (adjectives) that
-        describe the desired properties of your product, such as "Accuracy,"
-        "Responsiveness," or "User-Friendly." They help define the key qualities
+        describe the desired properties of your product, such as "Accuracy," or
+        "Responsiveness." <br />They help define the key qualities
         that are important for your project.
       </Typography>
-      <Box display="flex" justifyContent="flex-end" mb={2}>
+      <Box display="flex" justifyContent="flex-start" mt={1} mb={3}>
         <Button
           variant="contained"
           color="primary"
