@@ -30,4 +30,9 @@ class AccAPIEndpoints(BaseAPI):
         url = self.acc_url('/components')
         response = self.post(url, json=data, headers=headers)
         return response
-
+    
+    def create_capability(self, data, headers):
+        "Adds a new component"
+        url = self.acc_url('/capabilities')
+        response = self.post(url, json=data, headers=headers)
+        return response

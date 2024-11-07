@@ -1,20 +1,23 @@
-2024-11-07 23:13:52 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created ACC model with ID: 305
-2024-11-07 23:13:52 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
+2024-11-07 23:31:35 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created ACC model with ID: 308
+2024-11-07 23:31:36 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
 
-2024-11-07 23:13:52 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created attribute with details: {'name': 'Fast_20241107_231350', 'description': 'test', 'id': 37}
-2024-11-07 23:13:52 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
+2024-11-07 23:31:36 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created attribute with details: {'name': 'Fast_20241107_233132', 'description': 'test', 'id': 40}
+2024-11-07 23:31:36 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
 
-2024-11-07 23:13:52 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created component with details: {'name': 'Board', 'description': 'test', 'acc_model_id': 305, 'id': 17}
-2024-11-07 23:13:53 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
+2024-11-07 23:31:36 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created component with ID: 20
+2024-11-07 23:31:36 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
 
-2024-11-07 23:13:53 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | 
+2024-11-07 23:31:36 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | PASS: Successfully created capability with details: {'name': 'New Capability', 'description': 'Capability description', 'component_id': 20, 'id': 8}
+2024-11-07 23:31:37 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-11-07 23:31:37 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | 
 ************************
 --------RESULT--------
-Total number of checks=3
-2024-11-07 23:13:53 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of checks passed=3
+Total number of checks=4
+2024-11-07 23:31:37 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of checks passed=4
 ----------------------
 ************************
 
 
-2024-11-07 23:13:53 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks=0
-2024-11-07 23:13:53 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0
+2024-11-07 23:31:37 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks=0
+2024-11-07 23:31:37 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/api_tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0

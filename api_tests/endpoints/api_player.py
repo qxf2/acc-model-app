@@ -296,3 +296,10 @@ class APIPlayer(Results):
         response = self.api_obj.create_component(data=component_details, headers=headers)  # Call the endpoint
         return response
 
+
+    def create_capability(self, capability_details, auth_details=None):
+        "Adds a new capability"
+        result_flag = False
+        headers = self.set_header_details(auth_details)  # Set up headers from auth_details
+        response = self.api_obj.create_capability(data=capability_details, headers=headers)  # Call the endpoint
+        return response
