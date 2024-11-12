@@ -31,8 +31,23 @@ class AccAPIEndpoints(BaseAPI):
         response = self.post(url, json=data, headers=headers)
         return response
     
+
     def create_capability(self, data, headers):
-        "Adds a new component"
+        "Adds a new capability"
         url = self.acc_url('/capabilities')
+        response = self.post(url, json=data, headers=headers)
+        return response
+
+
+    def get_assessment_id(self, capability_id, attribute_id, headers):
+        "Adds a new rating with capability_id and attribute_id"
+        url = self.acc_url(f'/capability-assessments/?capability_id={capability_id}&attribute_id={attribute_id}')
+        response = self.get(url, headers=headers)
+        return response
+
+
+    def submit_ratings(self, assessment_id, data, headers):
+        "Adds a new rating with assessment_id"
+        url = self.acc_url(f'/capability-assessments/{assessment_id}')
         response = self.post(url, json=data, headers=headers)
         return response
