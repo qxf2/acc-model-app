@@ -36,7 +36,6 @@ def test_api_create_multiple_acc_models(test_api_obj):
                 "description": description
             }
 
-
             # Create an ACC model
             acc_model_response = test_api_obj.create_acc_model(
                 acc_details=acc_details,

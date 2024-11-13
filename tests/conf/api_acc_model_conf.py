@@ -8,9 +8,11 @@ current_timestamp = str(int(time.time()))
 # Bearer token from environment variables
 bearer_token = os.environ.get('bearer_token')
 
+# ACC model details and attribute details
 acc_details = {'name': 'Newsletter App'+current_timestamp, 'description': 'acc model name'}
 attribute_details = {'name': 'Secure'+current_timestamp, 'description': 'attribute for newsletter app'}
 
+# Rating details
 rating_options = [
     "Stable",
     "Acceptable",
@@ -20,7 +22,7 @@ rating_options = [
 ]
 rating_details = random.choice(rating_options)
 
+# Create multiple ACC models
 acc_models_base_name = "DynamicModel"
 base_description = "Dynamic description for ACC model"
 num_models = 3
-
