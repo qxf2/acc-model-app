@@ -1,32 +1,20 @@
-2024-11-12 13:03:02 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created ACC model with ID: 373
-2024-11-12 13:03:02 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+2024-11-13 22:21:44 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created ACC model with ID: {'name': 'DynamicModel_1731516703', 'description': 'Dynamic description for ACC model 1', 'id': 408, 'created_at': '2024-11-13T22:21:43.934666', 'updated_at': '2024-11-13T22:21:43.934672'}
+2024-11-13 22:21:44 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
 
-2024-11-12 13:03:03 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created attribute with details: {'name': 'Fast_12_130258', 'description': 'test', 'id': 105}
-2024-11-12 13:03:03 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+2024-11-13 22:21:44 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created ACC model with ID: {'name': 'DynamicModel_1731516705', 'description': 'Dynamic description for ACC model 2', 'id': 409, 'created_at': '2024-11-13T22:21:44.216197', 'updated_at': '2024-11-13T22:21:44.216202'}
+2024-11-13 22:21:44 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
 
-2024-11-12 13:03:03 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created component with ID: 85
-2024-11-12 13:03:03 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+2024-11-13 22:21:45 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created ACC model with ID: {'name': 'DynamicModel_1731516706', 'description': 'Dynamic description for ACC model 3', 'id': 410, 'created_at': '2024-11-13T22:21:44.733344', 'updated_at': '2024-11-13T22:21:44.733350'}
+2024-11-13 22:21:45 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
 
-2024-11-12 13:03:03 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created capability with details: {'name': 'New Capability', 'description': 'Capability description', 'component_id': 85, 'id': 72}
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
-
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully retrived the rating with details: {'capability_id': 72, 'attribute_id': 105, 'rating': None, 'comments': None, 'id': 5550}
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
-
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully retrieved assessment ID: 5550
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
-
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully submitted rating with details: {'capability_assessment_id': 5550, 'rating': 'Acceptable', 'comments': None, 'timestamp': '2024-11-12T13:03:04.525885', 'id': 37, 'user_id': 1}
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
-
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | 
+2024-11-13 22:21:45 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | 
 ************************
 --------RESULT--------
-Total number of checks=7
-2024-11-12 13:03:04 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of checks passed=7
+Total number of checks=3
+2024-11-13 22:21:45 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of checks passed=3
 ----------------------
 ************************
 
 
-2024-11-12 13:03:05 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of mini-checks=0
-2024-11-12 13:03:05 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0
+2024-11-13 22:21:45 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of mini-checks=0
+2024-11-13 22:21:45 | INFO | /mnt/c/Users/archa/Desktop/acc_api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0

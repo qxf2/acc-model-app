@@ -11,7 +11,7 @@ import urllib.parse
 from .api_interface import APIInterface
 from utils.results import Results
 import random
-from conf import api_example_conf as conf
+from conf import api_acc_model_conf as conf
 
 
 class APIPlayer(Results):

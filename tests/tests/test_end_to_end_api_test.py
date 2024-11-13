@@ -9,7 +9,7 @@ API automated test for ACC model app
 import os
 import sys
 import pytest
-from conf import api_example_conf as conf
+from conf import api_acc_model_conf as conf
 import random
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
@@ -52,8 +52,8 @@ def test_api_end_to_end(test_api_obj):
         # Create a Component only if ACC model creation succeeded
         if acc_model_result_flag:
             component_details = {
-                'name': 'Board',
-                'description': 'test',
+                'name': 'Manage articles',
+                'description': 'Component for newsletter app',
                 'acc_model_id': acc_model_id
             }
             component_response = test_api_obj.create_component(component_details=component_details, auth_details=auth_details)
@@ -69,8 +69,8 @@ def test_api_end_to_end(test_api_obj):
             # Create a Capability dependent on Component ID
             if component_result_flag:
                 capability_details = {
-                    'name': 'New Capability',
-                    'description': 'Capability description',
+                    'name': 'Edit an article',
+                    'description': 'Capability for newsletter app',
                     'component_id': component_id  # Set dependency on the component
                 }
                 capability_response = test_api_obj.create_capability(capability_details=capability_details, auth_details=auth_details)
@@ -117,7 +117,7 @@ def test_api_end_to_end(test_api_obj):
                         rating_payload = {
                             'capability_assessment_id': assessment_id,
                             'rating': rating_details,
-                            'comment': 'Test Comment'
+                            'comment': 'Retrieving rating details'
                         }
 
                         rating_response = test_api_obj.submit_ratings(assessment_id=assessment_id, rating_details=rating_payload, auth_details=auth_details)
