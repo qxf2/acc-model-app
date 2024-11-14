@@ -23,6 +23,11 @@ rating_options = [
 rating_details = random.choice(rating_options)
 
 # Create multiple ACC models
-acc_models_base_name = "DynamicModel"
-base_description = "Dynamic description for ACC model"
+acc_models_base_name = "Survey app"
+base_description = "Creating ACC model name"
 num_models = 3
+
+# Create multiple attributes
+attributes_base_name = "Fast"
+base_description = "Creating attribute name"
+num_attributes = 3
