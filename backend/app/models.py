@@ -85,6 +85,7 @@ class CapabilityAssessment(Base):
     ratings = relationship(
         "Rating", back_populates="capability_assessment", cascade="all, delete-orphan"
     )
+    rating_history = relationship("RatingHistory", back_populates="capability_assessment")
 
 
 class User(Base):
@@ -98,6 +99,7 @@ class User(Base):
     designation = Column(String, nullable=True)
 
     ratings = relationship("Rating", back_populates="user")
+    rating_history = relationship("RatingHistory", back_populates="user")
 
 
 class Rating(Base):
@@ -117,3 +119,21 @@ class Rating(Base):
     capability_assessment = relationship(
         "CapabilityAssessment", back_populates="ratings"
     )
+
+class RatingHistory(Base):
+    """Model representing the history of ratings."""
+    __tablename__ = "rating_history"
+
+    id = Column(Integer, primary_key=True, index=True)
+    rating = Column(String, nullable=False)
+    comments = Column(Text, nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    capability_assessment_id = Column(
+                Integer,
+                ForeignKey("capability_assessments.id"),
+                nullable=False
+    )
+    change_timestamp = Column(DateTime, default=datetime.now, nullable=False)
+
+    user = relationship("User", back_populates="rating_history")
+    capability_assessment = relationship("CapabilityAssessment", back_populates="rating_history")

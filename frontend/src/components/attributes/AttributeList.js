@@ -1,11 +1,11 @@
 import React from "react";
 import {
-  Grid,
   Card,
   CardContent,
   Typography,
   Button,
   Box,
+  Stack,
 } from "@mui/material";
 
 /**
@@ -21,47 +21,42 @@ import {
  */
 const AttributeList = ({ attributes, handleOpenModal, handleOpenDialog }) => {
   return (
-    <Grid container spacing={2}>
+    <Stack spacing={2} sx={{ maxWidth: "80%", ml: 0 }}> {/* Left-aligned */}
       {attributes.map((attribute) => (
-        <Grid item xs={12} key={attribute.id}>
-          <Card>
-            <CardContent>
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box>
-                  <Typography variant="h6">{attribute.name}</Typography>
-                  <Typography color="textSecondary">
-                    {attribute.description}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    size="small"
-                    onClick={() => handleOpenModal(attribute)}
-                    style={{ marginRight: "8px" }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    onClick={() => handleOpenDialog(attribute.id)}
-                  >
-                    Delete
-                  </Button>
-                </Box>
+        <Card
+          key={attribute.id}
+          sx={(theme) => theme.customCard} // Custom card style from theme
+        >
+          <CardContent>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box>
+                <Typography variant="h6">{attribute.name}</Typography>
+                <Typography color="textSecondary">{attribute.description}</Typography>
               </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+              <Box>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onClick={() => handleOpenModal(attribute)}
+                  sx={{ marginRight: 1 }} // Use MUI's spacing system
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  size="small"
+                  onClick={() => handleOpenDialog(attribute.id)}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
       ))}
-    </Grid>
+    </Stack>
   );
 };
 

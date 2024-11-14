@@ -262,10 +262,6 @@ class CommentUpdate(BaseModel):
 class Token(BaseModel):
     """
     Pydantic model representing a token.
-
-    Attributes:
-        access_token (str): The access token.
-        token_type (str): The type of the token.
     """
     access_token: str
     token_type: str
@@ -274,9 +270,29 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """
     Pydantic model representing token data.
-
-    Attributes:
-        username (Union[str, None]): The username associated with the token,
-            or None if the token is not associated with any user.
     """
     username: Union[str, None] = None
+
+class RatingHistoryBase(BaseModel):
+    """
+    Model for common properties of RatingHistory
+    """
+    rating: str
+    comments: Optional[str]
+    user_id: int
+    capability_assessment_id: int
+    change_timestamp: datetime
+
+class RatingHistoryRead(RatingHistoryBase):
+    """
+    Model for reading a RatingHistory
+    """
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+class RatingHistoryCreate(RatingHistoryBase):
+    """
+    Model for creating a RatingHistory
+    """
+    pass

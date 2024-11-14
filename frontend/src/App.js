@@ -7,18 +7,32 @@ import {
 } from "react-router-dom";
 import {
   CssBaseline,
-  Container,
   AppBar,
   Toolbar,
   Typography,
-  Button,
-  Menu,
-  MenuItem,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
   IconButton,
-  Tooltip,
+  Divider,
+  Box,
 } from "@mui/material";
+import {
+  Apps,
+  Dashboard as DashboardIcon,
+  Compare as CompareIcon,
+  RateReview,
+  People,
+  ExitToApp,
+} from "@mui/icons-material";
+
+import Collapse from "@mui/material/Collapse";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+
 import { Link } from "react-router-dom";
-import { Apps, People, ExitToApp } from "@mui/icons-material";
 import AccModels from "./pages/AccModels";
 import Attributes from "./pages/Attributes";
 import Components from "./pages/Components";
@@ -28,35 +42,19 @@ import Dashboard from "./pages/AggregateRatings";
 import Users from "./pages/Users";
 import RegistrationForm from "./pages/RegistrationForm";
 import Login from "./pages/Login";
+import HistoricalComparison from "./pages/HistoricalComparison";
 import { apiRequest } from "./services/apiService";
 import Home from "./pages/Home";
 import "./App.css";
 
-/**
- * The main App component that renders the entire application.
- * It manages the authentication state and renders public or protected routes
- * accordingly.
- *
- * Public routes:
- *  - /
- *  - /token
- *  - /registration
- *  - /dashboard
- *
- * Protected routes:
- *  - /acc-models
- *  - /attributes
- *  - /components
- *  - /capabilities
- *  - /users
- *  - /ratings
- *
- * @returns {React.ReactElement} The rendered App component.
- */
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [openModels, setOpenModels] = useState(true);
+  const toggleModels = () => {
+    setOpenModels(!openModels);
+  };
 
   useEffect(() => {
     const handleAuthentication = async () => {
@@ -110,128 +108,205 @@ function App() {
     localStorage.removeItem("authToken");
     localStorage.removeItem("refreshToken");
     setIsAuthenticated(false);
-    setAnchorEl(null);
   };
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
   };
 
   return (
     <Router>
       <CssBaseline />
-      <AppBar position="static">
-        <Toolbar>
-          <Typography
-            variant="h6"
+      <Box sx={{ display: "flex" }}>
+        {/* Drawer (Left Navigation) */}
+        <Drawer
+          variant="permanent"
+          open={drawerOpen}
+          onClose={toggleDrawer}
+          sx={{
+            width: drawerOpen ? 240 : 60,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerOpen ? 240 : 60,
+              boxSizing: "border-box",
+              backgroundColor: "#2E5D53",
+              color: "white",
+              boxShadow: "2px 0px 5px rgba(0, 0, 0, 0.1)",
+            },
+          }}
+        >
+          <Box
             component={Link}
             to="/"
-            sx={{ flexGrow: 1, textDecoration: "none", color: "inherit" }}
+            sx={{
+              textDecoration: "none",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              py: 2,
+              backgroundColor: "#2E5D53",
+            }}
           >
-            ACC Model App
-          </Typography>
-          <Button color="inherit" component={Link} to="/dashboard">
-            Dashboard
-          </Button>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", color: "white" }}
+            >
+              ACC Model App
+            </Typography>
+          </Box>
 
-          {!isAuthenticated && (
-            <>
-              <Button color="inherit" component={Link} to="/registration">
-                Register
-              </Button>
-              <Button color="inherit" component={Link} to="/token">
-                Login
-              </Button>
-            </>
-          )}
+          <Divider />
 
+          <List>
+            <ListItem component={Link} to="/dashboard">
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+            <ListItem component={Link} to="/historical-comparison">
+              <ListItemIcon>
+                <CompareIcon />
+              </ListItemIcon>
+              <ListItemText primary="Ratings Trends" />
+            </ListItem>
+            <Divider />
+
+            <ListItem component={Link} to="/token">
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Login" />
+            </ListItem>
+
+            <ListItem component={Link} to="/registration">
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Register" />
+            </ListItem>
+
+            {isAuthenticated && (
+              <>
+                <ListItem component={Link} to="/ratings">
+                  <ListItemIcon>
+                    <RateReview />
+                  </ListItemIcon>
+                  <ListItemText primary="Submit Ratings" />
+                </ListItem>
+
+                <Divider />
+
+                <ListItem onClick={toggleModels}>
+                  <ListItemIcon>
+                    <Apps />
+                  </ListItemIcon>
+                  <ListItemText primary="Manage" />
+                  {openModels ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+
+                <Collapse in={openModels} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem component={Link} to="/acc-models" sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <Apps />
+                      </ListItemIcon>
+                      <ListItemText primary="ACC Models" />
+                    </ListItem>
+                    <ListItem component={Link} to="/attributes" sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <Apps />
+                      </ListItemIcon>
+                      <ListItemText primary="Attributes" />
+                    </ListItem>
+                    <ListItem component={Link} to="/components" sx={{ pl: 4 }}>
+                      <ListItemIcon>
+                        <Apps />
+                      </ListItemIcon>
+                      <ListItemText primary="Components" />
+                    </ListItem>
+                    <ListItem
+                      component={Link}
+                      to="/capabilities"
+                      sx={{ pl: 4 }}
+                    >
+                      <ListItemIcon>
+                        <Apps />
+                      </ListItemIcon>
+                      <ListItemText primary="Capabilities" />
+                    </ListItem>
+                  </List>
+                </Collapse>
+                <Divider />
+
+                <ListItem component={Link} to="/users">
+                  <ListItemIcon>
+                    <People />
+                  </ListItemIcon>
+                  <ListItemText primary="Users" />
+                </ListItem>
+              </>
+            )}
+          </List>
+          <Divider />
           {isAuthenticated && (
-            <>
-              <Button color="inherit" component={Link} to="/ratings">
-                Submit Ratings
-              </Button>
-              <Tooltip title="Open Menu">
-                <IconButton color="inherit" onClick={handleMenuClick}>
-                  <Apps />
-                </IconButton>
-              </Tooltip>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-              >
-                <MenuItem
-                  component={Link}
-                  to="/acc-models"
-                  onClick={handleMenuClose}
-                >
-                  ACC Models
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/attributes"
-                  onClick={handleMenuClose}
-                >
-                  Attributes
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/components"
-                  onClick={handleMenuClose}
-                >
-                  Components
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/capabilities"
-                  onClick={handleMenuClose}
-                >
-                  Capabilities
-                </MenuItem>
-              </Menu>
-
-              <Tooltip title="Manage Users">
-                <IconButton color="inherit" component={Link} to="/users">
-                  <People />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="Logout">
-                <IconButton color="inherit" onClick={handleLogout}>
+            <List>
+              <ListItem onClick={handleLogout} sx={{ cursor: "pointer" }}>
+                <ListItemIcon>
                   <ExitToApp />
-                </IconButton>
-              </Tooltip>
-            </>
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItem>
+            </List>
           )}
-        </Toolbar>
-      </AppBar>
-      <Container>
-        <Routes>
-          {/* Public routes: Always accessible */}
-          <Route path="/" element={<Home />} />
-          <Route path="/token" element={<Login onLoginSuccess={handleLoginSuccess} />} />
-          <Route path="/registration" element={<RegistrationForm />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+        </Drawer>
 
-          {/* Protected routes: Only accessible if authenticated */}
-          {isAuthenticated ? (
-            <>
-              <Route path="/acc-models" element={<AccModels />} />
-              <Route path="/attributes" element={<Attributes />} />
-              <Route path="/components" element={<Components />} />
-              <Route path="/capabilities" element={<Capabilities />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/ratings" element={<Ratings />} />
-            </>
-          ) : (
-            <Route path="*" element={<Navigate to="/token" />} />
-          )}
-        </Routes>
-      </Container>
+        {/* Main Content Area */}
+        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <AppBar
+            position="fixed"
+            sx={{ backgroundColor: "#2E5D53", ml: drawerOpen ? 240 : 60 }}
+          >
+            <Toolbar>
+              <IconButton color="inherit" edge="start" onClick={toggleDrawer}>
+                <Apps />
+              </IconButton>
+              <Typography variant="h6" noWrap component="div">
+                ACC Model App
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Toolbar />
+
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/token"
+              element={<Login onLoginSuccess={handleLoginSuccess} />}
+            />
+            <Route path="/registration" element={<RegistrationForm />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route
+              path="/historical-comparison"
+              element={<HistoricalComparison />}
+            />
+
+            {isAuthenticated ? (
+              <>
+                <Route path="/acc-models" element={<AccModels />} />
+                <Route path="/attributes" element={<Attributes />} />
+                <Route path="/components" element={<Components />} />
+                <Route path="/capabilities" element={<Capabilities />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/ratings" element={<Ratings />} />
+              </>
+            ) : (
+              <Route path="*" element={<Navigate to="/token" />} />
+            )}
+          </Routes>
+        </Box>
+      </Box>
     </Router>
   );
 }

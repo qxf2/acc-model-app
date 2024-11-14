@@ -114,8 +114,8 @@ const Users = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="xl" classname="custom-container">
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: "primary.main" }}>
         Manage Users
       </Typography>
       <UserList

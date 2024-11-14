@@ -13,8 +13,8 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Grid,
 } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import {
   fetchACCModels,
@@ -41,11 +41,11 @@ const THRESHOLD_RATING_MAPPING = {
 // Maps rating description to corresponding colors used for visualizations
 const RATING_COLOR_MAPPING = {
   Stable: "#8BC34A", // Green
-  Acceptable: "#A3C1DA",  // Light Blue
+  Acceptable: "#A3C1DA", // Light Blue
   "Low impact": "#f5b877", // Orange
-  "Critical Concern": "#e57373", // Red 
+  "Critical Concern": "#e57373", // Red
   "Not Applicable": "#b0b0b0", // Gray
-  "No Rating": "#FAEBD7", // Antique White
+  "No Rating": "#E0E0E0",
 };
 
 /**
@@ -156,7 +156,7 @@ const Dashboard = () => {
     if (components.length > 0) {
       const fetchCapabilitiesData = async () => {
         try {
-          // Fetch capabilities for all components, (for each component, fetch its associated capabilities and map them to the component ID)
+          // Fetch capabilities for all components
           const allCapabilities = await Promise.all(
             components.map(async (component) => {
               const capabilitiesData = await fetchCapabilitiesByComponent(
@@ -185,9 +185,8 @@ const Dashboard = () => {
     }
   }, [components]); // Runs when 'components' array is updated
 
-  
   /**
-   * Fetches capability assessments and aggregated ratings 
+   * Fetches capability assessments and aggregated ratings
    * when capabilities and attributes are available.
    */
   useEffect(() => {
@@ -222,7 +221,7 @@ const Dashboard = () => {
           const aggregatedRatings = await fetchBulkAggregatedRatings(
             assessmentIds
           );
-          
+
           const aggregatedRatingsMap = {}; // To store rating description for each capability assessment ID
           // Map the aggregated ratings to the assessment IDs
           aggregatedRatings.forEach((rating) => {
@@ -252,7 +251,7 @@ const Dashboard = () => {
    */
   const handleToggleExpand = (componentId) => {
     setExpandedComponents((prevState) => ({
-      ...prevState,   // Copy previous state
+      ...prevState, // Copy previous state
       [componentId]: !prevState[componentId],
     }));
   };
@@ -308,12 +307,7 @@ const Dashboard = () => {
   };
 
   return (
-    // The main container for the page.
-    <Container
-      maxWidth="xl"
-      className="custom-container"
-    >
-      {/* The title of the page. */}
+    <Container maxWidth="xl" classname="custom-container">
       <Typography
         variant="h4"
         component="h1"
@@ -323,10 +317,9 @@ const Dashboard = () => {
         Capability Ratings Dashboard
       </Typography>
 
-      {/* The description of the page. */}
       <Typography
         variant="body1"
-        style={{ marginBottom: "1.5rem", color: "#7f8c8d" }}
+        style={{ marginBottom: "1.5rem", color: "#primary.main" }}
       >
         Review and analyze the consolidated ratings for each capability. This
         dashboard provides an overview of user evaluations across all
@@ -334,30 +327,36 @@ const Dashboard = () => {
         overall performance.
       </Typography>
 
-      {/* Dropdown to select an ACC model. */}
-      <TextField
-        select
-        label="Select ACC Model"
-        value={selectedAccModel}
-        onChange={(e) => setSelectedAccModel(e.target.value)}
-        fullWidth
-        margin="normal"
-      >
-        {/* Generate options for each ACC model. */}
-        {accModels.map((model) => (
-          <MenuItem key={model.id} value={model.id}>
-            {model.name}
-          </MenuItem>
-        ))}
-      </TextField>
-      
+      <Box display="flex" justifyContent="flex-start" mb={3}>
+        <TextField
+          select
+          label="Select ACC Model"
+          value={selectedAccModel}
+          onChange={(e) => setSelectedAccModel(e.target.value)}
+          variant="outlined"
+          margin="normal"
+          sx={{ width: "400px" }}
+        >
+          {accModels.map((model) => (
+            <MenuItem key={model.id} value={model.id}>
+              {model.name}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
+
       {/* Heatmap */}
       {selectedAccModel && (
         <Grid container spacing={3}>
-          <Grid item xs={6}>
-          <Typography variant="h6" component="h2" gutterBottom>
-            Capability Ratings Heatmap
-          </Typography>
+          <Grid xs={6}>
+            <Typography
+              variant="h6"
+              component="h2"
+              gutterBottom
+              style={{ fontWeight: "bold", color: "primary.main" }}
+            >
+              Capability Ratings Heatmap
+            </Typography>
             <TableContainer
               component={Paper}
               style={{
@@ -366,13 +365,11 @@ const Dashboard = () => {
                 overflow: "hidden", // Ensures table does not overflow
                 display: "flex",
                 justifyContent: "center",
-                backgroundColor: "#f2f2f2",
                 padding: "10px",
               }}
             >
               <Table
                 style={{
-                  border: "1px solid #ddd",
                   width: "100%", //Full width to fill the container
                   height: "100%", // Full height to fill the container
                   tableLayout: "fixed",
@@ -401,7 +398,6 @@ const Dashboard = () => {
                                 style={{
                                   backgroundColor: ratingColor,
                                   fontSize: "0.875rem",
-                                  border: "1px solid #ddd",
                                   padding: "2px",
                                 }}
                               >
@@ -418,8 +414,13 @@ const Dashboard = () => {
           </Grid>
 
           {/* Pie Chart */}
-          <Grid item xs={6}>
-            <Typography variant="h6" component="h2" gutterBottom>
+          <Grid xs={6}>
+            <Typography
+              variant="h6"
+              component="h2"
+              gutterBottom
+              style={{ fontWeight: "bold", color: "primary.main" }}
+            >
               Ratings Distribution
             </Typography>
             <Paper
@@ -427,7 +428,6 @@ const Dashboard = () => {
                 height: "300px",
                 width: "100%",
                 padding: "20px",
-                backgroundColor: "#f2f2f2",
               }}
             >
               <Pie data={pieData} options={pieOptions} />
@@ -440,14 +440,19 @@ const Dashboard = () => {
       {selectedAccModel && (
         <Box mt={5}>
           {/* Table to show the component, attribute and capability and their ratings */}
-          <Typography variant="h6" component="h2" gutterBottom>
-          Component and Capability Ratings
-        </Typography>
+          <Typography
+            variant="h6"
+            component="h2"
+            gutterBottom
+            style={{ fontWeight: "bold", color: "primary.main" }}
+          >
+            Component and Capability Ratings
+          </Typography>
           <TableContainer
             component={Paper}
             style={{ marginTop: "2rem", width: "100%", overflow: "auto" }}
           >
-            <Table style={{ border: "1px solid #ddd", tableLayout: "fixed" }}>
+            <Table style={{ tableLayout: "fixed" }}>
               <TableHead>
                 <TableRow>
                   {/* First table cell for Component/Capability names */}
@@ -456,14 +461,11 @@ const Dashboard = () => {
                       width: "200px", // Fixed width for the first column
                       fontSize: "1rem",
                       fontWeight: "bold",
-                      border: "1px solid #aaa",
-                      color: "#283593",
-                      backgroundColor: "#d0d0d0",
+                      backgroundColor: "#E4EFED",
                     }}
                   >
                     {/* Capability/Component Name */}
                   </TableCell>
-
 
                   {/* Show all the attributes as table headers (dynamically render) */}
                   {attributes.map((attribute) => (
@@ -473,13 +475,12 @@ const Dashboard = () => {
                         width: "100px", // Fixed width for each attribute column
                         fontSize: "1rem",
                         fontWeight: "bold",
-                        border: "1px solid #ddd",
-                        color: "#283593",
-                        backgroundColor: "#d0d0d0",
+                        color: "#2E403B",
+                        backgroundColor: "#E4EFED",
                         minWidth: "150px", // Ensures each column has a minimum width
                         overflowWrap: "break-word", // Allow long text to wrap
                         whiteSpace: "normal", // Prevents long words from overflowing
-                      }} 
+                      }}
                     >
                       {attribute.name}
                     </TableCell>
@@ -495,8 +496,7 @@ const Dashboard = () => {
                       <TableCell
                         style={{
                           fontSize: "1.125rem",
-                          border: "1px solid #aaa",
-                          backgroundColor: "#E0E0E0",
+                          backgroundColor: "#E4EFED",
                         }}
                       >
                         <Box display="flex" alignItems="center">
@@ -525,8 +525,7 @@ const Dashboard = () => {
                         <TableCell
                           key={attribute.id}
                           style={{
-                            backgroundColor: "#E0E0E0",
-                            border: "1px solid #aaa",
+                            backgroundColor: "#E4EFED",
                           }}
                         ></TableCell>
                       ))}
@@ -542,8 +541,7 @@ const Dashboard = () => {
                             <TableCell
                               style={{
                                 fontSize: "1rem",
-                                border: "1px solid #aaa",
-                                backgroundColor: "#E0E0E0",
+                                backgroundColor: "#E4EFED",
                               }}
                             >
                               {/* Show the capability name indented */}
@@ -566,7 +564,6 @@ const Dashboard = () => {
                                   style={{
                                     backgroundColor: ratingColor,
                                     fontSize: "0.875rem",
-                                    border: "1px solid #ddd",
                                   }}
                                 >
                                   {ratingDescription}
@@ -577,7 +574,7 @@ const Dashboard = () => {
                         ))}
                   </React.Fragment>
                 ))}
-              </TableBody>            
+              </TableBody>
             </Table>
           </TableContainer>
         </Box>

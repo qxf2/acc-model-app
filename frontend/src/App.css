@@ -1,5 +1,6 @@
 .App {
-  text-align: center;
+  text-align: left;
+  width: 100%;
 }
 
 .App-logo {
@@ -14,14 +15,9 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 2rem;
 }
 
 .App-link {
@@ -41,23 +37,32 @@
   font-size: 1.125rem;
 }
 
-.fixed-column {
-  font-size: 1rem;
-  font-weight: bold;
-  border: 1px solid #ddd;
-  color: #283593;
-  background-color: #f0f0f0;
-  min-width: 150px;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.custom-container {
+  margin-top: 2rem;
+  padding: 0.25rem;
+  width: 100%;
 }
 
-.custom-container {
-  margin-top: 2rem; /* margin at the top */
-  padding-left: 0.25rem; /* remove left padding */
-  padding-right: 0.25rem; /* remove right padding */
-  background-color: #f7f7f7; /* background color */
-  width: 100%; /* make the width 100% */
+.PageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 1rem 2rem;
+}
+
+.toolpad-layout {
+  padding: 0;
+  width: 100%;
+  max-width: none;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.custom-divider {
+  background-color: white;
 }

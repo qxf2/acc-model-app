@@ -97,8 +97,8 @@ const AccModels = () => {
       } else {
         setErrorMessage("An error occurred while saving the model.");
       }
-  }
-};
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -112,11 +112,19 @@ const AccModels = () => {
   };
 
   return (
-    <Container maxWidth="md" style={{ marginTop: "2rem" }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <Container maxWidth="xl" classname="custom-container">
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        sx={{ color: "primary.main" }}
+      >
         ACC Models
       </Typography>
-      <Box display="flex" justifyContent="flex-end" mb={2}>
+      <Typography variant="body1" sx={{ marginBottom: 3, color: "#7f8c8d" }}>
+        ACC Models are the starting point that ties everything together.
+      </Typography>
+      <Box display="flex" justifyContent="flex-start" mt={1} mb={3}>
         <Button
           variant="contained"
           color="primary"
@@ -125,6 +133,7 @@ const AccModels = () => {
           Create New ACC Model
         </Button>
       </Box>
+
       <AccModelList
         models={models}
         handleOpenModal={handleOpenModal}
