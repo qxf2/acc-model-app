@@ -136,7 +136,7 @@ To set up the project locally, follow these instructions:
 
     **Note**: The migration files for the initial setup have already been generated and are included in the repository. You only need to apply the migration.
 
-    Make sure you are in the main project folder. To apply existing migrations, run:
+   To apply existing migrations, run (from the backend folder):
     
     ```bash
     alembic upgrade head
