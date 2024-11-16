@@ -21,15 +21,15 @@ def test_api_create_multiple_acc_models(test_api_obj):
         #acc_models = conf.acc_models  # Use dynamically updated models
         auth_details = test_api_obj.set_auth_details(bearer_token)
 
-        base_name = conf.acc_models_base_name
-        base_description = conf.base_description
+        name = conf.acc_models_name
+        description = conf.acc_models_description
         num_models = conf.num_models
 
         # Iterate and create ACC models dynamically
         for counter in range(num_models):
             current_timestamp = str(int(time.time()) + counter)
-            model_name = f"{base_name}_{current_timestamp}"
-            description = f"{base_description} {counter + 1}"
+            model_name = f"{name}_{current_timestamp}"
+            description = f"{description} {counter + 1}"
             
             acc_details = {
                 "name": model_name,

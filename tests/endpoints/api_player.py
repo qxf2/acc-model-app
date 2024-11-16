@@ -85,3 +85,11 @@ class APIPlayer(Results):
         headers = self.set_header_details(auth_details)
         response = self.api_obj.submit_ratings(assessment_id=assessment_id, data=rating_details, headers=headers)
         return response
+
+
+    def delete_acc_model(self, acc_model_id, auth_details=None):
+        "Deletes an ACC model"
+        result_flag = False
+        headers = self.set_header_details(auth_details)
+        response = self.api_obj.delete_acc_model(acc_model_id=acc_model_id, headers=headers)
+        return response

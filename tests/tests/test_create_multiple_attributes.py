@@ -1,3 +1,8 @@
+"""
+API automated test for ACC model app
+1. Create an ACC model name
+2. Create multiple attributes
+"""
 import os
 import sys
 import pytest
@@ -18,18 +23,17 @@ def test_api_create_multiple_attributes(test_api_obj):
 
         # Set authentication details
         bearer_token = conf.bearer_token
-        #acc_models = conf.acc_models  # Use dynamically updated models
         auth_details = test_api_obj.set_auth_details(bearer_token)
 
-        base_name = conf.attributes_base_name
-        base_description = conf.base_description
+        name = conf.attributes_name
+        description = conf.attributes_description
         num_attributes = conf.num_models
 
         # Iterate and create ACC models dynamically
         for counter in range(num_attributes):
             current_timestamp = str(int(time.time()) + counter)
-            attribute_name = f"{base_name}_{current_timestamp}"
-            description = f"{base_description} {counter + 1}"
+            attribute_name = f"{name}_{current_timestamp}"
+            description = f"{description} {counter + 1}"
             
             attribute_details = {
                 "name": attribute_name,

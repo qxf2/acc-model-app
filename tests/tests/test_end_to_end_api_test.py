@@ -33,7 +33,7 @@ def test_api_end_to_end(test_api_obj):
 
         test_api_obj.log_result(
             acc_model_result_flag,
-            positive=f"Successfully created ACC model with ID: {acc_model_id}",
+            positive=f"Successfully created ACC model with details: {acc_model_response.json()}",
             negative=f"Failed to create ACC model. Response: {acc_model_response.json() if acc_model_response else acc_model_response}"
         )
 
@@ -128,6 +128,18 @@ def test_api_end_to_end(test_api_obj):
                             positive=f"Successfully submitted rating with details: {rating_response.json()}",
                             negative=f"Failed to submit rating with response: {rating_response.json() if rating_response else rating_response}."
                         )
+
+            if acc_model_result_flag:
+                delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id, auth_details=auth_details)
+                delete_result_flag = delete_response and delete_response.status_code == 200
+
+                test_api_obj.log_result(
+                    delete_result_flag,
+                    positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
+                    negative=f"Failed to delete ACC model. Response: {delete_response.json() if delete_response else delete_response}."
+                )
+
+
         # Update pass/fail counters
         expected_pass = test_api_obj.total
         actual_pass = test_api_obj.passed
