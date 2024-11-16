@@ -23,11 +23,29 @@ rating_options = [
 rating_details = random.choice(rating_options)
 
 # Create multiple ACC models
-acc_models_base_name = "Survey app"
-base_description = "Creating ACC model name"
+acc_models_name = "Survey app"
+acc_models_description = "Creating ACC model name"
 num_models = 3
 
 # Create multiple attributes
-attributes_base_name = "Fast"
-base_description = "Creating attribute name"
+attributes_name = "Fast"
+attributes_description = "Creating attribute name"
 num_attributes = 3
+
+# Create multiple components
+components_name = "Add articles"
+components_description = "Creating component name"
+num_components = 3
+
+# Components configuration for dynamic creation
+components = [
+    {"name": "Authentication module", "description": "Handles user authentication"},
+    {"name": "User management module", "description": "Manages user profiles and roles"},
+    {"name": "Notification module", "description": "Sends user notifications and alerts"}
+]
+
+capabilities = [
+    {"name": "Registration", "description": "Description for Capability Registration"},
+    {"name": "Login", "description": "Description for Capability Login"},
+    {"name": "Forget Password", "description": "Description for Capability Forget Password"}
+]
