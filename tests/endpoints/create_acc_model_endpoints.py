@@ -51,3 +51,10 @@ class AccAPIEndpoints(BaseAPI):
         url = self.acc_url(f'/capability-assessments/{assessment_id}')
         response = self.post(url, json=data, headers=headers)
         return response
+
+    
+    def delete_acc_model(self, acc_model_id, headers):
+        "Deletes an ACC model"
+        url = self.acc_url(f'/acc-models/{acc_model_id}')
+        response = self.delete(url, headers=headers)
+        return response
