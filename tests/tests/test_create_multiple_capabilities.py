@@ -33,7 +33,7 @@ def test_create_components_and_capabilities(test_api_obj):
 
         test_api_obj.log_result(
             acc_model_result_flag,
-            positive=f"Successfully created ACC model with ID: {acc_model_id}",
+            positive=f"Successfully created ACC model with details: {acc_model_id.json()}",
             negative=f"Failed to create ACC model. Response: {acc_model_response.json() if acc_model_response else acc_model_response}"
         )
 

@@ -20,7 +20,7 @@ rating_options = [
     "Critical concern",
     "Not applicable"
 ]
-rating_details = random.choice(rating_options)
+rating_options = random.choice(rating_options)
 
 # Create multiple ACC models
 acc_models_name = "Survey app"
@@ -49,3 +49,6 @@ capabilities = [
     {"name": "Login", "description": "Description for Capability Login"},
     {"name": "Forget Password", "description": "Description for Capability Forget Password"}
 ]
+
+rating_details = ['Stable', 'Acceptable', 'Low Impact', 'Critical concern', 'Not applicable']
+

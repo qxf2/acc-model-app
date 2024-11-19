@@ -86,7 +86,7 @@ def test_api_end_to_end(test_api_obj):
                 # Submit a Rating for the Capability and Attribute
                 if capability_result_flag and attribute_result_flag:
                     # Select a random rating from the predefined list
-                    rating_details = conf.rating_details
+                    rating_details = conf.rating_options
                     
                     # Construct the URL with capability_id and attribute_id
                     assessment_response = test_api_obj.get_assessment_id(

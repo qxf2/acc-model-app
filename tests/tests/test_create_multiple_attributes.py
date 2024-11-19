@@ -7,8 +7,7 @@ import os
 import sys
 import pytest
 import time
-from conf import api_acc_model_conf as conf  # Import dynamic acc_models from conf
-
+from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
 
@@ -33,7 +32,6 @@ def test_api_create_multiple_attributes(test_api_obj):
         for counter in range(num_attributes):
             current_timestamp = str(int(time.time()) + counter)
             attribute_name = f"{name}_{current_timestamp}"
-            description = f"{description} {counter + 1}"
             
             attribute_details = {
                 "name": attribute_name,

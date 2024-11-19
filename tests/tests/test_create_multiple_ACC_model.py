@@ -1,9 +1,12 @@
+"""
+API automated test for ACC model app
+1. Create an multiple ACC model name
+"""
 import os
 import sys
 import pytest
 import time
-from conf import api_acc_model_conf as conf  # Import dynamic acc_models from conf
-
+from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
 
@@ -18,7 +21,6 @@ def test_api_create_multiple_acc_models(test_api_obj):
 
         # Set authentication details
         bearer_token = conf.bearer_token
-        #acc_models = conf.acc_models  # Use dynamically updated models
         auth_details = test_api_obj.set_auth_details(bearer_token)
 
         name = conf.acc_models_name
@@ -29,7 +31,6 @@ def test_api_create_multiple_acc_models(test_api_obj):
         for counter in range(num_models):
             current_timestamp = str(int(time.time()) + counter)
             model_name = f"{name}_{current_timestamp}"
-            description = f"{description} {counter + 1}"
             
             acc_details = {
                 "name": model_name,

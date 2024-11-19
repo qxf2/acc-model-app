@@ -11,8 +11,7 @@ import sys
 import pytest
 import time
 import random
-from conf import api_acc_model_conf as conf  # Import dynamic data from conf
-
+from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
 
