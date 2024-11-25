@@ -1,6 +1,6 @@
 """
 API automated test for ACC model app
-Create an multiple ACC model name
+1. Create and delete multiple ACC model names
 """
 import os
 import sys
