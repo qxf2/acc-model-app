@@ -5,6 +5,7 @@ API automated test for ACC model app
 3. Create a component
 4. Create a capability
 5. Submit ratings
+6. Delete the ACC model
 """
 import os
 import sys
