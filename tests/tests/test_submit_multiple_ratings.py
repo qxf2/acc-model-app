@@ -5,7 +5,9 @@ API automated test for ACC model app
 3. Create components for the ACC model
 4. Create capabilities for each component
 5. Submit ratings for capabilities with different ratings
+6. Delete created attributes and an ACC model
 """
+
 import os
 import sys
 import pytest
@@ -15,17 +17,19 @@ from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
 
+
 @pytest.mark.API
-def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_obj):
+def test_submit_ratings(test_api_obj):
     try:
         expected_pass = 0
         actual_pass = -1
 
-        # Step 1: Set authentication details
+        # Set authentication details
         bearer_token = conf.bearer_token
         auth_details = test_api_obj.set_auth_details(bearer_token)
+        created_attribute_ids = []
 
-        # Step 2: Create an ACC model
+        # Create an ACC model
         acc_details = conf.acc_details
         acc_model_response = test_api_obj.create_acc_model(acc_details=acc_details, auth_details=auth_details)
         acc_model_result_flag = acc_model_response and acc_model_response.status_code == 200 and 'id' in acc_model_response.json()
@@ -40,8 +44,7 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
         # Fail test if ACC model creation fails
         assert acc_model_id, "ACC model creation failed. Cannot proceed with the test."
 
-        # Step 3: Create multiple attributes
-        attributes = []
+        # Create multiple attributes
         for counter in range(conf.num_attributes):
             current_timestamp = str(int(time.time()) + counter)
             attribute_name = f"{conf.attributes_name}_{current_timestamp}"
@@ -61,7 +64,7 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
             attribute_id = attribute_response.json().get('id') if attribute_result_flag else None
 
             if attribute_result_flag:
-                attributes.append(attribute_id)
+                created_attribute_ids.append(attribute_id)
 
             test_api_obj.log_result(
                 attribute_result_flag,
@@ -70,9 +73,9 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
             )
 
         # Ensure attributes are created
-        assert attributes, "No attributes were created successfully."
+        assert created_attribute_ids, "No attributes were created successfully."
 
-        # Step 4: Create components
+        # Create components
         component_ids = []
         for component in conf.components:
             component_details = {
@@ -97,7 +100,7 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
         # Ensure components are created
         assert component_ids, "No components were created successfully."
 
-        # Step 5: Create capabilities and submit ratings with different ratings for each capability
+        # Create capabilities and submit ratings with different ratings for each capability
         for component_id in component_ids:
             for capability in conf.capabilities:
                 capability_details = {
@@ -117,13 +120,15 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
                 )
 
                 if capability_result_flag:
-                    for attribute_id in attributes:
-                        # Randomly select a rating from predefined list
-                        rating_details = random.choice(conf.rating_details)  # Random rating from conf.rating_details
+                    for attribute_id in created_attribute_ids:
+                        # Explicitly select a random rating for every submission
+                        selected_rating = random.choice(conf.rating_details)
+                        
+                        # Retrieve assessment ID
                         assessment_response = test_api_obj.get_assessment_id(
                             capability_id=capability_id,
                             attribute_id=attribute_id,
-                            rating_details=rating_details,
+                            rating_details=selected_rating,  # Send selected rating
                             auth_details=auth_details
                         )
 
@@ -140,8 +145,8 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
                             # Submit Rating
                             rating_payload = {
                                 'capability_assessment_id': assessment_id,
-                                'rating': rating_details,
-                                'comment': 'Submitting rating for attribute and capability'
+                                'rating': selected_rating,  # Use the selected rating here
+                                'comment': f'Submitting rating {selected_rating} for attribute {attribute_id} and capability {capability_id}'
                             }
 
                             rating_response = test_api_obj.submit_ratings(
@@ -153,9 +158,38 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
                             rating_result_flag = rating_response and rating_response.status_code == 200
                             test_api_obj.log_result(
                                 rating_result_flag,
-                                positive=f"Successfully submitted rating with details: {rating_response.json()}",
+                                positive=f"Successfully submitted rating {selected_rating} with details: {rating_response.json()}",
                                 negative=f"Failed to submit rating with response: {rating_response.json() if rating_response else rating_response}."
                             )
+
+        # Delete all created attributes
+        unique_attribute_ids = list(set(created_attribute_ids))  # Remove duplicates
+
+        for attribute_id in unique_attribute_ids:
+            try:
+                delete_response = test_api_obj.delete_attribute(attribute_id, auth_details=auth_details)
+
+                delete_result_flag = delete_response and delete_response.status_code in [200, 204]
+
+                test_api_obj.log_result(
+                    delete_result_flag,
+                    positive=f"Successfully deleted attribute with ID: {attribute_id}",
+                    negative=f"Failed to delete attribute with ID: {attribute_id}. Response: {delete_response.json() if delete_response else delete_response}"
+                )
+            except Exception as e:
+                print(f"Error deleting attribute with ID {attribute_id}: {str(e)}")
+                test_api_obj.log_result(False, negative=f"Exception occurred while deleting attribute ID {attribute_id}: {str(e)}")
+
+        # Delete ACC model
+        if acc_model_result_flag:
+            delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id, auth_details=auth_details)
+            delete_result_flag = delete_response and delete_response.status_code == 200
+
+            test_api_obj.log_result(
+                delete_result_flag,
+                positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
+                negative=f"Failed to delete ACC model. Response: {delete_response.json() if delete_response else delete_response}."
+            )
 
         # Update pass/fail counters
         expected_pass = test_api_obj.total
@@ -174,5 +208,6 @@ def test_acc_model_with_attributes_components_capabilities_and_ratings(test_api_
     assert expected_pass > 0, f"No checks were executed in the test: {__file__}"
     assert expected_pass == actual_pass, f"Test failed: {__file__}"
 
+
 if __name__ == '__main__':
-    test_acc_model_with_attributes_components_capabilities_and_ratings()
+    test_submit_ratings()

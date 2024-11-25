@@ -5,8 +5,9 @@ API automated test for ACC model app
 3. Create a component
 4. Create a capability
 5. Submit ratings
-6. Delete the ACC model
+6. Delete an ACC model
 """
+
 import os
 import sys
 import pytest
@@ -14,6 +15,7 @@ from conf import api_acc_model_conf as conf
 import random
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
+
 
 @pytest.mark.API
 def test_api_end_to_end(test_api_obj):
@@ -130,6 +132,7 @@ def test_api_end_to_end(test_api_obj):
                             negative=f"Failed to submit rating with response: {rating_response.json() if rating_response else rating_response}."
                         )
 
+            # Delete ACC model
             if acc_model_result_flag:
                 delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id, auth_details=auth_details)
                 delete_result_flag = delete_response and delete_response.status_code == 200
@@ -140,6 +143,7 @@ def test_api_end_to_end(test_api_obj):
                     negative=f"Failed to delete ACC model. Response: {delete_response.json() if delete_response else delete_response}."
                 )
 
+            # Delete attributes
             if attribute_result_flag:
                 delete_response = test_api_obj.delete_attribute(attribute_id=attribute_id, auth_details=auth_details)
                 delete_result_flag = delete_response and delete_response.status_code == 200

@@ -2,6 +2,7 @@
 API automated test for ACC model app
 1. Create and delete multiple ACC model names
 """
+
 import os
 import sys
 import pytest
@@ -10,8 +11,9 @@ from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
 
+
 @pytest.mark.API
-def test_api_create_multiple_acc_models(test_api_obj):
+def test_create_and_delete_multiple_acc_models(test_api_obj):
     """
     Run API test for creating multiple ACC models using dynamic names.
     """
@@ -27,7 +29,7 @@ def test_api_create_multiple_acc_models(test_api_obj):
         num_models = conf.num_models
         created_model_ids = []
 
-        # Step 1: Create ACC models
+        # Create ACC models
         for counter in range(num_models):
             current_timestamp = str(int(time.time()) + counter)
             model_name = f"{name}_{current_timestamp}"
@@ -104,4 +106,4 @@ def test_api_create_multiple_acc_models(test_api_obj):
 
 
 if __name__ == '__main__':
-    test_api_create_multiple_acc_models()
+    test_create_and_delete_multiple_acc_models()

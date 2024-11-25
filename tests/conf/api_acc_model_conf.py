@@ -13,14 +13,14 @@ acc_details = {'name': 'Newsletter App'+current_timestamp, 'description': 'acc m
 attribute_details = {'name': 'Secure'+current_timestamp, 'description': 'attribute for newsletter app'}
 
 # Rating details
-rating_options = [
+rating_details = [
     "Stable",
     "Acceptable",
     "Low Impact",
     "Critical concern",
     "Not applicable"
 ]
-rating_options = random.choice(rating_options)
+rating_options = random.choice(rating_details)
 
 # Create multiple ACC models
 acc_models_name = "Survey app"
@@ -49,6 +49,3 @@ capabilities = [
     {"name": "Login", "description": "Description for Capability Login"},
     {"name": "Forget Password", "description": "Description for Capability Forget Password"}
 ]
-
-rating_details = ['Stable', 'Acceptable', 'Low Impact', 'Critical concern', 'Not applicable']
-

@@ -58,3 +58,11 @@ class AccAPIEndpoints(BaseAPI):
         url = self.acc_url(f'/acc-models/{acc_model_id}')
         response = self.delete(url, headers=headers)
         return response
+
+
+    def delete_attribute(self, attribute_id, headers):
+        "Deletes an attribute"        
+        url = self.acc_url(f'/attributes/{attribute_id}')
+        response = self.delete(url, headers=headers)
+        return response
+        

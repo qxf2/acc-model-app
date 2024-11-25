@@ -1,4 +1,3 @@
-# pylint: disable=line-too-long
 """
 API_Player class does the following:
 a) serves as an interface between the test and API_Interface
@@ -92,4 +91,12 @@ class APIPlayer(Results):
         result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.delete_acc_model(acc_model_id=acc_model_id, headers=headers)
+        return response
+
+
+    def delete_attribute(self, attribute_id, auth_details=None):
+        "Deletes an attribute"
+        result_flag = False
+        headers = self.set_header_details(auth_details)
+        response = self.api_obj.delete_attribute(attribute_id=attribute_id, headers=headers)
         return response
