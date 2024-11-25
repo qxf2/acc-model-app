@@ -22,12 +22,12 @@ def test_api_create_multiple_acc_models(test_api_obj):
         # Set authentication details
         bearer_token = conf.bearer_token
         auth_details = test_api_obj.set_auth_details(bearer_token)
-
         name = conf.acc_models_name
         description = conf.acc_models_description
         num_models = conf.num_models
+        created_model_ids = []
 
-        # Iterate and create ACC models dynamically
+        # Step 1: Create ACC models
         for counter in range(num_models):
             current_timestamp = str(int(time.time()) + counter)
             model_name = f"{name}_{current_timestamp}"
@@ -55,6 +55,35 @@ def test_api_create_multiple_acc_models(test_api_obj):
                 positive=f"Successfully created ACC model with details: {acc_model_response.json()}",
                 negative=f"Failed to create ACC model. Response: {acc_model_response.json() if acc_model_response else acc_model_response}"
             )
+
+            # Add created model ID to the list
+            if acc_model_id:
+                created_model_ids.append(acc_model_id)
+
+        def is_deletion_successful(response):
+            if response.status_code == 204:
+                return True
+            elif response.status_code == 200 and "id" in response.json():
+                # Check if the returned ID matches the deleted model's ID
+                return True
+            else:
+                return False
+
+        # Delete all created ACC models
+        for acc_model_id in created_model_ids:
+            try:
+                delete_response = test_api_obj.delete_acc_model(acc_model_id, auth_details=auth_details)
+                
+                # Check for successful deletion based on actual API behavior
+                delete_result_flag = is_deletion_successful(delete_response)
+
+                test_api_obj.log_result(
+                    delete_result_flag,
+                    positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
+                    negative=f"Failed to delete ACC model with ID: {acc_model_id}. Response: {delete_response.json() if delete_response else delete_response}"
+                )
+            except Exception as e:
+                print(f"Error deleting model with ID {acc_model_id}: {str(e)}")
 
         # Update pass/fail counters
         expected_pass = test_api_obj.total
