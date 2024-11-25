@@ -71,7 +71,7 @@ def test_api_end_to_end(test_api_obj):
                 capability_details = {
                     'name': 'Edit an article',
                     'description': 'Capability for newsletter app',
-                    'component_id': component_id  # Set dependency on the component
+                    'component_id': component_id
                 }
                 capability_response = test_api_obj.create_capability(capability_details=capability_details, auth_details=auth_details)
                 capability_result_flag = capability_response and capability_response.status_code == 200 and 'id' in capability_response.json()
@@ -139,6 +139,15 @@ def test_api_end_to_end(test_api_obj):
                     negative=f"Failed to delete ACC model. Response: {delete_response.json() if delete_response else delete_response}."
                 )
 
+            if attribute_result_flag:
+                delete_response = test_api_obj.delete_attribute(attribute_id=attribute_id, auth_details=auth_details)
+                delete_result_flag = delete_response and delete_response.status_code == 200
+
+                test_api_obj.log_result(
+                    delete_result_flag,
+                    positive=f"Successfully deleted attribute with ID: {attribute_id}",
+                    negative=f"Failed to delete attribute. Response: {delete_response.json() if delete_response else delete_response}."
+                )
 
         # Update pass/fail counters
         expected_pass = test_api_obj.total
