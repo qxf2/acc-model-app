@@ -41,7 +41,7 @@ const styles = {
   },
 };
 
-const Home = () => {
+const Home = ({ isAuthenticated }) => {
   return (
     <Container style={styles.mainContainer}>
       {/* Hero Section */}
@@ -51,12 +51,13 @@ const Home = () => {
         </Typography>
         <Typography
           variant="h6"
-          sx={{ color: "#f0f0f0", marginBottom: "2rem", maxWidth: "75%"}}
+          sx={{ color: "#f0f0f0", maxWidth: "75%"}}
         >
           Effortlessly build a structured ACC model offering clarity and
           coverage for effective testing.
         </Typography>
-        <Box display="flex" justifyContent="center" gap={2}>
+        {!isAuthenticated && (
+        <Box display="flex" justifyContent="center" gap={2} sx={{marginBottom: "2rem", marginTop: "2rem" }}>
           <Button
             component={Link}
             to="/registration"
@@ -74,9 +75,10 @@ const Home = () => {
             Login
           </Button>
         </Box>
+        )}
         <Typography
           variant="body1"
-          sx={{ color: "#FCFCFC", marginTop: "2rem", maxWidth: "80%"}}
+          sx={{ color: "#FCFCFC", maxWidth: "80%"}}
         >
           Start by creating an ACC Model, then define key Attributes, add
           Components, and map Capabilities.
