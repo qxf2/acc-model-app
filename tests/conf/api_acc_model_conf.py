@@ -9,8 +9,8 @@ current_timestamp = str(int(time.time()))
 bearer_token = os.environ.get('bearer_token')
 
 # ACC model details and attribute details
-acc_details = {'name': 'Newsletter App'+current_timestamp, 'description': 'acc model name'}
-attribute_details = {'name': 'Secure'+current_timestamp, 'description': 'attribute for newsletter app'}
+acc_details = {'name': 'Newsletter App'+current_timestamp, 'description': 'Creating an acc model for newsletter app'}
+attribute_details = {'name': 'Secure'+current_timestamp, 'description': 'Creating an attribute for newsletter app'}
 
 # Rating details
 rating_details = [
@@ -24,17 +24,17 @@ rating_options = random.choice(rating_details)
 
 # Create multiple ACC models
 acc_models_name = "Survey app"
-acc_models_description = "Creating ACC model name"
+acc_models_description = "Creating an ACC model for survey app"
 num_models = 3
 
 # Create multiple attributes
 attributes_name = "Fast"
-attributes_description = "Creating attribute name"
+attributes_description = "Creating an attribute for survey app"
 num_attributes = 3
 
 # Create multiple components
 components_name = "Add articles"
-components_description = "Creating component name"
+components_description = "Creating a component for newsletter app"
 num_components = 3
 
 # Components configuration for dynamic creation
@@ -45,7 +45,7 @@ components = [
 ]
 
 capabilities = [
-    {"name": "Registration", "description": "Description for Capability Registration"},
-    {"name": "Login", "description": "Description for Capability Login"},
-    {"name": "Forget Password", "description": "Description for Capability Forget Password"}
+    {"name": "Registration", "description": "Capability for Registration"},
+    {"name": "Login", "description": "Capability for Login"},
+    {"name": "Forget Password", "description": "Capability for Forget Password"}
 ]
