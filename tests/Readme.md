@@ -177,6 +177,12 @@ COMMANDS FOR RUNNING TESTS
 - **API Test**  
 	`python -m pytest tests/test_api_example.py`  
 	**Note:** Ensure the sample `cars-api` is available at `qxf2/cars-api` repository before running the API test.
+  ## Run API Tests
+1. Export the bearer_token.
+
+2. Navigate to the 'tests' folder and run `pip install -r requirements.txt` to install dependencies.
+
+3. Run tests using `python -m pytest tests/'test_name'`.
 
 - **Mobile Test Run on Browserstack/Sauce Labs**  
 	`python -m pytest tests/test_mobile_bitcoin_price --mobile_os_version <android version> --device_name <simulator> --app_path <.apk location on local> --remote_flag Y`  
