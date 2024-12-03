@@ -33,7 +33,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U archanags -d accmodelapp"]
+      test: ["CMD-SHELL", "pg_isready -U username -d databasename"]
       interval: 5s
       timeout: 5s
       retries: 5
