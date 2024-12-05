@@ -3,7 +3,7 @@ name: Docker Compose and API Tests
 on:
   push:
     branches:
-      - docker-compose-api-tests-workflow
+      - api_tests
 
 jobs:
   run-tests:
