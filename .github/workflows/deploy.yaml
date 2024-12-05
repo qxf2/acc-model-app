@@ -27,11 +27,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r tests/requirements.txt
 
-      - name: Copy .env file to the working directory
-        run: cp .env /home/runner/work/acc-model-app/acc-model-app/.env
-
-      - name: Start Docker Compose
-        run: docker compose up --build -d
+      - name: Set environment variables and run command
+        run: |
+          export POSTGRES_USER="username"
+          export POSTGRES_PASSWORD="password"
+          export POSTGRES_DB="databasename"
+          docker-compose up --build -d
 
       - name: Debug Docker
         run: |
