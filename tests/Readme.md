@@ -182,8 +182,7 @@ COMMANDS FOR RUNNING TESTS
 - **Run API Tests Locally**    
   Before running the tests, ensure you have the necessary environment setup, including the Bearer Token for authentication.
 
-- **Run API Tests with Bearer Token**  
-  `python -m pytest tests/test_name.py --bearer_token <your_bearer_token>`  
+- **Run API Tests with Bearer Token**   
   For authentication, retrieve and export the Bearer Token as an environment variable by following the steps below:  
   1. **Launch the Backend Service**  
      Ensure the backend service is running. You can do this by running the application with Docker Compose:  
@@ -204,8 +203,7 @@ COMMANDS FOR RUNNING TESTS
      export bearer_token="your_bearer_token"
      ```
 
-- **Install Test Dependencies**  
-  `python -m pip install -r requirements.txt`  
+- **Install Test Dependencies**   
   Navigate to the tests folder and install dependencies using pip:
   ```bash
   cd tests/pip install -r requirements.txt
