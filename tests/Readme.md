@@ -199,19 +199,15 @@ COMMANDS FOR RUNNING TESTS
      ```
   3. **Set the Token as an Environment Variable**  
      Use the token from the previous step and export it as an environment variable:  
-     ```bash
-     export bearer_token="your_bearer_token"
-     ```
+     `export bearer_token="your_bearer_token"`
 
 - **Install Test Dependencies**   
   Navigate to the tests folder and install dependencies using pip:
-  ```bash
-  cd tests/pip install -r requirements.txt
+  `cd tests/pip install -r requirements.txt`
 
-- **Run the Tests**
+- **Run the Tests**   
   Run specific test files or all tests using pytest. For example, to run a specific test:
-  ```bash
-  python -m pytest tests/test_name.py
+  `python -m pytest tests/test_name.py`
 
 - **Mobile Test Run on Browserstack/Sauce Labs**  
 	`python -m pytest tests/test_mobile_bitcoin_price --mobile_os_version <android version> --device_name <simulator> --app_path <.apk location on local> --remote_flag Y`  
