@@ -1,0 +1,41 @@
+# Tesults Configuration
+tesults_target_token_default = ""
+
+#TestRail url and credentials
+
+testrail_url = "Add your testrail url"
+testrail_user = 'TESTRAIL_USERNAME'
+testrail_password = 'TESTRAIL_PASSWORD'
+
+#Details needed for the Gmail
+#Fill out the email details over here
+imaphost ="imap.gmail.com"  #Add imap hostname of your email client
+app_username ='USERNAME'
+
+#Login has to use the app password because of Gmail security configuration
+# 1. Setup 2 factor authentication
+# 2. Follow the 2 factor authentication setup wizard to enable an app password
+#Src: https://support.google.com/accounts/answer/185839?hl=en
+#Src: https://support.google.com/mail/answer/185833?hl=en
+app_password = 'APP_PASSWORD'
+
+#Details for sending pytest report
+smtp_ssl_host = 'smtp.gmail.com'  # Add smtp ssl host of your email client
+smtp_ssl_port = 465  # Add smtp ssl port number of your email client
+sender = 'abc@xyz.com' #Add senders email address here
+targets = ['asd@xyz.com','qwe@xyz.com'] # Add recipients email address in a list
+
+#REPORT PORTAL
+report_portal_api_key = "Enter your report portal api key here"
+report_portal_endpoint = "Enter your endpoint here"
+report_portal_project = "Enter your Project here"
+report_portal_launch = "Enter your project launch here"
+
+#Slack channel incoming webhook
+#To generate incoming webhook url ref: https://qxf2.com/blog/post-pytest-test-results-on-slack/
+slack_incoming_webhook_url = "Add Slack incomming webhook url here"
+# To generate pytest_report.log file add ">pytest_report.log" at end of py.test command 
+# for e.g. pytest -k example_form --slack_flag y -v > log/pytest_report.log
+
+
+
