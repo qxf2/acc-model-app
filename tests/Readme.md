@@ -179,13 +179,12 @@ COMMANDS FOR RUNNING TESTS
 	**Note:** Ensure the sample `cars-api` is available at `qxf2/cars-api` repository before running the API test.
   ## Run API Tests
 
-- **Run API Tests Locally**  
-  `python -m pytest tests/test_name.py`  
-  **Note:** Before running the tests, ensure you have the necessary environment setup, including the Bearer Token for authentication.
+- **Run API Tests Locally**    
+  Before running the tests, ensure you have the necessary environment setup, including the Bearer Token for authentication.
 
 - **Run API Tests with Bearer Token**  
   `python -m pytest tests/test_name.py --bearer_token <your_bearer_token>`  
-  **Note:** For authentication, retrieve and export the Bearer Token as an environment variable by following the steps below:  
+  For authentication, retrieve and export the Bearer Token as an environment variable by following the steps below:  
   1. **Launch the Backend Service**  
      Ensure the backend service is running. You can do this by running the application with Docker Compose:  
      `docker-compose up --build -d`  
@@ -207,9 +206,14 @@ COMMANDS FOR RUNNING TESTS
 
 - **Install Test Dependencies**  
   `python -m pip install -r requirements.txt`  
-  **Note:** Navigate to the `tests` folder before installing dependencies:
+  Navigate to the tests folder and install dependencies using pip:
   ```bash
-  cd tests
+  cd tests/pip install -r requirements.txt
+
+- **Run the Tests**
+  Run specific test files or all tests using pytest. For example, to run a specific test:
+  ```bash
+  python -m pytest tests/test_name.py
 
 - **Mobile Test Run on Browserstack/Sauce Labs**  
 	`python -m pytest tests/test_mobile_bitcoin_price --mobile_os_version <android version> --device_name <simulator> --app_path <.apk location on local> --remote_flag Y`  
