@@ -178,32 +178,38 @@ COMMANDS FOR RUNNING TESTS
 	`python -m pytest tests/test_api_example.py`  
 	**Note:** Ensure the sample `cars-api` is available at `qxf2/cars-api` repository before running the API test.
   ## Run API Tests
-- **Run API Tests Locally**
-1. *Retrieve and Export the Bearer Token*
-   The API tests require a valid bearer token for authentication. Follow these steps to retrieve and export the token:
-   a) Retrieve the Bearer Token
-   1. *Launch the Backend Service*
-      Ensure the backend service is running. You can do this by running the application with Docker Compose:
-      `docker-compose up --build -d`.Confirm the backend is accessible by checking the logs or navigating to the appropriate URL (e.g., http://localhost:8000).
-   2. *Fetch the Bearer Token*
-      Use a tool like curl to authenticate with the backend and obtain the token. For example, if the API requires a username and password for authentication: 
-      `curl -X 'POST' \
-      'http://localhost:8000/token' \
-      -H 'accept: application/json' \
-      -H 'Content-Type: application/x-www-form-urlencoded' \
-      -d 'username=your_username&password=your_password'
-   b) Export the Bearer Token
-   3. *Set the Token as an Environment Variable*
-      Use the token from the previous step and export it as an environment variable:
-      `export bearer_token="your_bearer_token"`
-2. *Install Test Dependencies*
-   a) Navigate to the tests folder:
-      `cd tests`
-   b) Install the required dependencies using pip:
-      `pip install -r requirements.txt`
-3. *Run the Tests*
-   Run specific test files or all tests using pytest. For example, to run a specific test:
-   `python -m pytest tests/test_name.py`
+
+- **Run API Tests Locally**  
+  `python -m pytest tests/test_name.py`  
+  **Note:** Before running the tests, ensure you have the necessary environment setup, including the Bearer Token for authentication.
+
+- **Run API Tests with Bearer Token**  
+  `python -m pytest tests/test_name.py --bearer_token <your_bearer_token>`  
+  **Note:** For authentication, retrieve and export the Bearer Token as an environment variable by following the steps below:  
+  1. **Launch the Backend Service**  
+     Ensure the backend service is running. You can do this by running the application with Docker Compose:  
+     `docker-compose up --build -d`  
+     Confirm the backend is accessible by checking the logs or navigating to the appropriate URL (e.g., http://localhost:8000).  
+  2. **Fetch the Bearer Token**  
+     Use a tool like `curl` to authenticate with the backend and obtain the token. For example:  
+     ```bash
+     curl -X 'POST' \
+     'http://localhost:8000/token' \
+     -H 'accept: application/json' \
+     -H 'Content-Type: application/x-www-form-urlencoded' \
+     -d 'username=your_username&password=your_password'
+     ```
+  3. **Set the Token as an Environment Variable**  
+     Use the token from the previous step and export it as an environment variable:  
+     ```bash
+     export bearer_token="your_bearer_token"
+     ```
+
+- **Install Test Dependencies**  
+  `python -m pip install -r requirements.txt`  
+  **Note:** Navigate to the `tests` folder before installing dependencies:
+  ```bash
+  cd tests
 
 - **Mobile Test Run on Browserstack/Sauce Labs**  
 	`python -m pytest tests/test_mobile_bitcoin_price --mobile_os_version <android version> --device_name <simulator> --app_path <.apk location on local> --remote_flag Y`  
