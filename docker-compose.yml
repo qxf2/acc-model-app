@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      database:
+        condition: service_healthy
+    command: >
+      sh -c "until pg_isready -U username -d databasename; 
+      do echo 'Waiting for database...'; sleep 2; done; 
+      alembic upgrade head && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+    networks:
+      - acc_network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    networks:
+      - acc_network
+
+  database:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U username -d databasename"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - acc_network
+
+volumes:
+  postgres_data:
+
+networks:
+  acc_network:
