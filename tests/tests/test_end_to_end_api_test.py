@@ -26,11 +26,11 @@ def test_api_end_to_end(test_api_obj):
 
         # Set authentication details
         bearer_token = conf.bearer_token
-        ACC_DETAILS = conf.ACC_DETAILS
+        acc_details = conf.acc_details
         auth_details = test_api_obj.set_auth_details(bearer_token)
 
         # Create an ACC model
-        acc_model_response = test_api_obj.create_acc_model(ACC_DETAILS=ACC_DETAILS, auth_details=auth_details)
+        acc_model_response = test_api_obj.create_acc_model(acc_details=acc_details, auth_details=auth_details)
         acc_model_result_flag = acc_model_response and acc_model_response.status_code == 200 and 'id' in acc_model_response.json()
         acc_model_id = acc_model_response.json().get('id') if acc_model_result_flag else None
 
@@ -41,8 +41,8 @@ def test_api_end_to_end(test_api_obj):
         )
 
         # Create an Attribute
-        ATTRIBUTE_DETAILS = conf.ATTRIBUTE_DETAILS
-        attribute_response = test_api_obj.create_attribute(ATTRIBUTE_DETAILS=ATTRIBUTE_DETAILS, auth_details=auth_details)
+        attribute_details = conf.attribute_details
+        attribute_response = test_api_obj.create_attribute(attribute_details=attribute_details, auth_details=auth_details)
         attribute_result_flag = attribute_response and attribute_response.status_code == 200 and 'id' in attribute_response.json()
         attribute_id = attribute_response.json().get('id') if attribute_result_flag else None
 
@@ -89,13 +89,13 @@ def test_api_end_to_end(test_api_obj):
                 # Submit a Rating for the Capability and Attribute
                 if capability_result_flag and attribute_result_flag:
                     # Select a random rating from the predefined list
-                    RATING_DETAILS = conf.RATING_OPTIONS
+                    rating_details = conf.rating_options
                     
                     # Construct the URL with capability_id and attribute_id
                     assessment_response = test_api_obj.get_assessment_id(
                         capability_id=capability_id,
                         attribute_id=attribute_id,
-                        RATING_DETAILS=RATING_DETAILS,
+                        rating_details=rating_details,
                         auth_details=auth_details
                     )
 
@@ -119,11 +119,11 @@ def test_api_end_to_end(test_api_obj):
                     if assessment_result_flag:
                         rating_payload = {
                             'capability_assessment_id': assessment_id,
-                            'rating': RATING_DETAILS,
+                            'rating': rating_details,
                             'comment': 'Retrieving rating details'
                         }
 
-                        rating_response = test_api_obj.submit_ratings(assessment_id=assessment_id, RATING_DETAILS=rating_payload, auth_details=auth_details)
+                        rating_response = test_api_obj.submit_ratings(assessment_id=assessment_id, rating_details=rating_payload, auth_details=auth_details)
 
                         rating_result_flag = rating_response and rating_response.status_code == 200
                         test_api_obj.log_result(

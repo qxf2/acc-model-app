@@ -7,44 +7,44 @@ import os
 import random
 
 # Constant for current timestamp
-CURRENT_TIMESTAMP = str(int(time.time()))
+current_timestamp = str(int(time.time()))
 
 # Bearer token from environment variables
 bearer_token = os.environ.get('bearer_token')
 
 # ACC model details and attribute details
-ACC_DETAILS = {'name': 'Newsletter App' + CURRENT_TIMESTAMP,
+acc_details = {'name': 'Newsletter App' + current_timestamp,
                'description': 'Creating an acc model for newsletter app'}
-ATTRIBUTE_DETAILS = {'name': 'Secure' + CURRENT_TIMESTAMP,
+attribute_details = {'name': 'Secure' + current_timestamp,
                      'description': 'Creating an attribute for newsletter app'}
 
 # Rating details
-RATING_DETAILS = [
+rating_details = [
     "Stable",
     "Acceptable",
     "Low Impact",
     "Critical concern",
     "Not applicable"
 ]
-RATING_OPTIONS = random.choice(RATING_DETAILS)
+rating_options = random.choice(rating_details)
 
 # Create multiple ACC models
-ACC_MODELS_NAME = "Survey app"
-ACC_MODELS_DESCRIPTION = "Creating an ACC model for survey app"
-NUM_MODELS = 3
+acc_models_name = "Survey app"
+acc_models_description = "Creating an ACC model for survey app"
+num_models = 3
 
 # Create multiple attributes
-ATTRIBUTES_NAME = "Fast"
-ATTRIBUTES_DESCRIPTION = "Creating an attribute for survey app"
-NUM_ATTRIBUTES = 3
+attributes_name = "Fast"
+attributes_description = "Creating an attribute for survey app"
+num_attributes = 3
 
 # Create multiple components
-COMPONENTS_NAME = "Add articles"
-COMPONENTS_DESCRIPTION = "Creating a component for newsletter app"
-NUM_COMPONENTS = 3
+components_name = "Add articles"
+components_description = "Creating a component for newsletter app"
+num_components = 3
 
 # Components configuration for dynamic creation
-COMPONENTS = [
+components = [
     {"name": "Authentication module",
      "description": "Handles user authentication"},
     {"name": "User management module",
@@ -53,7 +53,7 @@ COMPONENTS = [
      "description": "Sends user notifications and alerts"}
 ]
 
-CAPABILITIES = [
+capabilities = [
     {"name": "Registration", "description": "Capability for Registration"},
     {"name": "Login", "description": "Capability for Login"},
     {"name": "Forget Password", "description": "Capability for Forget Password"}

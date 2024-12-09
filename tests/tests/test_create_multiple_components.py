@@ -22,11 +22,11 @@ def test_create_and_delete_multiple_components(test_api_obj):
 
         # Set authentication details
         bearer_token = conf.bearer_token
-        ACC_DETAILS = conf.ACC_DETAILS
+        acc_details = conf.acc_details
         auth_details = test_api_obj.set_auth_details(bearer_token)
 
         # Create an ACC model
-        acc_model_response = test_api_obj.create_acc_model(ACC_DETAILS=ACC_DETAILS, auth_details=auth_details)
+        acc_model_response = test_api_obj.create_acc_model(acc_details=acc_details, auth_details=auth_details)
         acc_model_result_flag = acc_model_response and acc_model_response.status_code == 200 and 'id' in acc_model_response.json()
         acc_model_id = acc_model_response.json().get('id') if acc_model_result_flag else None
 
@@ -41,7 +41,7 @@ def test_create_and_delete_multiple_components(test_api_obj):
 
         # Create multiple Components for the ACC model
         component_ids = []
-        for component in conf.COMPONENTS:
+        for component in conf.components:
             # Add acc_model_id dependency
             component_details = {
                 "name": component["name"],

@@ -36,22 +36,22 @@ class APIPlayer(Results):
         return headers
 
 
-    def create_acc_model(self, ACC_DETAILS, auth_details=None):
+    def create_acc_model(self, acc_details, auth_details=None):
         "adds a new ACC model"
         result_flag = False
-        data = ACC_DETAILS
+        data = acc_details
         headers = self.set_header_details(auth_details)
-        json_response = self.api_obj.create_acc_model(data=data, headers=headers)                                               
+        json_response = self.api_obj.create_acc_model(data=data, headers=headers)
         return json_response
 
-    
-    def create_attribute(self, ATTRIBUTE_DETAILS, auth_details=None):
+
+    def create_attribute(self, attribute_details, auth_details=None):
         "adds a new attribute"
         result_flag = False
         headers = self.set_header_details(auth_details)
-        response = self.api_obj.create_attribute(data=ATTRIBUTE_DETAILS, headers=headers)
+        response = self.api_obj.create_attribute(data=attribute_details, headers=headers)
         return response
-    
+
 
     # In APIPlayer class
     def create_component(self, component_details, auth_details=None):
@@ -70,19 +70,25 @@ class APIPlayer(Results):
         return response
 
 
-    def get_assessment_id(self, capability_id, attribute_id, RATING_DETAILS, auth_details=None):
-        """Adds a new rating with specified capability and attribute"""
+    def get_assessment_id(self, capability_id, attribute_id, rating_details, auth_details=None):
+        "Fetches assessment id"
         result_flag = False
         headers = self.set_header_details(auth_details)
-        response = self.api_obj.get_assessment_id(capability_id=capability_id, attribute_id=attribute_id, headers=headers)
+        response = self.api_obj.get_assessment_id(
+            capability_id=capability_id,
+            attribute_id=attribute_id,
+            headers=headers)
         return response
 
 
-    def submit_ratings(self, assessment_id, RATING_DETAILS, auth_details=None):
+    def submit_ratings(self, assessment_id, rating_details, auth_details=None):
         "Adds a new rating with capability_id and attribute_id"
         result_flag = False
         headers = self.set_header_details(auth_details)
-        response = self.api_obj.submit_ratings(assessment_id=assessment_id, data=RATING_DETAILS, headers=headers)
+        response = self.api_obj.submit_ratings(
+            assessment_id=assessment_id,
+            data=rating_details,
+            headers=headers)
         return response
 
 
