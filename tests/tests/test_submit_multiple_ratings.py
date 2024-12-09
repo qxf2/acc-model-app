@@ -30,8 +30,8 @@ def test_submit_ratings(test_api_obj):
         created_attribute_ids = []
 
         # Create an ACC model
-        acc_details = conf.acc_details
-        acc_model_response = test_api_obj.create_acc_model(acc_details=acc_details, auth_details=auth_details)
+        ACC_DETAILS = conf.ACC_DETAILS
+        acc_model_response = test_api_obj.create_acc_model(ACC_DETAILS=ACC_DETAILS, auth_details=auth_details)
         acc_model_result_flag = acc_model_response and acc_model_response.status_code == 200 and 'id' in acc_model_response.json()
         acc_model_id = acc_model_response.json().get('id') if acc_model_result_flag else None
 
@@ -45,17 +45,17 @@ def test_submit_ratings(test_api_obj):
         assert acc_model_id, "ACC model creation failed. Cannot proceed with the test."
 
         # Create multiple attributes
-        for counter in range(conf.num_attributes):
-            current_timestamp = str(int(time.time()) + counter)
-            attribute_name = f"{conf.attributes_name}_{current_timestamp}"
-            attribute_description = f"{conf.attributes_description} {counter + 1}"
+        for counter in range(conf.NUM_ATTRIBUTES):
+            CURRENT_TIMESTAMP = str(int(time.time()) + counter)
+            attribute_name = f"{conf.ATTRIBUTES_NAME}_{CURRENT_TIMESTAMP}"
+            attribute_description = f"{conf.ATTRIBUTES_DESCRIPTION} {counter + 1}"
 
-            attribute_details = {
+            ATTRIBUTE_DETAILS = {
                 "name": attribute_name,
                 "description": attribute_description
             }
 
-            attribute_response = test_api_obj.create_attribute(attribute_details=attribute_details, auth_details=auth_details)
+            attribute_response = test_api_obj.create_attribute(ATTRIBUTE_DETAILS=ATTRIBUTE_DETAILS, auth_details=auth_details)
             attribute_result_flag = (
                 attribute_response and
                 attribute_response.status_code == 200 and
@@ -77,7 +77,7 @@ def test_submit_ratings(test_api_obj):
 
         # Create components
         component_ids = []
-        for component in conf.components:
+        for component in conf.COMPONENTS:
             component_details = {
                 "name": component["name"],
                 "description": component["description"],
@@ -102,7 +102,7 @@ def test_submit_ratings(test_api_obj):
 
         # Create capabilities and submit ratings with different ratings for each capability
         for component_id in component_ids:
-            for capability in conf.capabilities:
+            for capability in conf.CAPABILITIES:
                 capability_details = {
                     "name": capability["name"],
                     "description": capability["description"],
@@ -122,13 +122,13 @@ def test_submit_ratings(test_api_obj):
                 if capability_result_flag:
                     for attribute_id in created_attribute_ids:
                         # Explicitly select a random rating for every submission
-                        selected_rating = random.choice(conf.rating_details)
+                        selected_rating = random.choice(conf.RATING_DETAILS)
                         
                         # Retrieve assessment ID
                         assessment_response = test_api_obj.get_assessment_id(
                             capability_id=capability_id,
                             attribute_id=attribute_id,
-                            rating_details=selected_rating,  # Send selected rating
+                            RATING_DETAILS=selected_rating,  # Send selected rating
                             auth_details=auth_details
                         )
 
@@ -151,7 +151,7 @@ def test_submit_ratings(test_api_obj):
 
                             rating_response = test_api_obj.submit_ratings(
                                 assessment_id=assessment_id,
-                                rating_details=rating_payload,
+                                RATING_DETAILS=rating_payload,
                                 auth_details=auth_details
                             )
 

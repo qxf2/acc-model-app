@@ -23,24 +23,24 @@ def test_create_and_delete_multiple_attributes(test_api_obj):
         # Set authentication details
         bearer_token = conf.bearer_token
         auth_details = test_api_obj.set_auth_details(bearer_token)
-        name = conf.attributes_name
-        description = conf.attributes_description
-        num_attributes = conf.num_attributes
+        name = conf.ATTRIBUTES_NAME
+        description = conf.ATTRIBUTES_DESCRIPTION
+        NUM_ATTRIBUTES = conf.NUM_ATTRIBUTES
         created_attribute_ids = []
 
         # Create multiple attributes
-        for counter in range(num_attributes):
-            current_timestamp = str(int(time.time()) + counter)
-            attribute_name = f"{name}_{current_timestamp}"
+        for counter in range(NUM_ATTRIBUTES):
+            CURRENT_TIMESTAMP = str(int(time.time()) + counter)
+            attribute_name = f"{name}_{CURRENT_TIMESTAMP}"
             
-            attribute_details = {
+            ATTRIBUTE_DETAILS = {
                 "name": attribute_name,
                 "description": description
             }
 
             # Create an attribute
             attribute_response = test_api_obj.create_attribute(
-                attribute_details=attribute_details,
+                ATTRIBUTE_DETAILS=ATTRIBUTE_DETAILS,
                 auth_details=auth_details
             )
             attribute_result_flag = (

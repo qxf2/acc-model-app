@@ -24,24 +24,24 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
         # Set authentication details
         bearer_token = conf.bearer_token
         auth_details = test_api_obj.set_auth_details(bearer_token)
-        name = conf.acc_models_name
-        description = conf.acc_models_description
-        num_models = conf.num_models
+        name = conf.ACC_MODELS_NAME
+        description = conf.ACC_MODELS_DESCRIPTION
+        NUM_MODELS = conf.NUM_MODELS
         created_model_ids = []
 
         # Create ACC models
-        for counter in range(num_models):
-            current_timestamp = str(int(time.time()) + counter)
-            model_name = f"{name}_{current_timestamp}"
+        for counter in range(NUM_MODELS):
+            CURRENT_TIMESTAMP = str(int(time.time()) + counter)
+            model_name = f"{name}_{CURRENT_TIMESTAMP}"
             
-            acc_details = {
+            ACC_DETAILS = {
                 "name": model_name,
                 "description": description
             }
 
             # Create an ACC model
             acc_model_response = test_api_obj.create_acc_model(
-                acc_details=acc_details,
+                ACC_DETAILS=ACC_DETAILS,
                 auth_details=auth_details
             )
             acc_model_result_flag = (
