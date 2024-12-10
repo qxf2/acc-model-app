@@ -7,9 +7,9 @@ import os
 import sys
 import pytest
 import time
+from endpoints.api_player import APIPlayer
 from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from endpoints.api_player import APIPlayer
 
 
 @pytest.mark.API
@@ -33,7 +33,7 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
         for counter in range(num_models):
             current_timestamp = str(int(time.time()) + counter)
             model_name = f"{name}_{current_timestamp}"
-            
+
             acc_details = {
                 "name": model_name,
                 "description": description
@@ -45,8 +45,8 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
                 auth_details=auth_details
             )
             acc_model_result_flag = (
-                acc_model_response and 
-                acc_model_response.status_code == 200 and 
+                acc_model_response and
+                acc_model_response.status_code == 200 and
                 'id' in acc_model_response.json()
             )
             acc_model_id = acc_model_response.json().get('id') if acc_model_result_flag else None
@@ -54,8 +54,11 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
             # Log the result
             test_api_obj.log_result(
                 acc_model_result_flag,
-                positive=f"Successfully created ACC model with details: {acc_model_response.json()}",
-                negative=f"Failed to create ACC model. Response: {acc_model_response.json() if acc_model_response else acc_model_response}"
+                positive=f"Successfully created ACC model: {acc_model_response.json()}",
+                negative = (
+                f"Failed to create ACC model. Response: "
+                f"{acc_model_response.json() if acc_model_response else acc_model_response}"
+            )
             )
 
             # Add created model ID to the list
@@ -74,15 +77,19 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
         # Delete all created ACC models
         for acc_model_id in created_model_ids:
             try:
-                delete_response = test_api_obj.delete_acc_model(acc_model_id, auth_details=auth_details)
-                
+                delete_response = test_api_obj.delete_acc_model(
+                                    acc_model_id,
+                                    auth_details=auth_details
+                                )
+
                 # Check for successful deletion based on actual API behavior
                 delete_result_flag = is_deletion_successful(delete_response)
 
                 test_api_obj.log_result(
                     delete_result_flag,
                     positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
-                    negative=f"Failed to delete ACC model with ID: {acc_model_id}. Response: {delete_response.json() if delete_response else delete_response}"
+                    negative=f"Failed to delete ACC model with ID: {acc_model_id}. Response: "
+                            f"{delete_response.json() if delete_response else delete_response}"
                 )
             except Exception as e:
                 print(f"Error deleting model with ID {acc_model_id}: {str(e)}")

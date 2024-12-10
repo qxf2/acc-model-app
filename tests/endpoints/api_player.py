@@ -4,13 +4,10 @@ a) serves as an interface between the test and API_Interface
 b) contains several useful wrappers around commonly used combination of actions
 c) maintains the test context/state
 """
-from base64 import b64encode
+
 import logging
-import urllib.parse
-from .api_interface import APIInterface
 from utils.results import Results
-import random
-from conf import api_acc_model_conf as conf
+from .api_interface import APIInterface
 
 
 class APIPlayer(Results):
@@ -38,7 +35,6 @@ class APIPlayer(Results):
 
     def create_acc_model(self, acc_details, auth_details=None):
         "adds a new ACC model"
-        result_flag = False
         data = acc_details
         headers = self.set_header_details(auth_details)
         json_response = self.api_obj.create_acc_model(data=data, headers=headers)
@@ -47,7 +43,6 @@ class APIPlayer(Results):
 
     def create_attribute(self, attribute_details, auth_details=None):
         "adds a new attribute"
-        result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.create_attribute(data=attribute_details, headers=headers)
         return response
@@ -56,7 +51,6 @@ class APIPlayer(Results):
     # In APIPlayer class
     def create_component(self, component_details, auth_details=None):
         "Adds a new component"
-        result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.create_component(data=component_details, headers=headers)
         return response
@@ -64,15 +58,13 @@ class APIPlayer(Results):
 
     def create_capability(self, capability_details, auth_details=None):
         "Adds a new capability"
-        result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.create_capability(data=capability_details, headers=headers)
         return response
 
 
-    def get_assessment_id(self, capability_id, attribute_id, rating_details, auth_details=None):
+    def get_assessment_id(self, capability_id, rating_details, attribute_id, auth_details=None):
         "Fetches assessment id"
-        result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.get_assessment_id(
             capability_id=capability_id,
@@ -83,7 +75,6 @@ class APIPlayer(Results):
 
     def submit_ratings(self, assessment_id, rating_details, auth_details=None):
         "Adds a new rating with capability_id and attribute_id"
-        result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.submit_ratings(
             assessment_id=assessment_id,
@@ -94,7 +85,6 @@ class APIPlayer(Results):
 
     def delete_acc_model(self, acc_model_id, auth_details=None):
         "Deletes an ACC model"
-        result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.delete_acc_model(acc_model_id=acc_model_id, headers=headers)
         return response
@@ -102,7 +92,6 @@ class APIPlayer(Results):
 
     def delete_attribute(self, attribute_id, auth_details=None):
         "Deletes an attribute"
-        result_flag = False
         headers = self.set_header_details(auth_details)
         response = self.api_obj.delete_attribute(attribute_id=attribute_id, headers=headers)
         return response
