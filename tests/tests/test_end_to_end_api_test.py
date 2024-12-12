@@ -170,7 +170,3 @@ def test_api_end_to_end(test_api_obj):
     # Final assertion
     assert expected_pass > 0, f"No checks were executed in the test: {__file__}"
     assert expected_pass == actual_pass, f"Test failed: {__file__}"
-
-
-if __name__ == '__main__':
-    test_api_end_to_end()

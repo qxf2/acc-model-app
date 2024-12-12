@@ -1,13 +1,13 @@
 """
 API automated test for ACC model app
-1. Create and delete multiple ACC model names
+1. Create new multiple ACC models
+2. Delete the newly created ACC models
 """
 
 import os
 import sys
-import pytest
 import time
-from endpoints.api_player import APIPlayer
+import pytest
 from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -21,22 +21,25 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
         expected_pass = 0
         actual_pass = -1
 
-        # Set authentication details
-        bearer_token = conf.bearer_token
-        auth_details = test_api_obj.set_auth_details(bearer_token)
-        name = conf.acc_models_name
-        description = conf.acc_models_description
-        num_models = conf.num_models
+        config = {
+            "bearer_token": conf.bearer_token,
+            "name": conf.acc_models_name,
+            "description": conf.acc_models_description,
+            "num_models": conf.num_models,
+            "invalid_bearer_token": conf.invalid_bearer_token
+        }
+
+        auth_details = test_api_obj.set_auth_details(config["bearer_token"])
         created_model_ids = []
 
         # Create ACC models
-        for counter in range(num_models):
+        for counter in range(config["num_models"]):
             current_timestamp = str(int(time.time()) + counter)
-            model_name = f"{name}_{current_timestamp}"
+            model_name = f"{config['name']}_{current_timestamp}"
 
             acc_details = {
                 "name": model_name,
-                "description": description
+                "description": config["description"]
             }
 
             # Create an ACC model
@@ -68,11 +71,10 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
         def is_deletion_successful(response):
             if response.status_code == 204:
                 return True
-            elif response.status_code == 200 and "id" in response.json():
+            if response.status_code == 200 and "id" in response.json():
                 # Check if the returned ID matches the deleted model's ID
                 return True
-            else:
-                return False
+            return False
 
         # Delete all created ACC models
         for acc_model_id in created_model_ids:
@@ -91,8 +93,32 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
                     negative=f"Failed to delete ACC model with ID: {acc_model_id}. Response: "
                             f"{delete_response.json() if delete_response else delete_response}"
                 )
-            except Exception as e:
-                print(f"Error deleting model with ID {acc_model_id}: {str(e)}")
+            except ValueError as e:
+                print(f"ValueError occurred: {e}")
+            except TypeError as e:
+                print(f"TypeError occurred: {e}")
+
+            # Test for validation error 403
+            result = test_api_obj.check_validation_error(auth_details)
+            test_api_obj.log_result(not result['result_flag'],
+                            positive=result['msg'],
+                            negative=result['msg'])
+
+            # test for validation http error 401 when no authentication
+            auth_details = None
+            result = test_api_obj.check_validation_error(auth_details)
+            test_api_obj.log_result(not result['result_flag'],
+                            positive=result['msg'],
+                            negative=result['msg'])
+
+            # test for validation http error 401 when invalid authentication
+            # Set invalid authentication details
+            bearer_token = config["invalid_bearer_token"]
+            auth_details = test_api_obj.set_auth_details(bearer_token)
+            result = test_api_obj.check_validation_error(auth_details)
+            test_api_obj.log_result(not result['result_flag'],
+                                positive=result['msg'],
+                                negative=result['msg'])
 
         # Update pass/fail counters
         expected_pass = test_api_obj.total
@@ -101,8 +127,12 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
         # Write test summary
         test_api_obj.write_test_summary()
 
-    except Exception as e:
-        # Handle exceptions and log details
+    except TypeError as e:
+        error_msg = f"TypeError occurred in test: {__file__}. Python says: {str(e)}"
+        print(error_msg)
+        test_api_obj.write(error_msg)
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        # Handle all other exceptions that weren't caught earlier
         error_msg = f"Exception occurred in test: {__file__}. Python says: {str(e)}"
         print(error_msg)
         test_api_obj.write(error_msg)
@@ -110,7 +140,3 @@ def test_create_and_delete_multiple_acc_models(test_api_obj):
     # Final assertion
     assert expected_pass > 0, f"No checks were executed in the test: {__file__}"
     assert expected_pass == actual_pass, f"Test failed: {__file__}"
-
-
-if __name__ == '__main__':
-    test_create_and_delete_multiple_acc_models()

@@ -1,7 +1,7 @@
 """
 Configuration for creating ACC models, attributes, components, and capabilities.
 """
-
+# pylint: disable=invalid-name
 import time
 import os
 import random
@@ -58,3 +58,5 @@ capabilities = [
     {"name": "Login", "description": "Capability for Login"},
     {"name": "Forget Password", "description": "Capability for Forget Password"}
 ]
+
+invalid_bearer_token = "invalid_bearer_token"

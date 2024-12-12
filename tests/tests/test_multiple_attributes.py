@@ -105,7 +105,3 @@ def test_create_and_delete_multiple_attributes(test_api_obj):
     # Final assertion
     assert expected_pass > 0, f"No checks were executed in the test: {__file__}"
     assert expected_pass == actual_pass, f"Test failed: {__file__}"
-
-
-if __name__ == '__main__':
-    test_create_and_delete_multiple_attributes()

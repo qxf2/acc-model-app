@@ -95,3 +95,38 @@ class APIPlayer(Results):
         headers = self.set_header_details(auth_details)
         response = self.api_obj.delete_attribute(attribute_id=attribute_id, headers=headers)
         return response
+    
+    def get_user_list(self, auth_details=None):
+        "get user list"
+        headers = self.set_header_details(auth_details)
+        try:
+            result = self.api_obj.get_user_list(headers=headers)
+            self.write(f"Request & Response: {result}")
+        except (TypeError, AttributeError) as e:
+            raise e
+        return {'user_list': result['user_list'], 'response_code': result['response']}
+
+    def check_validation_error(self, auth_details=None):
+        "verify validatin error 403"
+        result = self.get_user_list(auth_details)
+        response_code = result['response_code']
+        result_flag = False
+        msg = ''
+
+        if  response_code == 403:
+            msg = "403 FORBIDDEN: Authentication successful but no access for non admin users"
+
+        elif response_code == 200:
+            result_flag = True
+            msg = "successful authentication and access permission"
+
+        elif response_code == 401:
+            msg = "401 UNAUTHORIZED: Authenticate with proper credentials OR Require Basic Authentication"
+
+        elif response_code == 404:
+            msg = "404 NOT FOUND: URL not found"
+
+        else:
+            msg = "unknown reason"
+
+        return {'result_flag': result_flag, 'msg': msg}

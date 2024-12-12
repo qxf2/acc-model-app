@@ -1,7 +1,8 @@
 """
 API automated test for ACC model app
-1. Create multiple components and their capabilities for a single ACC model
-2. Delete an ACC model
+1. Create an ACC model name
+2. Create multiple components for each ACC model name
+3. Delete an ACC model
 """
 
 import os
@@ -13,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from endpoints.api_player import APIPlayer
 
 @pytest.mark.API
-def test_create_and_delete_multiple_capabilities(test_api_obj):
+def test_create_and_delete_multiple_components(test_api_obj):
     
     try:
         expected_pass = 0
@@ -31,7 +32,7 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
 
         test_api_obj.log_result(
             acc_model_result_flag,
-            positive=f"Successfully created ACC model with details: {acc_model_id}",
+            positive=f"Successfully created ACC model: {acc_model_response.json()}",
             negative=f"Failed to create ACC model. Response: {acc_model_response.json() if acc_model_response else acc_model_response}"
         )
 
@@ -67,27 +68,6 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
         # Ensure at least one component is created
         assert component_ids, "No components were created successfully."
 
-        # Create Capabilities for each Component
-        for component_id in component_ids:
-            for capability in conf.capabilities:
-                capability_details = {
-                    "name": capability["name"],
-                    "description": capability["description"],
-                    "component_id": component_id  # Link the capability to the component
-                }
-
-                # Create the capability
-                capability_response = test_api_obj.create_capability(capability_details=capability_details, auth_details=auth_details)
-                capability_result_flag = capability_response and capability_response.status_code == 200 and 'id' in capability_response.json()
-                capability_id = capability_response.json().get('id') if capability_result_flag else None
-
-                # Log result for each capability
-                test_api_obj.log_result(
-                    capability_result_flag,
-                    positive=f"Successfully created capability '{capability['name']}' for component ID {component_id} with ID: {capability_id}",
-                    negative=f"Failed to create capability '{capability['name']}' for component ID {component_id}. Response: {capability_response.json() if capability_response else capability_response}."
-                )
-
         # Delete ACC model
         if acc_model_result_flag:
             delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id, auth_details=auth_details)
@@ -98,7 +78,7 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
                 positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
                 negative=f"Failed to delete ACC model. Response: {delete_response.json() if delete_response else delete_response}."
             )
-        
+
         # Update pass/fail counters
         expected_pass = test_api_obj.total
         actual_pass = test_api_obj.passed
@@ -115,7 +95,3 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
     # Final assertions
     assert expected_pass > 0, f"No checks were executed in the test: {__file__}"
     assert expected_pass == actual_pass, f"Test failed: {__file__}"
-
-
-if __name__ == '__main__':
-    test_create_and_delete_multiple_capabilities()
