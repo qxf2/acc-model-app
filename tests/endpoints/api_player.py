@@ -106,19 +106,26 @@ class APIPlayer(Results):
             raise e
         return {'user_list': result['user_list'], 'response_code': result['response']}
 
+
     def check_validation_error(self, auth_details=None):
-        "verify validatin error 403"
+        """
+        Verify validation error and handle various HTTP response codes (e.g., 403, 401, 200, 404).
+        """
+        # Fetch the response using the get_user_list method (with optional authentication)
         result = self.get_user_list(auth_details)
         response_code = result['response_code']
+        
+        # Default values for result flag and message
         result_flag = False
         msg = ''
 
-        if  response_code == 403:
-            msg = "403 FORBIDDEN: Authentication successful but no access for non admin users"
+        # Handle different HTTP response codes
+        if response_code == 403:
+            msg = "403 FORBIDDEN: Authentication successful but no access for non-admin users"
 
         elif response_code == 200:
             result_flag = True
-            msg = "successful authentication and access permission"
+            msg = "Successful authentication and access permission"
 
         elif response_code == 401:
             msg = "401 UNAUTHORIZED: Authenticate with proper credentials OR Require Basic Authentication"
@@ -127,6 +134,8 @@ class APIPlayer(Results):
             msg = "404 NOT FOUND: URL not found"
 
         else:
-            msg = "unknown reason"
+            msg = f"Unknown error code: {response_code}"
 
+        # Return the result as a dictionary
         return {'result_flag': result_flag, 'msg': msg}
+

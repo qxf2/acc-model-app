@@ -1,6 +1,6 @@
 """
 API automated test for ACC model app
-1. Create multiple ACC models
+1. Create ACC models
 2. Create multiple capabilities
 3. Create multiple components
 4. Delete all ACC models which were created
@@ -10,14 +10,12 @@ API automated test for ACC model app
 import os
 import sys
 import pytest
-import time
 from conf import api_acc_model_conf as conf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from endpoints.api_player import APIPlayer
 
 @pytest.mark.API
-def test_create_and_delete_multiple_capabilities(test_api_obj):
-    
+def test_multiple_capabilities(test_api_obj):
+    "Function to create multiple capabilities for respective components"
     try:
         expected_pass = 0
         actual_pass = -1
@@ -34,7 +32,7 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
 
         test_api_obj.log_result(
             acc_model_result_flag,
-            positive=f"Successfully created ACC model: {acc_model_response.json()}",
+            positive=f"Successfully created ACC model with details: {acc_model_response.json()}",
             negative=f"Failed to create ACC model. Response: {acc_model_response.json() if acc_model_response else acc_model_response}"
         )
 
@@ -72,24 +70,51 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
 
         # Create Capabilities for each Component
         for component_id in component_ids:
-            for capability in conf.capabilities:
-                capability_details = {
-                    "name": capability["name"],
-                    "description": capability["description"],
-                    "component_id": component_id  # Link the capability to the component
-                }
+            # Find the component name by matching the component_id
+            component_name = None
+            for component in conf.components:
+                if component["name"] in conf.capabilities:
+                    component_name = component["name"]
+                    break
 
-                # Create the capability
-                capability_response = test_api_obj.create_capability(capability_details=capability_details, auth_details=auth_details)
-                capability_result_flag = capability_response and capability_response.status_code == 200 and 'id' in capability_response.json()
-                capability_id = capability_response.json().get('id') if capability_result_flag else None
+            if component_name:
+                # Retrieve the list of capabilities for this component
+                component_capabilities = conf.capabilities.get(component_name, [])
 
-                # Log result for each capability
-                test_api_obj.log_result(
-                    capability_result_flag,
-                    positive=f"Successfully created capability '{capability['name']}' for component ID {component_id} with ID: {capability_id}",
-                    negative=f"Failed to create capability '{capability['name']}' for component ID {component_id}. Response: {capability_response.json() if capability_response else capability_response}."
-                )
+                # Initialize the result flag for capabilities creation
+                capabilities_creation_result = True
+
+                # Create capabilities for the current component
+                for capability in component_capabilities:
+                    capability_details = {
+                        "name": capability["name"],
+                        "description": capability["description"],
+                        "component_id": component_id
+                    }
+
+                    # Create the capability
+                    capability_response = test_api_obj.create_capability(capability_details=capability_details, auth_details=auth_details)
+                    capability_result_flag = capability_response and capability_response.status_code == 200
+
+                    if capability_result_flag:
+                        # Log the response for debugging
+                        test_api_obj.log_result(
+                            capability_result_flag,
+                            positive=f"Successfully created capability '{capability['name']}' for component '{component_name}' with ID: {capability_response.json()}",
+                            negative=f"Failed to create capability '{capability['name']}' for component '{component_name}'. Response: {capability_response.text}"
+                        )
+                    else:
+                        capabilities_creation_result = False
+                        test_api_obj.log_result(
+                            False,
+                            positive="",
+                            negative=f"Failed to create capability '{capability['name']}' for component '{component_name}'. Response: {capability_response.text if capability_response else 'No response'}"
+                        )
+
+                # If capabilities were not created for any of the components, raise an assertion error
+                assert capabilities_creation_result, f"Capabilities creation failed for component '{component_name}'."
+            else:
+                print(f"Component with ID {component_id} does not have defined capabilities in the configuration.")
 
         # Delete ACC model
         if acc_model_result_flag:
@@ -101,7 +126,7 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
                 positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
                 negative=f"Failed to delete ACC model. Response: {delete_response.json() if delete_response else delete_response}."
             )
-        
+
         # Update pass/fail counters
         expected_pass = test_api_obj.total
         actual_pass = test_api_obj.passed
@@ -109,8 +134,12 @@ def test_create_and_delete_multiple_capabilities(test_api_obj):
         # Write test summary
         test_api_obj.write_test_summary()
 
-    except Exception as e:
-        # Handle exceptions and log details
+    except TypeError as e:
+        error_msg = f"TypeError occurred in test: {__file__}. Python says: {str(e)}"
+        print(error_msg)
+        test_api_obj.write(error_msg)
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        # Handle all other exceptions that weren't caught earlier
         error_msg = f"Exception occurred in test: {__file__}. Python says: {str(e)}"
         print(error_msg)
         test_api_obj.write(error_msg)

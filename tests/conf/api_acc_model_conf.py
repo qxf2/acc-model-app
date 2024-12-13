@@ -45,18 +45,26 @@ num_components = 3
 
 # Components configuration for dynamic creation
 components = [
-    {"name": "Authentication module",
-     "description": "Handles user authentication"},
-    {"name": "User management module",
-     "description": "Manages user profiles and roles"},
-    {"name": "Notification module",
-     "description": "Sends user notifications and alerts"}
+    {"name": "Authentication module", "description": "Handles user authentication"},
+    {"name": "User management module", "description": "Manages user profiles and roles"},
+    {"name": "Notification module", "description": "Sends user notifications and alerts"}
 ]
 
-capabilities = [
-    {"name": "Registration", "description": "Capability for Registration"},
-    {"name": "Login", "description": "Capability for Login"},
-    {"name": "Forget Password", "description": "Capability for Forget Password"}
-]
+# Mapping components to specific capabilities
+capabilities = {
+    "Authentication module": [
+        {"name": "Registration", "description": "Handles user registration"},
+        {"name": "Login", "description": "Handles user login"}
+    ],
+    "User management module": [
+        {"name": "User Profile", "description": "Allows users to manage their profiles"},
+        {"name": "Role Management", "description": "Manages user roles and permissions"}
+    ],
+    "Notification module": [
+        {"name": "Email Notifications", "description": "Sends email notifications to users"},
+        {"name": "Push Notifications", "description": "Sends push notifications to users"}
+    ]
+}
+
 
 invalid_bearer_token = "invalid_bearer_token"
