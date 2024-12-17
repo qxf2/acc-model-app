@@ -207,3 +207,4 @@ def test_submit_ratings(test_api_obj):
     # Final assertion
     assert expected_pass > 0, f"No checks were executed in the test: {__file__}"
     assert expected_pass == actual_pass, f"Test failed: {__file__}"
+    

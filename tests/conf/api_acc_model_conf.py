@@ -11,6 +11,7 @@ current_timestamp = str(int(time.time()))
 
 # Bearer token from environment variables
 bearer_token = os.environ.get('bearer_token')
+invalid_bearer_token = "invalid_bearer_token"
 
 # ACC model details and attribute details
 acc_details = {'name': 'Newsletter App' + current_timestamp,
@@ -43,6 +44,10 @@ components_name = "Add articles"
 components_description = "Creating a component for newsletter app"
 num_components = 3
 
+# Create multiple components
+capability_name = "Registration"
+capability_description = "Handles user registration"
+
 # Components configuration for dynamic creation
 components = [
     {"name": "Authentication module", "description": "Handles user authentication"},
@@ -65,6 +70,3 @@ capabilities = {
         {"name": "Push Notifications", "description": "Sends push notifications to users"}
     ]
 }
-
-
-invalid_bearer_token = "invalid_bearer_token"

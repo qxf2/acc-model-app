@@ -96,11 +96,11 @@ class APIPlayer(Results):
         response = self.api_obj.delete_attribute(attribute_id=attribute_id, headers=headers)
         return response
     
-    def get_user_list(self, auth_details=None):
-        "get user list"
+    def get_user(self, auth_details=None):
+        "get user"
         headers = self.set_header_details(auth_details)
         try:
-            result = self.api_obj.get_user_list(headers=headers)
+            result = self.api_obj.get_user(headers=headers)
             self.write(f"Request & Response: {result}")
         except (TypeError, AttributeError) as e:
             raise e
@@ -111,8 +111,8 @@ class APIPlayer(Results):
         """
         Verify validation error and handle various HTTP response codes (e.g., 403, 401, 200, 404).
         """
-        # Fetch the response using the get_user_list method (with optional authentication)
-        result = self.get_user_list(auth_details)
+        # Fetch the response using the get_user method (with optional authentication)
+        result = self.get_user(auth_details)
         response_code = result['response_code']
         
         # Default values for result flag and message
