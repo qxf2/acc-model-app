@@ -1,10 +1,9 @@
 """
 API automated test for ACC model app
 1. Create ACC models
-2. Create multiple capabilities
-3. Create multiple components
+2. Create multiple components
+3. Create multiple capabilities
 4. Delete all ACC models which were created
-5. Delete an ACC model
 """
 
 import os
@@ -26,14 +25,17 @@ def test_multiple_capabilities(test_api_obj):
         auth_details = test_api_obj.set_auth_details(bearer_token)
 
         # Create an ACC model
-        acc_model_response = test_api_obj.create_acc_model(acc_details=acc_details, auth_details=auth_details)
-        acc_model_result_flag = acc_model_response and acc_model_response.status_code == 200 and 'id' in acc_model_response.json()
-        acc_model_id = acc_model_response.json().get('id') if acc_model_result_flag else None
+        acc_response = test_api_obj.create_acc_model(acc_details=acc_details,
+                                                        auth_details=auth_details)
+        acc_result_flag = acc_response and acc_response.status_code == 200 and 'id' in acc_response.json()
+        acc_model_id = acc_response.json().get('id') if acc_result_flag else None
 
         test_api_obj.log_result(
-            acc_model_result_flag,
-            positive=f"Successfully created ACC model with details: {acc_model_response.json()}",
-            negative=f"Failed to create ACC model. Response: {acc_model_response.json() if acc_model_response else acc_model_response}"
+            acc_result_flag,
+            positive=f"Successfully created ACC model with details: {acc_response.json()}",
+            negative=(
+                    f"Failed to create ACC model. Response: "
+                    f"{acc_response.json() if acc_response else acc_response}")
         )
 
         # Fail test if ACC model creation fails
@@ -50,7 +52,8 @@ def test_multiple_capabilities(test_api_obj):
             }
 
             # Create the component
-            component_response = test_api_obj.create_component(component_details=component_details, auth_details=auth_details)
+            component_response = test_api_obj.create_component(component_details=component_details,
+                                                                auth_details=auth_details)
             component_result_flag = component_response and component_response.status_code == 200 and 'id' in component_response.json()
             component_id = component_response.json().get('id') if component_result_flag else None
 
@@ -62,7 +65,9 @@ def test_multiple_capabilities(test_api_obj):
             test_api_obj.log_result(
                 component_result_flag,
                 positive=f"Successfully created component '{component['name']}' with ID: {component_id}",
-                negative=f"Failed to create component '{component['name']}'. Response: {component_response.json() if component_response else component_response}."
+                negative=(
+                        f"Failed to create component '{component['name']}'. "
+                        f"Response: {component_response.json() if component_response else component_response}.")
             )
 
         # Ensure at least one component is created
@@ -82,7 +87,7 @@ def test_multiple_capabilities(test_api_obj):
                 component_capabilities = conf.capabilities.get(component_name, [])
 
                 # Initialize the result flag for capabilities creation
-                capabilities_creation_result = True
+                capabilities_result = True
 
                 # Create capabilities for the current component
                 for capability in component_capabilities:
@@ -93,39 +98,65 @@ def test_multiple_capabilities(test_api_obj):
                     }
 
                     # Create the capability
-                    capability_response = test_api_obj.create_capability(capability_details=capability_details, auth_details=auth_details)
+                    capability_response = test_api_obj.create_capability(capability_details=capability_details,
+                                                                         auth_details=auth_details)
                     capability_result_flag = capability_response and capability_response.status_code == 200
 
                     if capability_result_flag:
                         # Log the response for debugging
                         test_api_obj.log_result(
                             capability_result_flag,
-                            positive=f"Successfully created capability '{capability['name']}' for component '{component_name}' with ID: {capability_response.json()}",
-                            negative=f"Failed to create capability '{capability['name']}' for component '{component_name}'. Response: {capability_response.text}"
+                            positive=(
+                                f"Successfully created capability '{capability['name']}' for component '{component_name}' "
+                                f"with ID: {capability_response.json()}"
+                            ),
+                            negative=(
+                                f"Failed to create capability '{capability['name']}' for component '{component_name}'. "
+                                f"Response: {capability_response.text}")
                         )
                     else:
-                        capabilities_creation_result = False
+                        capabilities_result = False
                         test_api_obj.log_result(
                             False,
                             positive="",
-                            negative=f"Failed to create capability '{capability['name']}' for component '{component_name}'. Response: {capability_response.text if capability_response else 'No response'}"
+                            negative=(f"Failed to create capability '{capability['name']}' for component '{component_name}'. "
+                            f"Response: {capability_response.text if capability_response else 'No response'}")
                         )
 
-                # If capabilities were not created for any of the components, raise an assertion error
-                assert capabilities_creation_result, f"Capabilities creation failed for component '{component_name}'."
+                # If capabilities were not created, raise an assertion error
+                assert capabilities_result, f"Failed to create capability for component '{component_name}'."
             else:
-                print(f"Component with ID {component_id} does not have defined capabilities in the configuration.")
+                print(f"Component with ID {component_id} does not have defined capabilities.")
 
         # Delete ACC model
-        if acc_model_result_flag:
-            delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id, auth_details=auth_details)
+        if acc_result_flag:
+            delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id,
+                                                            auth_details=auth_details)
             delete_result_flag = delete_response and delete_response.status_code == 200
 
             test_api_obj.log_result(
                 delete_result_flag,
                 positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
-                negative=f"Failed to delete ACC model. Response: {delete_response.json() if delete_response else delete_response}."
+                negative=(f"Failed to delete ACC model. "
+                f"Response: {delete_response.json() if delete_response else delete_response}.")
             )
+
+        # test for validation http error 401 when no authentication
+        auth_details = None
+        result = test_api_obj.check_validation_error(auth_details)
+        test_api_obj.log_result(not result['result_flag'],
+                            positive=result['msg'],
+                            negative=result['msg'])
+
+        # test for validation http error 401 for invalid authentication
+        # set invalid authentication details
+        invalid_bearer_token = conf.invalid_bearer_token
+        auth_details = test_api_obj.set_auth_details(invalid_bearer_token)
+        result = test_api_obj.check_validation_error(auth_details)
+        test_api_obj.log_result(not result['result_flag'],
+                            positive=result['msg'],
+                            negative=result['msg'])
+
 
         # Update pass/fail counters
         expected_pass = test_api_obj.total

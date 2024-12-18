@@ -1,11 +1,11 @@
 """
 API automated test for ACC model app
-1. Create an ACC model name
+1. Create a new ACC model name
 2. Create an attribute
 3. Create a component
 4. Create a capability
 5. Submit ratings
-6. Delete an ACC model
+6. Delete newly created ACC model
 """
 
 import os
@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 @pytest.mark.API
 def test_api_end_to_end(test_api_obj):
-    "Run API test for creating an ACC model, attribute, component, and dependent capability"
+    "Run API test for creating an ACC model,attribute,component,capability and submit ratings"
     try:
         expected_pass = 0
         actual_pass = -1
@@ -24,6 +24,7 @@ def test_api_end_to_end(test_api_obj):
         # Set authentication details
         bearer_token = conf.bearer_token
         acc_details = conf.acc_details
+        capability_details = conf.capability_details
         auth_details = test_api_obj.set_auth_details(bearer_token)
 
         # Create an ACC model

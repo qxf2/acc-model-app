@@ -93,7 +93,6 @@ def test_multiple_acc_models(test_api_obj):
                             negative=result['msg'])
 
         # test for validation http error 401 for invalid authentication
-        # set invalid authentication details
         invalid_bearer_token = conf.invalid_bearer_token
         auth_details = test_api_obj.set_auth_details(invalid_bearer_token)
         result = test_api_obj.check_validation_error(auth_details)
