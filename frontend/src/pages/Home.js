@@ -8,6 +8,8 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import FeatureFlagService from "../services/featureFlagService";
+import { useFlags } from "launchdarkly-react-client-sdk";
 
 const styles = {
   heroSection: {
@@ -42,6 +44,11 @@ const styles = {
 };
 
 const Home = ({ isAuthenticated }) => {
+
+  //const hideAuthButtons = FeatureFlagService.getFlagValue("hideAuthButtons");
+  const { hideAuthButtons } = useFlags();
+  console.log("hideAuthButton value:", hideAuthButtons);
+
   return (
     <Container style={styles.mainContainer}>
       {/* Hero Section */}
@@ -56,7 +63,7 @@ const Home = ({ isAuthenticated }) => {
           Effortlessly build a structured ACC model offering clarity and
           coverage for effective testing.
         </Typography>
-        {!isAuthenticated && (
+        {!isAuthenticated && !hideAuthButtons && (
         <Box display="flex" justifyContent="center" gap={2} sx={{marginBottom: "2rem", marginTop: "2rem" }}>
           <Button
             component={Link}
