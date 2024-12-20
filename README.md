@@ -179,8 +179,7 @@ The application will be available at `http://localhost:3000`.
 
 4. If starting new, create ACC Model to begin with. Then divide your project into Components and then define the Capabilities. All these can be done on the respective pages (ACC Models, Components, Capabilities, Attributes) which are available under the dropdown menu (present) on the Navigation bar.
 
-5. To provide ratings for your capabilities, use the Ratings page. 
-
+5. To provide ratings for your capabilities, use the Ratings page.
 
 ### License
 
