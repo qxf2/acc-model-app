@@ -1,0 +1,37 @@
+2024-12-23 11:48:09 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created ACC model: {'name': 'Survey app_1734934689', 'description': 'Creating an ACC model name for survey app', 'id': 356, 'created_at': '2024-12-23T06:18:09.591623', 'updated_at': '2024-12-23T06:18:09.591625'}
+2024-12-23 11:48:09 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:09 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created ACC model: {'name': 'Survey app_1734934690', 'description': 'Creating an ACC model name for survey app', 'id': 357, 'created_at': '2024-12-23T06:18:09.779532', 'updated_at': '2024-12-23T06:18:09.779534'}
+2024-12-23 11:48:09 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully created ACC model: {'name': 'Survey app_1734934691', 'description': 'Creating an ACC model name for survey app', 'id': 358, 'created_at': '2024-12-23T06:18:09.972055', 'updated_at': '2024-12-23T06:18:09.972057'}
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully deleted ACC model with ID: 356
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully deleted ACC model with ID: 357
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: Successfully deleted ACC model with ID: 358
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:10 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/endpoints/api_player.py::get_user | Request & Response: {'url': 'http://127.0.0.1:8000/users/users/me', 'response': 401, 'user_list': {'detail': 'Not authenticated'}}
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: 401 UNAUTHORIZED: Authenticate with proper credentials OR Require Basic Authentication
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/endpoints/api_player.py::get_user | Request & Response: {'url': 'http://127.0.0.1:8000/users/users/me', 'response': 401, 'user_list': {'detail': 'Incorrect token'}}
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | PASS: 401 UNAUTHORIZED: Authenticate with proper credentials OR Require Basic Authentication
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::log_result | ~~~~~~~~
+
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::write_test_summary | 
+************************
+--------RESULT--------
+Total number of checks=8
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of checks passed=8
+----------------------
+************************
+
+
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of mini-checks=0
+2024-12-23 11:48:11 | INFO | /mnt/c/Users/archa/Desktop/api_tests/acc-model-app/tests/utils/results.py::write_test_summary | Total number of mini-checks passed=0
