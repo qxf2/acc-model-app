@@ -1,8 +1,6 @@
-name: ACC model API tests
-
 on:
   push:
-    branches: [docker-compose-api-tests-workflow]
+    branches: [main]
 
 jobs:
   test:
@@ -28,6 +26,7 @@ jobs:
           echo "NEW_DB_USER=${{ secrets.NEW_DB_USER }}" >> .env
           echo "NEW_DB_PASSWORD=${{ secrets.NEW_DB_PASSWORD }}" >> .env
           echo "NEW_DB_NAME=${{ secrets.NEW_DB_NAME }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
 
       - name: Build and Start Services
         run: |
@@ -49,14 +48,9 @@ jobs:
         run: |
           docker exec -i acc-model-app_database_1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} <<EOF
           CREATE USER ${{ secrets.NEW_DB_USER }} WITH PASSWORD '${{ secrets.NEW_DB_PASSWORD }}';
-          CREATE DATABASE ${{ secrets.NEW_DB_NAME }};
+          CREATE DATABASE ${{ secrets.NEW_DB_NAME }} WITH OWNER ${{ secrets.NEW_DB_USER }};
           GRANT ALL PRIVILEGES ON DATABASE ${{ secrets.NEW_DB_NAME }} TO ${{ secrets.NEW_DB_USER }};
           EOF
-
-      - name: Verify PostgreSQL Users and Databases
-        run: |
-          docker exec -i acc-model-app_database_1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c "\du"
-          docker exec -i acc-model-app_database_1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c "\l"
 
       - name: Wait for backend to be ready
         run: |
@@ -70,28 +64,51 @@ jobs:
           done
           curl -s http://127.0.0.1:8000/health || exit 1
 
-      - name: Get Bearer Token
+      - name: Create User in Backend
+        run: |
+          USER_RESPONSE=$(curl -s -X 'POST' \
+            'http://localhost:8000/users/' \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "username": "username08",
+              "email": "user08@qxf2.com",
+              "designation": "QA",
+              "password": "password08"
+            }')
+
+          echo "User created: $USER_RESPONSE"
+
+      - name: Verify PostgreSQL Users and Databases (Optional)
+        run: |
+          docker exec -i acc-model-app_database_1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c "\du"
+          docker exec -i acc-model-app_database_1 psql -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }} -c "\l"
+
+      - name: Fetch Bearer Token
         id: get_token
         run: |
-          token=$(curl -X 'POST' \
-              'http://localhost:8000/token' \
-              -H 'accept: application/json' \
-              -H 'Content-Type: application/x-www-form-urlencoded' \
-              -d "username=${{ secrets.NEW_DB_USER }}&password=${{ secrets.NEW_DB_PASSWORD }}" \
-              -s | jq -r '.access_token') 
-          echo "::set-output name=bearer_token::$token"
-        env:
-          USERNAME: ${{ secrets.NEW_DB_USER }}
-          PASSWORD: ${{ secrets.NEW_DB_PASSWORD }}
+          BEARER_TOKEN_RESPONSE=$(curl -s -X 'POST' \
+            'http://localhost:8000/token' \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            -d 'username=username08&password=password08')
 
-      - name: Export Bearer Token
-        run: |
-          echo "export BEARER_TOKEN=${{ steps.get_token.outputs.bearer_token }}" >> $GITHUB_ENV
+          echo "Bearer Token: $BEARER_TOKEN_RESPONSE"
+          BEARER_TOKEN=$(echo "$BEARER_TOKEN_RESPONSE" | jq -r '.access_token')
 
-      - name: Run API Tests
+          # Export BEARER_TOKEN as an environment variable directly
+          echo "::set-env name=bearer_token::$BEARER_TOKEN"
+
+      - name: Run API Tests Inside Container
         run: |
           pip install -r tests/requirements.txt
-          python -m pytest tests/tests/test_end_to_end_api_test.py
+          pytest tests/tests/test_end_to_end_api_test.py -s -v
+      
+      - name: Debug Docker
+        run: |
+          docker info
+          docker ps
 
-      - name: Shut down Docker Compose
-        run: docker-compose down
+      - name: Stop and remove services
+        run: |
+          docker-compose down
