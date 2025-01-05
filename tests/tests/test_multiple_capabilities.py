@@ -27,7 +27,10 @@ def test_multiple_capabilities(test_api_obj):
         # Create an ACC model
         acc_response = test_api_obj.create_acc_model(acc_details=acc_details,
                                                         auth_details=auth_details)
-        acc_result_flag = acc_response and acc_response.status_code == 200 and 'id' in acc_response.json()
+        acc_result_flag = (
+            acc_response is not None and
+            acc_response.status_code == 200 and
+            'id' in acc_response.json())
         acc_model_id = acc_response.json().get('id') if acc_result_flag else None
 
         test_api_obj.log_result(
@@ -54,7 +57,10 @@ def test_multiple_capabilities(test_api_obj):
             # Create the component
             component_response = test_api_obj.create_component(component_details=component_details,
                                                                 auth_details=auth_details)
-            component_result_flag = component_response and component_response.status_code == 200 and 'id' in component_response.json()
+            component_result_flag = (
+                component_response is not None and
+                component_response.status_code == 200 and
+                'id' in component_response.json())
             component_id = component_response.json().get('id') if component_result_flag else None
 
             # Collect successful component IDs
@@ -100,7 +106,9 @@ def test_multiple_capabilities(test_api_obj):
                     # Create the capability
                     capability_response = test_api_obj.create_capability(capability_details=capability_details,
                                                                          auth_details=auth_details)
-                    capability_result_flag = capability_response and capability_response.status_code == 200
+                    capability_result_flag = (
+                        capability_response is not None and
+                        capability_response.status_code == 200)
 
                     if capability_result_flag:
                         # Log the response for debugging
@@ -132,7 +140,9 @@ def test_multiple_capabilities(test_api_obj):
         if acc_result_flag:
             delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id,
                                                             auth_details=auth_details)
-            delete_result_flag = delete_response and delete_response.status_code == 200
+            delete_result_flag = (
+                delete_response is not None and
+                delete_response.status_code == 200)
 
             test_api_obj.log_result(
                 delete_result_flag,
@@ -141,15 +151,15 @@ def test_multiple_capabilities(test_api_obj):
                 f"Response: {delete_response.json() if delete_response else delete_response}.")
             )
 
-        # test for validation http error 401 when no authentication
+        # Test for validation http error 401 when no authentication
         auth_details = None
         result = test_api_obj.check_validation_error(auth_details)
         test_api_obj.log_result(not result['result_flag'],
                             positive=result['msg'],
                             negative=result['msg'])
 
-        # test for validation http error 401 for invalid authentication
-        # set invalid authentication details
+        # Test for validation http error 401 for invalid authentication
+        # Set invalid authentication details
         invalid_bearer_token = conf.invalid_bearer_token
         auth_details = test_api_obj.set_auth_details(invalid_bearer_token)
         result = test_api_obj.check_validation_error(auth_details)
@@ -169,7 +179,7 @@ def test_multiple_capabilities(test_api_obj):
         error_msg = f"TypeError occurred in test: {__file__}. Python says: {str(e)}"
         print(error_msg)
         test_api_obj.write(error_msg)
-    except Exception as e:  # pylint: disable=broad-exception-caught
+    except Exception as e:
         # Handle all other exceptions that weren't caught earlier
         error_msg = f"Exception occurred in test: {__file__}. Python says: {str(e)}"
         print(error_msg)

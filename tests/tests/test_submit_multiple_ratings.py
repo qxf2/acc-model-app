@@ -32,7 +32,10 @@ def test_submit_ratings(test_api_obj):
         acc_details = conf.acc_details
         acc_model_response = test_api_obj.create_acc_model(acc_details=acc_details,
                                                            auth_details=auth_details)
-        acc_model_result_flag = acc_model_response and acc_model_response.status_code == 200 and 'id' in acc_model_response.json()
+        acc_model_result_flag = (
+            acc_model_response is not None and
+            acc_model_response.status_code == 200 and
+            'id' in acc_model_response.json())
         acc_model_id = acc_model_response.json().get('id') if acc_model_result_flag else None
 
         test_api_obj.log_result(
@@ -57,7 +60,7 @@ def test_submit_ratings(test_api_obj):
 
             attribute_response = test_api_obj.create_attribute(attribute_details=attribute_details, auth_details=auth_details)
             attribute_result_flag = (
-                attribute_response and
+                attribute_response is not None and
                 attribute_response.status_code == 200 and
                 'id' in attribute_response.json()
             )
@@ -85,7 +88,10 @@ def test_submit_ratings(test_api_obj):
             }
 
             component_response = test_api_obj.create_component(component_details=component_details, auth_details=auth_details)
-            component_result_flag = component_response and component_response.status_code == 200 and 'id' in component_response.json()
+            component_result_flag = (
+                component_response is not None and
+                component_response.status_code == 200 and
+                'id' in component_response.json())
             component_id = component_response.json().get('id') if component_result_flag else None
 
             if component_result_flag:
@@ -110,7 +116,10 @@ def test_submit_ratings(test_api_obj):
                 }
 
                 capability_response = test_api_obj.create_capability(capability_details=capability_details, auth_details=auth_details)
-                capability_result_flag = capability_response and capability_response.status_code == 200 and 'id' in capability_response.json()
+                capability_result_flag = (
+                    capability_response is not None and
+                    capability_response.status_code == 200 and
+                    'id' in capability_response.json())
 
                 # Log and validate capability creation response
                 capability_response_data = capability_response.json()
@@ -182,7 +191,9 @@ def test_submit_ratings(test_api_obj):
                 delete_response = test_api_obj.delete_attribute(attribute_id,
                                                             auth_details=auth_details)
 
-                delete_result_flag = delete_response and delete_response.status_code in [200, 204]
+                delete_result_flag = (
+                    delete_response is not None and
+                    delete_response.status_code in [200, 204])
 
                 test_api_obj.log_result(
                     delete_result_flag,
@@ -195,8 +206,11 @@ def test_submit_ratings(test_api_obj):
 
         # Delete ACC model
         if acc_model_result_flag:
-            delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id, auth_details=auth_details)
-            delete_result_flag = delete_response and delete_response.status_code == 200
+            delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id,
+                                                        auth_details=auth_details)
+            delete_result_flag = (
+                delete_response is not None and
+                delete_response.status_code == 200)
 
             test_api_obj.log_result(
                 delete_result_flag,

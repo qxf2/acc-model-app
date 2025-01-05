@@ -50,9 +50,9 @@ def test_multiple_acc_models(test_api_obj):
 
             # Check creation success
             acc_model_result_flag = (
-                acc_model_response
-                and acc_model_response.status_code == 200
-                and "id" in acc_model_response.json()
+                acc_model_response is not None and
+                acc_model_response.status_code == 200 and
+                "id" in acc_model_response.json()
             )
 
             # Log results
@@ -77,7 +77,9 @@ def test_multiple_acc_models(test_api_obj):
             )
 
             # Check deletion success
-            delete_result_flag = delete_response and delete_response.status_code in (200, 204)
+            delete_result_flag = (
+                delete_response is not None and
+                delete_response.status_code in (200, 204))
             test_api_obj.log_result(
                 delete_result_flag,
                 positive=f"Successfully deleted ACC model with ID: {acc_model_id}",
@@ -85,14 +87,14 @@ def test_multiple_acc_models(test_api_obj):
                           f"Response: {delete_response.json() if delete_response else delete_response}"),
             )
 
-        # test for validation http error 401 when no authentication
+        # Test for validation http error 401 when no authentication
         auth_details = None
         result = test_api_obj.check_validation_error(auth_details)
         test_api_obj.log_result(not result['result_flag'],
                             positive=result['msg'],
                             negative=result['msg'])
 
-        # test for validation http error 401 for invalid authentication
+        # Test for validation http error 401 for invalid authentication
         invalid_bearer_token = conf.invalid_bearer_token
         auth_details = test_api_obj.set_auth_details(invalid_bearer_token)
         result = test_api_obj.check_validation_error(auth_details)
