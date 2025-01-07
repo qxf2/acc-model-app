@@ -179,9 +179,59 @@ The application will be available at `http://localhost:3000`.
 
 4. If starting new, create ACC Model to begin with. Then divide your project into Components and then define the Capabilities. All these can be done on the respective pages (ACC Models, Components, Capabilities, Attributes) which are available under the dropdown menu (present) on the Navigation bar.
 
-5. To provide ratings for your capabilities, use the Ratings page.
+5. To provide ratings for your capabilities, use the Ratings page. 
+
+## App Setup Instructions (using Docker)
+To set up the project locally, follow these instructions:
+
+## Prerequisites
+
+- **Docker**
+- **Docker Compose**
+
+## Steps to Run the App Using Docker
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/qxf2/acc-model-app.git
+   cd acc-model-app
+
+2. Generate 'SECRET_KEY'.
+   This is essential for cryptograhic signing within the application. To generate the key, run the following command in your terminal:
+
+   ```bash
+   openssl rand -hex 32
+   ```
+   
+3. Set 'SECRET_KEY' as Environment Variable.
+   * Create a '.env' file in the project root
+   
+   * Add the following lines to '.env'
+
+   ```bash
+   SECRET_KEY=your_secret_key_value_here
+   POSTGRES_USER=your_username
+   POSTGRES_PASSWORD=your_password
+   POSTGRES_DB=your_databasename
+   DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}"
+   ```
+
+4. Navigate to the frontend folder and create another .env file with the following
+   ```bash
+   REACT_APP_API_BASE_URL=http://localhost:8000
+   ```
+
+   * Ensure '.env' is listed in your '.gitignore' file to prevent it from being committed to version control.
+
+5. Navigate to the root directory and run the following command to start the app and all associated services.
+   ```bash
+   docker-compose up --build
+   ```
+
+Once the services are up and running, you can access the application through the following URLs:
+Frontend: http://localhost:3000
+Backend: http://localhost:8000/docs
 
 ### License
 
 This project is licensed under the MIT Licesnse. See the `LICENSE` for more details.
-

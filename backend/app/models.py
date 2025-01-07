@@ -85,7 +85,8 @@ class CapabilityAssessment(Base):
     ratings = relationship(
         "Rating", back_populates="capability_assessment", cascade="all, delete-orphan"
     )
-    rating_history = relationship("RatingHistory", back_populates="capability_assessment")
+    rating_history = relationship("RatingHistory", back_populates="capability_assessment",
+        cascade="all, delete-orphan")
 
 
 class User(Base):
