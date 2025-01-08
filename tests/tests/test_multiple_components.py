@@ -28,7 +28,10 @@ def test_create_and_delete_multiple_components(test_api_obj):
         # Create an ACC model
         acc_response = test_api_obj.create_acc_model(acc_details=acc_details,
                                                     auth_details=auth_details)
-        acc_result_flag = acc_response and acc_response.status_code==200 and 'id' in acc_response.json()
+        acc_result_flag = (
+            acc_response is not None and
+            acc_response.status_code==200 and
+            'id' in acc_response.json())
         acc_model_id = acc_response.json().get('id') if acc_result_flag else None
 
         test_api_obj.log_result(
@@ -54,7 +57,10 @@ def test_create_and_delete_multiple_components(test_api_obj):
             # Create the component
             component_response = test_api_obj.create_component(component_details=component_details,
                                                              auth_details=auth_details)
-            component_result_flag = component_response and component_response.status_code == 200 and 'id' in component_response.json()
+            component_result_flag = (
+                component_response is not None and
+                component_response.status_code == 200 and
+                'id' in component_response.json())
             component_id = component_response.json().get('id') if component_result_flag else None
 
             # Collect successful component IDs
@@ -76,7 +82,9 @@ def test_create_and_delete_multiple_components(test_api_obj):
         if acc_result_flag:
             delete_response = test_api_obj.delete_acc_model(acc_model_id=acc_model_id,
                                                             auth_details=auth_details)
-            delete_result_flag = delete_response and delete_response.status_code == 200
+            delete_result_flag = (
+                delete_response is not None and
+                delete_response.status_code == 200)
 
             test_api_obj.log_result(
                 delete_result_flag,

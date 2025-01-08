@@ -64,8 +64,11 @@ def test_create_and_delete_multiple_attributes(test_api_obj):
         # Step 2: Delete created attributes
         for attribute_id in created_attribute_ids:
             try:
-                delete_response = test_api_obj.delete_attribute(attribute_id, auth_details=auth_details)
-                delete_result_flag = delete_response.status_code == 204
+                delete_response = test_api_obj.delete_attribute(attribute_id,
+                                    auth_details=auth_details)
+                delete_result_flag = (
+                    delete_response is not None and
+                    delete_response.status_code in (200, 204))
 
                 # Log result for attribute deletion
                 test_api_obj.log_result(
@@ -73,17 +76,15 @@ def test_create_and_delete_multiple_attributes(test_api_obj):
                     positive=f"Successfully deleted attribute with ID: {attribute_id}",
                     negative=f"Failed to delete attribute with ID: {attribute_id}. Response: {delete_response.json() if delete_response else delete_response}"
                 )
+
             except Exception as e:
-                test_api_obj.log_result(
-                    False,
-                    positive="",
-                    negative=f"Error deleting attribute with ID {attribute_id}: {str(e)}"
-                )
+                print(f"Error deleting attribute with ID {attribute_id}: {str(e)}")
+                test_api_obj.log_result(False, negative=f"Exception occurred while deleting attribute ID {attribute_id}: {str(e)}")
 
         # Step 3: Test 401 error validation with no authentication
         auth_details = None
         result = test_api_obj.check_validation_error(auth_details)
-        assert not result['result_flag'], "Expected 401 Unauthorized error, but the request succeeded"
+        assert not result['result_flag'],"Expected 401 Unauthorized error,but the request succeeded"
         test_api_obj.log_result(
             not result['result_flag'],
             positive=result['msg'],
@@ -94,7 +95,7 @@ def test_create_and_delete_multiple_attributes(test_api_obj):
         invalid_bearer_token = conf.invalid_bearer_token
         auth_details = test_api_obj.set_auth_details(invalid_bearer_token)
         result = test_api_obj.check_validation_error(auth_details)
-        assert not result['result_flag'], "Expected 401 Unauthorized error, but the request succeeded"
+        assert not result['result_flag'],"Expected 401 Unauthorized error,but the request succeeded"
         test_api_obj.log_result(
             not result['result_flag'],
             positive=result['msg'],

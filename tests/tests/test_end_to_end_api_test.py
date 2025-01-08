@@ -33,7 +33,7 @@ def test_api_end_to_end(test_api_obj):
             auth_details=auth_details
         )
         acc_model_result_flag = (
-            acc_model_response and
+            acc_model_response is not None and
             acc_model_response.status_code == 200 and
             'id' in acc_model_response.json()
         )
@@ -61,7 +61,7 @@ def test_api_end_to_end(test_api_obj):
             auth_details=auth_details
         )
         attribute_result_flag = (
-            attribute_response and
+            attribute_response is not None and
             attribute_response.status_code == 200 and
             'id' in attribute_response.json()
         )
@@ -94,7 +94,7 @@ def test_api_end_to_end(test_api_obj):
                 auth_details=auth_details
             )
             component_result_flag = (
-                component_response and
+                component_response is not None and
                 component_response.status_code == 200 and
                 'id' in component_response.json()
             )
@@ -121,7 +121,7 @@ def test_api_end_to_end(test_api_obj):
                     auth_details=auth_details
                 )
                 capability_result_flag = (
-                    capability_response and
+                    capability_response is not None and
                     capability_response.status_code == 200 and
                     'id' in capability_response.json()
                 )
@@ -164,7 +164,7 @@ def test_api_end_to_end(test_api_obj):
 
                     # Log result for rating submission
                     assessment_id_result_flag = (
-                        assessment_response and
+                        assessment_response is not None and
                         assessment_response.status_code == 200
                     )
                     test_api_obj.log_result(
@@ -229,7 +229,9 @@ def test_api_end_to_end(test_api_obj):
                     acc_model_id=acc_model_id,
                     auth_details=auth_details
                 )
-                delete_result_flag = delete_response and delete_response.status_code == 200
+                delete_result_flag = (
+                    delete_response is not None and
+                    delete_response.status_code == 200)
 
                 # Log result for ACC model deletion
                 test_api_obj.log_result(
@@ -247,7 +249,9 @@ def test_api_end_to_end(test_api_obj):
                     attribute_id=attribute_id,
                     auth_details=auth_details
                 )
-                delete_result_flag = delete_response and delete_response.status_code == 200
+                delete_result_flag = (
+                    delete_response is not None and
+                    delete_response.status_code == 200)
 
                 # Log result for Attribute deletion
                 test_api_obj.log_result(
@@ -259,15 +263,15 @@ def test_api_end_to_end(test_api_obj):
                     )
                 )
 
-        # test for validation http error 401 when no authentication
+        # Test for validation http error 401 when no authentication
         auth_details = None
         result = test_api_obj.check_validation_error(auth_details)
         test_api_obj.log_result(not result['result_flag'],
                             positive=result['msg'],
                             negative=result['msg'])
 
-        # test for validation http error 401 for invalid authentication
-        # set invalid authentication details
+        # Test for validation http error 401 for invalid authentication
+        # Set invalid authentication details
         invalid_bearer_token = conf.invalid_bearer_token
         auth_details = test_api_obj.set_auth_details(invalid_bearer_token)
         result = test_api_obj.check_validation_error(auth_details)
