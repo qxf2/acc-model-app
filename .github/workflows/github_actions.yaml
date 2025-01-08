@@ -71,10 +71,10 @@ jobs:
             -H 'accept: application/json' \
             -H 'Content-Type: application/json' \
             -d '{
-              "username": "username08",
-              "email": "user08@qxf2.com",
+              "username": "username",
+              "email": "username@qxf2.com",
               "designation": "QA",
-              "password": "password08"
+              "password": "password"
             }')
           # Log only the necessary information (e.g., user ID)
           echo "User created: $(jq -r '.id' <<< "$USER_RESPONSE")"
@@ -86,18 +86,16 @@ jobs:
             'http://localhost:8000/token' \
             -H 'accept: application/json' \
             -H 'Content-Type: application/x-www-form-urlencoded' \
-            -d 'username=username08&password=password08')
-
+            -d 'username=username&password=password')
           # Extract and log only the access token
           BEARER_TOKEN=$(echo "$BEARER_TOKEN_RESPONSE" | jq -r '.access_token')
           echo "Bearer Token: $BEARER_TOKEN" 
-
           # Make the token available as an output
           echo "bearer_token=$BEARER_TOKEN" >> $GITHUB_OUTPUT
 
       - name: Run API Tests Inside Container
         env:
-          bearer_token: ${{ steps.get_token.outputs.bearer_token }}
+           bearer_token:${{ steps.get_token.outputs.bearer_token }}
         run: |
           pip install -r tests/requirements.txt 
           pytest tests/
@@ -107,7 +105,7 @@ jobs:
           docker ps -a
           docker stop $(docker ps -a -q)
           docker rm $(docker ps -a -q)
-          docker system prune -f 
+          docker system prune -f
 
       - name: Remove Bearer Token Environment Variable
         run: |
