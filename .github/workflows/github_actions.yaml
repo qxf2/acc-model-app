@@ -100,7 +100,7 @@ jobs:
           bearer_token: ${{ steps.get_token.outputs.bearer_token }}
         run: |
           pip install -r tests/requirements.txt 
-          pytest tests/tests/test_end_to_end_api_test.py
+          pytest tests/
 
       - name: Stop and remove services
         run: |
