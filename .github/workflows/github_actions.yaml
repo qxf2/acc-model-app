@@ -87,27 +87,26 @@ jobs:
             -H 'accept: application/json' \
             -H 'Content-Type: application/x-www-form-urlencoded' \
             -d 'username=username&password=password')
-            
+
           # Extract and log only the access token
           BEARER_TOKEN=$(echo "$BEARER_TOKEN_RESPONSE" | jq -r '.access_token')
           echo "Bearer Token: $BEARER_TOKEN" 
-          # Make the token available as an output
+
+          # Set output using GITHUB_OUTPUT
           echo "bearer_token=$BEARER_TOKEN" >> $GITHUB_OUTPUT
 
       - name: Run API Tests Inside Container
         env:
-           bearer_token:${{ steps.get_token.outputs.bearer_token }}
+          BEARER_TOKEN: ${{ steps.get_token.outputs.bearer_token }} 
         run: |
           pip install -r tests/requirements.txt 
           pytest tests/
 
       - name: Stop and remove services
         run: |
-          docker ps -a
-          docker stop $(docker ps -a -q)
-          docker rm $(docker ps -a -q)
-          docker system prune -f
+          docker-compose down 
 
-      - name: Remove Bearer Token Environment Variable
+      - name: Prune Docker System
         run: |
-          unset BEARER_TOKEN
+          docker system prune -f
+          
