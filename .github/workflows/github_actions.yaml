@@ -93,7 +93,7 @@ jobs:
           echo "Bearer Token: $BEARER_TOKEN" 
 
           # Make the token available as an output
-          echo "::set-output name=bearer_token::$BEARER_TOKEN"
+          echo "bearer_token=$BEARER_TOKEN" >> $GITHUB_OUTPUT
 
       - name: Run API Tests Inside Container
         env:
